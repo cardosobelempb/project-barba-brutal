@@ -14,7 +14,7 @@ export default function ContentRoot({
   className,
   ...props
 }: ContentRootProps) {
-  const baseClasses = cn("lg:max-w-7xl", "mx-auto", className);
+  const baseClasses = cn("lg:max-w-7xl px-2 md:px-3", "mx-auto", className);
   return React.createElement(
     as,
     {

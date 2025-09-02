@@ -13,7 +13,7 @@ export default function ContainerRoot({
   className,
   ...props
 }: ContainerRootProps) {
-  const baseClasses = cn("w-full px-8", className);
+  const baseClasses = cn("w-full", className);
   return React.createElement(
     as,
     {

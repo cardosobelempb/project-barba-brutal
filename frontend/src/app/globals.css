@@ -89,7 +89,7 @@
     min-height: 100vh;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-black text-foreground;
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
     font-size: 62.5%;

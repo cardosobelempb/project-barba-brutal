@@ -1,4 +1,5 @@
 import BoxRoot from "@/components/templates/BoxRoot";
+import Link from "next/link";
 import {
   FaInstagramSquare,
   FaLinkedin,
@@ -8,11 +9,32 @@ import {
 
 export const ProfissionalSocial = () => {
   return (
-    <BoxRoot className="flex gap-x-2 p-3 text-zinc-300">
-      <FaYoutube className="stroke-1" />
-      <FaInstagramSquare />
-      <FaTwitter />
-      <FaLinkedin />
+    <BoxRoot
+      as="nav"
+      className="flex gap-x-2 p-3 text-zinc-300 justify-center sm:justify-start"
+    >
+      <ul className="flex items-center gap-x-2">
+        <li>
+          <Link href={"/"}>
+            <FaYoutube />
+          </Link>
+        </li>
+        <li>
+          <Link href={"/"}>
+            <FaInstagramSquare />
+          </Link>
+        </li>
+        <li>
+          <Link href={"/"}>
+            <FaTwitter />
+          </Link>
+        </li>
+        <li>
+          <Link href={"/"}>
+            <FaLinkedin />
+          </Link>
+        </li>
+      </ul>
     </BoxRoot>
   );
 };
