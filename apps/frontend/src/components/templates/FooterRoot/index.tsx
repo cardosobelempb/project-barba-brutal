@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
 
+import { IconRoot } from "@/components/IconRoot";
 import BoxRoot from "../BoxRoot";
 import ContainerRoot from "../ContainerRoot";
 import ContentRoot from "../ContentRoot";
@@ -18,7 +19,7 @@ export default function FooterRoot({ className }: ContentRootProps) {
         as={"section"}
         className={cn(
           "py-4 sm:py-8",
-          "grid grid-cols-1 sm:grid-cols-3 text-zinc-400"
+          "grid grid-cols-1 sm:grid-cols-3 text-zinc-400",
         )}
       >
         <BrandRoot />
@@ -52,7 +53,8 @@ export default function FooterRoot({ className }: ContentRootProps) {
             </li>
             <li>
               <Link className="flex items-center gap-x-2 text-sm" href={"/"}>
-                <FaWhatsapp className="text-green-500 size-5" /> Whatsapp
+                <IconRoot icon={FaWhatsapp} className="text-green-500 size-5" />{" "}
+                Whatsapp
               </Link>
             </li>
           </ul>

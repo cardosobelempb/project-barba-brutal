@@ -1,3 +1,4 @@
+import { IconRoot } from "@/components/IconRoot";
 import BoxRoot from "@/components/templates/BoxRoot";
 import Link from "next/link";
 import {
@@ -16,22 +17,22 @@ export const ProfissionalSocial = () => {
       <ul className="flex items-center gap-x-2">
         <li>
           <Link href={"/"}>
-            <FaYoutube />
+            <IconRoot icon={FaYoutube} />
           </Link>
         </li>
         <li>
           <Link href={"/"}>
-            <FaInstagramSquare />
+            <IconRoot icon={FaInstagramSquare} />
           </Link>
         </li>
         <li>
           <Link href={"/"}>
-            <FaTwitter />
+            <IconRoot icon={FaTwitter} />
           </Link>
         </li>
         <li>
           <Link href={"/"}>
-            <FaLinkedin />
+            <IconRoot icon={FaLinkedin} />
           </Link>
         </li>
       </ul>

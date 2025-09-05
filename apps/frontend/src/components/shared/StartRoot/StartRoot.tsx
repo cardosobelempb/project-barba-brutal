@@ -1,3 +1,4 @@
+import { IconRoot } from "@/components/IconRoot";
 import BoxRoot from "@/components/templates/BoxRoot";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
@@ -11,11 +12,11 @@ export const StartRoot = ({ star, starQtd }: StartRootProps) => {
     const value = index + 1;
 
     if (star >= value) {
-      return <FaStar key={index} size={18} />;
+      return <IconRoot key={index} icon={FaStar} />;
     } else if (star > value - 1) {
-      return <FaStarHalfAlt key={index} size={18} />;
+      return <IconRoot key={index} icon={FaStarHalfAlt} />;
     } else {
-      return <FaRegStar key={index} size={18} />;
+      return <IconRoot key={index} icon={FaRegStar} />;
     }
   });
   return (

@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { AuthRegisterService } from 'src/infra/application/services/auth/auth-register.service';
+import { AuthRegisterService } from 'src/application/services/auth/auth-register.service';
 
-export type User = {
+export type UserEntity = {
   id?: string;
   name: string;
   email: string;
@@ -16,9 +16,9 @@ export class AuthRegisterController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('/register')
-  async handle(@Body() user: User): Promise<void> {
+  async handle(@Body() entity: UserEntity): Promise<void> {
     console.log('AuthRegisterController=>');
 
-    await this.authRegisterService.execute(user);
+    await this.authRegisterService.execute(entity);
   }
 }
