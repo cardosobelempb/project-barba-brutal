@@ -12,14 +12,17 @@ export const ServiceItem = ({ service }: ServiceItemProps) => {
       as="article"
       className="flex bg-zinc-800 rounded-xl overflow-hidden"
     >
-      <Image
-        src={service.imgUrl}
-        alt={service.name}
-        width={150}
-        height={150}
-        priority
-        className="object-cover"
-      />
+      <BoxRoot className="relative w-[150px] h-[150px]">
+        <Image
+          src={service.imgUrl}
+          alt={service.name}
+          fill
+          sizes="100%"
+          priority
+          className="object-cover object-top w-auto h-auto"
+          quality={80}
+        />
+      </BoxRoot>
       <BoxRoot className="flex flex-col gap-y-2  p-3">
         <h2 className="text-lg font-black">{service.name}</h2>
         <p className="text-xs text-zinc-400 flex-1">{service.description}</p>

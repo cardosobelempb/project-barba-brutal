@@ -20,10 +20,13 @@ export const ProfessionalItem = ({ professional }: ProfissionalItemProps) => {
           src={professional.imgUrl}
           alt={professional.name}
           fill
+          sizes="100%"
           priority
-          className="object-cover object-top"
+          className="object-cover object-top w-auto h-auto"
+          quality={80}
         />
       </BoxRoot>
+
       <BoxRoot className="flex flex-col gap-y-2  p-3">
         <h1 className="text-2xl font-black">{professional.name}</h1>
         <p className="text-xs text-zinc-400 flex-1">

@@ -26,10 +26,13 @@ export default function BackgroundRoot({
     },
     src ? (
       <Image
-        fill
-        className="object-cover -z-30"
         src={src}
         alt="Image de fundo..."
+        fill
+        sizes="100%"
+        priority
+        className="object-cover object-top w-auto h-auto -z-30"
+        quality={80}
       />
     ) : (
       ""
