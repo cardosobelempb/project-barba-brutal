@@ -1,3 +1,3 @@
-import { IService } from './service.interface'
+import { ServiceRoot } from './ServiceRoot'
 
-export type { IService }
+export type { ServiceRoot }

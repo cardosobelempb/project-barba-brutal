@@ -1,5 +1,5 @@
 import { Pagination } from '@repo/core';
-import { UserEntity } from '@repo/user';
+import { UserEntity } from '@repo/types';
 import { PrismaService } from 'src/application/services/database/prisma.service';
 
 import { UserRepository } from '../UserRepository';

@@ -1,5 +1,6 @@
-import { UserEntity } from './entities/UserEntity';
+import { UserRegisterService } from './services'
 
-export type { UserEntity };
+export { UserRegisterService }
+
 
 

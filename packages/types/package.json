@@ -1,5 +1,5 @@
 {
-  "name": "@repo/core",
+  "name": "@repo/types",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +12,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "dayjs": "^1.11.18",
     "tsup": "^8.5.0"
   }
 }
