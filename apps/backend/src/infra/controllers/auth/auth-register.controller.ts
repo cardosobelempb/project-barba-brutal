@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { AuthRegisterService } from '@repo/auth';
 
 import type { UserProps } from '@repo/types';
-import { AuthRegisterService } from 'src/application/services/auth/auth-register.service';
 
 @Controller('/auth')
 export class AuthRegisterController {
@@ -10,8 +10,6 @@ export class AuthRegisterController {
   @HttpCode(HttpStatus.CREATED)
   @Post('/register')
   async handle(@Body() entity: UserProps): Promise<void> {
-    console.log('AuthRegisterController=>');
-
     await this.authRegisterService.execute(entity);
   }
 }

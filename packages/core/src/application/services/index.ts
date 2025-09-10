@@ -1,3 +1,3 @@
-import { ServiceRoot } from './ServiceRoot'
+import { ServiceAbstract } from './ServiceAbstract'
 
-export type { ServiceRoot }
+export type { ServiceAbstract }

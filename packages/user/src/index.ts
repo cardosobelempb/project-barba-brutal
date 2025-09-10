@@ -1,6 +1,7 @@
+import { UserRepository } from './repositories'
 import { UserRegisterService } from './services'
 
-export { UserRegisterService }
+export { UserRegisterService, UserRepository }
 
 
 

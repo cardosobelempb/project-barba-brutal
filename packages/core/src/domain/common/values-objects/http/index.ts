@@ -10,13 +10,17 @@ import {
   SchemaDefinition,
 } from './types'
 
-export {
-  BaseParams,
+export type {
   ExtendedType,
   FieldSchema,
-  PrimitiveType,
+  PrimitiveType
+}
+
+export {
+  BaseParams,
   QueryParams,
   RequestBody,
   RouteParams,
-  type SchemaDefinition,
+  type SchemaDefinition
 }
+

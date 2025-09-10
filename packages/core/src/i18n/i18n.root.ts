@@ -1,53 +1,54 @@
-import { SupportedLocales } from './types'
-import { localeContent } from './index'
+import { localeContent, SupportedLocales } from './localeContent';
 
 export class I18nRoot {
   constructor(private locale: SupportedLocales = 'pt') {
-    this.locale = locale
+    this.locale = locale;
   }
 
   setLocale(locale: SupportedLocales) {
-    this.locale = locale
+    this.locale = locale;
+  }
+
+  private get content() {
+    return localeContent[this.locale] || localeContent['pt'];
   }
 
   get messages() {
-    return localeContent[this.locale].messages
+    return this.content.messages;
   }
 
   get placeholders() {
-    return localeContent[this.locale].placeholders
+    return this.content.placeholders;
   }
 
   get titles() {
-    return localeContent[this.locale].titles
+    return this.content.titles;
   }
 
   get descriptions() {
-    return localeContent[this.locale].descriptions
+    return this.content.descriptions;
   }
 
   get buttons() {
-    return localeContent[this.locale].buttons
+    return this.content.buttons;
   }
 
   get errors() {
-    return localeContent[this.locale].errors
+    return this.content.errors;
   }
 
   get labels() {
-    return localeContent[this.locale].labels
+    return this.content.labels;
   }
 
-  get httpErrors() {
-    return localeContent[this.locale].httpErrors
-  }
-
-  getHttpErrorMessage(statusCode: number): string {
-    return (
-      this.httpErrors[statusCode] || this.errors.unknown // fallback genérico
-    )
-  }
+  get httpErrors(): Record<number, string> {
+  return this.content.httpErrors;
 }
 
-export const i18n = new I18nRoot()
-console.log(i18n.errors.duplicateCheckin)
+getHttpErrorMessage(statusCode: number): string {
+  return this.httpErrors[statusCode] || this.errors.unknown;
+}
+}
+
+export const i18n = new I18nRoot('en')
+// console.log(i18n.errors.duplicateCheckin)

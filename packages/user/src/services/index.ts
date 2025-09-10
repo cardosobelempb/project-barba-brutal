@@ -1,2 +1,2 @@
-export * from './UserRegisterService';
+export * from './UserRegisterService.service';
 

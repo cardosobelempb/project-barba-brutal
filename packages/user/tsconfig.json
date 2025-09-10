@@ -1,18 +1,3 @@
 {
   "extends": "@repo/typescript-config/base.json",
-  // "compilerOptions": {
-  //   "module": "NodeNext", // Usando ES Modules
-  //   "target": "ES2022",
-  //   "moduleResolution": "NodeNext", // Resolução de módulos no estilo Node.js 16+
-  //   "outDir": "dist", // Pasta para arquivos compilados
-  //   "rootDir": "src", // Pasta raiz do código TypeScript
-  //   "declaration": true,
-  //   "declarationMap": true,
-  //   "esModuleInterop": true,
-  //   "skipLibCheck": true,
-  //   "strict": true
-  // },
-  // "include": [
-  //   "src/**/*"
-  // ]
 }

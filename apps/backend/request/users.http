@@ -8,8 +8,8 @@ POST http://localhost:4000/users/register
 Content-Type: application/json
 
 {
-  "name": "Cláudio Cardoso",
-  "email": "claudio.c.lima@hotmail.com",
+  "name": "Kevin Cardoso",
+  "email": "kevin.c.lima@hotmail.com",
   "password": "262011",
   "phone": "(83) 999126797",
   "barber": false

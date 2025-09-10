@@ -1,8 +1,7 @@
 import { Pagination } from '@repo/core';
 import { UserEntity } from '@repo/types';
+import { UserRepository } from '@repo/user';
 import { PrismaService } from 'src/application/services/database/prisma.service';
-
-import { UserRepository } from '../UserRepository';
 
 export class UserPrismaRepository implements UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -43,3 +42,5 @@ export class UserPrismaRepository implements UserRepository {
     await this.prismaService.user.delete({ where: { id: entity.id } });
   }
 }
+
+export const USER_PRISMA_REPOSITORY = 'UserPrismaRepository';

@@ -1,10 +1,11 @@
-import pt from './pt'
 import en from './en'
-import { SupportedLocales, LocaleContentType } from './types'
-import { I18nRoot, i18n } from './i18n.root'
+import { i18n, I18nRoot } from './i18n.root'
+import pt from './pt'
+import { LocaleContentType, SupportedLocales } from './types'
 
 export const localeContent: Record<SupportedLocales, LocaleContentType> = {
   pt,
   en,
 }
-export { I18nRoot, i18n }
+export { i18n, I18nRoot }
+
