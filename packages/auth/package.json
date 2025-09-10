@@ -1,0 +1,21 @@
+{
+  "name": "@repo/auth",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup src/index.ts --dts --minify",
+    "dev": "tsup src/index.ts --dts --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@repo/core": "*",
+    "@repo/user": "*"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0"
+  }
+}

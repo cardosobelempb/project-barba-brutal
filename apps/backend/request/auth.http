@@ -1,0 +1,23 @@
+GET http://localhost:4000/ping
+
+
+###
+POST http://localhost:4000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Cláudio Cardoso",
+  "email": "claudio.c.lima@hotmail.com",
+  "password": "262011",
+  "phone": "(83) 999126797",
+  "barber": false
+}
+
+###
+POST http://localhost:4000/auth/signin
+Content-Type: application/json
+
+{
+  "email": "kevin.c.lima@hotmail.com",
+  "password": "262011"
+}
