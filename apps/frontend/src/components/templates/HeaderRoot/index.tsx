@@ -26,7 +26,7 @@ export default function HeaderRoot({ className }: ContentRootProps) {
           <nav>
             <ul className="flex justify-end">
               <li>
-                <Link href={"/entrar"}>Entrar</Link>
+                <Link href={"/auth/signin"}>Entrar</Link>
               </li>
             </ul>
           </nav>

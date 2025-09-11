@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { Toaster } from "@/components/ui/sonner";
+import { ReactNode } from "react";
 
-import { ThemeProvider } from './ThemeProvider';
+import { ThemeProvider } from "./ThemeProvider";
 
 type ProviderRootProps = {
   children: ReactNode;
@@ -10,12 +11,13 @@ export default function ProviderRoot({ children }: ProviderRootProps) {
   return (
     <>
       <ThemeProvider
-        attribute='class'
-        defaultTheme='system'
+        attribute="class"
+        defaultTheme="system"
         enableSystem
         disableTransitionOnChange
       >
         {children}
+        <Toaster />
       </ThemeProvider>
     </>
   );
