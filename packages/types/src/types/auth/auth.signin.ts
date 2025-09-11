@@ -1,5 +1,5 @@
 
-export interface SignInProps {
+export interface AuthSignInProps {
   email: string
     password: string
   }

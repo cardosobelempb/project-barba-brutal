@@ -1,4 +1,4 @@
-import type { SignInProps } from './auth.signin';
+import type { AuthSignInProps } from './auth.signin';
 
-export type { SignInProps };
+export type { AuthSignInProps };
 

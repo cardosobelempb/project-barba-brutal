@@ -2,18 +2,19 @@ import { Pagination } from '@repo/core';
 import { UserEntity } from '@repo/types';
 import { UserRepository } from '@repo/user';
 import { PrismaService } from 'src/application/services/database/prisma.service';
+import { UserPrismaMapper } from './mapper/UserPrisma.mapper';
 
 export class UserPrismaRepository implements UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const user = await this.prismaService.user.findUnique({
+    const entity = await this.prismaService.user.findUnique({
       where: { email },
     });
 
-    if (!user) return null;
+    if (!entity) return null;
 
-    return user;
+    return UserPrismaMapper.toDomain(entity);
   }
   async findById(id: string): Promise<UserEntity | null> {
     const entity = await this.prismaService.user.findUnique({
@@ -22,10 +23,11 @@ export class UserPrismaRepository implements UserRepository {
 
     if (!entity) return null;
 
-    return entity;
+    return UserPrismaMapper.toDomain(entity);
   }
   async findAll({ page }: Pagination): Promise<UserEntity[]> {
-    return await this.prismaService.user.findMany();
+    const users = await this.prismaService.user.findMany();
+    return users.map((user) => UserPrismaMapper.toDomain(user));
   }
   // async create(entity: UserEntity): Promise<void> {
   //   await this.prismaService.user.create({ data: entity });
