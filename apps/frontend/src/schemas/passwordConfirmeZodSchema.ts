@@ -5,7 +5,7 @@ export const passwordConfirmeZodSchema = z
   .object({
     password: passwordZodSchema,
     passwordConfirm: z.string().min(5, {
-      message: "Password confirm must be at least 5 characters.",
+      message: "A confirmação da senha deve ter pelo menos 5 caracteres.",
     }),
   })
   .superRefine((data, ctx) => {
@@ -13,7 +13,7 @@ export const passwordConfirmeZodSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["passwordConfirm"],
-        message: "Password do not match.",
+        message: "As senhas não correspondem.",
       });
     }
   });

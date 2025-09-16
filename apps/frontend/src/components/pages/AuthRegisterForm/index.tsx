@@ -33,12 +33,16 @@ export default function AuthRegisterForm() {
   const form = useForm<RegisterZodSchema>({
     resolver: zodResolver(registerZodSchema),
     defaultValues: {
+      name: "",
       email: "",
+      phone: "",
       password: "",
+      passwordConfirm: "",
     },
   });
 
   async function onSubmit(values: RegisterZodSchema) {
+    console.log(values);
     // await authClient.signIn.email({
     //   email: values.email,
     //   password: values.password,
@@ -76,10 +80,10 @@ export default function AuthRegisterForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="w-full sm:w-[350px]  border-none">
+          <Card className="w-full sm:w-[350px]">
             <CardHeader>
               <BrandRoot className="self-center " />
-              <CardTitle>Registar</CardTitle>
+              <CardTitle className="text-lg">Registar</CardTitle>
               <CardDescription>Register para continuar.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
@@ -91,15 +95,11 @@ export default function AuthRegisterForm() {
                     <FormLabel>Nome</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full bg-zinc-800 px-4 py-2 rounded border-none"
                         type="text"
                         placeholder="Digíte seu nome completo..."
                         {...field}
                       />
                     </FormControl>
-                    {/* <FormDescription>
-                    This is your public display name.
-                  </FormDescription> */}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -112,7 +112,6 @@ export default function AuthRegisterForm() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full bg-zinc-800 px-4 py-2 rounded border-none"
                         type="email"
                         placeholder="Digíte seu email..."
                         {...field}
@@ -134,7 +133,6 @@ export default function AuthRegisterForm() {
                     <FormLabel>Telefone</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full bg-zinc-800 px-4 py-2 rounded border-none"
                         type="tel"
                         placeholder="Digíte seu telefone..."
                         {...field}
@@ -156,7 +154,6 @@ export default function AuthRegisterForm() {
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full bg-zinc-800 px-4 py-2 rounded border-none"
                         type="password"
                         placeholder="Digíte sua senha..."
                         {...field}
@@ -177,7 +174,6 @@ export default function AuthRegisterForm() {
                     <FormLabel>Confimar Senha</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full bg-zinc-800 px-4 py-2 rounded border-none"
                         type="password"
                         placeholder="Confirme sua senha..."
                         {...field}
@@ -191,22 +187,18 @@ export default function AuthRegisterForm() {
                 )}
               />
             </CardContent>
-            <CardFooter className="flex gap-x-3">
-              <Button
-                className={`px-4 py-2 text-white rounded-md bg-green-600 hover:bg-green-500 w-full`}
-                variant={"default"}
-                type="submit"
-              >
+            <CardFooter className="flex gap-y-3 flex-col">
+              <Button className="w-full" variant={"default"} type="submit">
                 Registrar
               </Button>
-              <Button variant={"default"} type="submit" asChild>
-                <Link
-                  className={`px-4 py-2 text-white bg-red-600 w-full hover:bg-red-500`}
-                  href={"/"}
-                >
-                  Cancelar
-                </Link>
-              </Button>
+
+              <Link
+                href={"/auth/signin"}
+                className={`flex gap-x-3 justify-center`}
+              >
+                Já tem conta?
+                <span className="text-yellow-500">Entrar!</span>
+              </Link>
             </CardFooter>
           </Card>
         </form>

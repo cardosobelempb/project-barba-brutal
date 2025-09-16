@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import {
@@ -38,6 +39,7 @@ export default function AuthSignInForm() {
   });
 
   async function onSubmit(values: SignInZodSchema) {
+    console.log(values);
     // await authClient.signIn.email({
     //   email: values.email,
     //   password: values.password,
@@ -75,10 +77,10 @@ export default function AuthSignInForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="w-full sm:w-[350px]  border-none">
+          <Card className="w-full sm:w-[350px] border-none ">
             <CardHeader>
               <BrandRoot className="self-center " />
-              <CardTitle>Entrar</CardTitle>
+              <CardTitle className="text-lg">Entrar</CardTitle>
               <CardDescription>Faça login para continuar.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
@@ -90,7 +92,6 @@ export default function AuthSignInForm() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full bg-zinc-800 px-4 py-2 rounded border-none"
                         type="email"
                         placeholder="Digíte seu email..."
                         {...field}
@@ -112,7 +113,6 @@ export default function AuthSignInForm() {
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full bg-zinc-800 px-4 py-2 rounded border-none"
                         type="password"
                         placeholder="Digíte sua senha..."
                         {...field}
@@ -126,10 +126,22 @@ export default function AuthSignInForm() {
                 )}
               />
             </CardContent>
-            <CardFooter>
-              <Button variant={"default"} type="submit">
+            <CardFooter className="fex flex-col gap-y-3">
+              <Button
+                className={`px-4 py-2  rounded-md  w-full`}
+                variant={"default"}
+                type="submit"
+              >
                 Entrar
               </Button>
+
+              <Link
+                href={"/auth/register"}
+                className={`flex gap-x-3 justify-center`}
+              >
+                Ainda não tem conta?
+                <span className="text-yellow-500">Registre-se!</span>
+              </Link>
             </CardFooter>
           </Card>
         </form>

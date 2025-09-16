@@ -12,7 +12,7 @@ export default function BrandRoot({ className }: BrandRootProps) {
       <Link
         className={cn(
           `flex items-center justify-center sm:justify-start gap-x-2`,
-          className
+          className,
         )}
         href={`/`}
       >
@@ -21,7 +21,7 @@ export default function BrandRoot({ className }: BrandRootProps) {
           alt="Picture of the author"
           width={50}
           height={50}
-          className={`w-16 h-16 hidden sm:block`}
+          className={`w-16 h-16 hidden sm:block `}
         />
         <Image
           src={`https://mc.surb.com.br/api/v1/buckets/barba-brutal/objects/download?preview=true&prefix=logo.png`}

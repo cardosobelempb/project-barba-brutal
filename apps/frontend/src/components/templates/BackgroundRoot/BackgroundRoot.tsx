@@ -7,6 +7,7 @@ type BackgroundRootProps = {
   className?: string;
   as?: ElementType;
   src?: string;
+  priority?: boolean;
 };
 
 export default function BackgroundRoot({
@@ -14,6 +15,7 @@ export default function BackgroundRoot({
   as = "div",
   className,
   src,
+  priority = true,
   ...props
 }: BackgroundRootProps) {
   const baseClasses = cn("w-full h-full", className);
@@ -29,8 +31,10 @@ export default function BackgroundRoot({
         src={src}
         alt="Image de fundo..."
         fill
+        width={0}
+        height={0}
         sizes="100%"
-        priority
+        priority={priority}
         className="object-cover object-top w-auto h-auto -z-30"
         quality={80}
       />
@@ -39,6 +43,6 @@ export default function BackgroundRoot({
     ),
     <div className="bg-black sm:bg-transparent sm:bg sm:bg-gradient-to-r from-black/60 via-black/95 to-black/60">
       {children}
-    </div>
+    </div>,
   );
 }
