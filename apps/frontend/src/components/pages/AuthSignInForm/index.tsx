@@ -1,7 +1,7 @@
 "use client";
 
-import BrandRoot from "@/components/BrandRoot";
-import { InputRoot } from "@/components/InputRoot";
+import BrandRoot from "@/components/shared/BrandRoot";
+import { InputRoot } from "@/components/shared/InputRoot";
 import { Button } from "@/components/ui/button";
 import {
   Card,

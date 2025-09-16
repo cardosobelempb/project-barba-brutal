@@ -1,4 +1,4 @@
-import BrandRoot from "@/components/BrandRoot";
+import BrandRoot from "@/components/shared/BrandRoot";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
