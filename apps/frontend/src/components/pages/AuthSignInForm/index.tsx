@@ -1,6 +1,7 @@
 "use client";
 
 import BrandRoot from "@/components/BrandRoot";
+import PasswordInput from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { http } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,7 +41,17 @@ export default function AuthSignInForm() {
   });
 
   async function onSubmit(values: SignInZodSchema) {
-    console.log(values);
+    const response = await http({
+      method: "POST",
+      url: "/auth/signin",
+      data: {
+        email: values.email,
+        password: values.password,
+      },
+      withCredentials: true, // 🔥 IMPORTANTE
+    });
+    form.reset();
+    console.log(response.data);
     // await authClient.signIn.email({
     //   email: values.email,
     //   password: values.password,
@@ -77,9 +89,9 @@ export default function AuthSignInForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="w-full sm:w-[350px] border-none ">
+          <Card className="w-[300px] sm:w-[350px] border-none ">
             <CardHeader>
-              <BrandRoot className="self-center " />
+              <BrandRoot className="self-center" />
               <CardTitle className="text-lg">Entrar</CardTitle>
               <CardDescription>Faça login para continuar.</CardDescription>
             </CardHeader>
@@ -112,7 +124,7 @@ export default function AuthSignInForm() {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input
+                      <PasswordInput
                         type="password"
                         placeholder="Digíte sua senha..."
                         {...field}

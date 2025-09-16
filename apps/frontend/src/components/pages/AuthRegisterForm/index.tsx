@@ -1,6 +1,7 @@
 "use client";
 
 import BrandRoot from "@/components/BrandRoot";
+import PasswordInput from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,11 +20,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { http } from "@/lib/api";
 import {
   RegisterZodSchema,
   registerZodSchema,
 } from "@/schemas/registerZodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosResponse } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -42,7 +45,18 @@ export default function AuthRegisterForm() {
   });
 
   async function onSubmit(values: RegisterZodSchema) {
-    console.log(values);
+    const response: AxiosResponse<RegisterZodSchema> = await http({
+      method: "POST",
+      url: "/auth/register",
+      data: {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        phone: values.phone,
+      },
+    });
+    form.reset();
+    console.log(response.data);
     // await authClient.signIn.email({
     //   email: values.email,
     //   password: values.password,
@@ -80,7 +94,7 @@ export default function AuthRegisterForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="w-full sm:w-[350px]">
+          <Card className="w-[300px] sm:w-[350px]">
             <CardHeader>
               <BrandRoot className="self-center " />
               <CardTitle className="text-lg">Registar</CardTitle>
@@ -153,7 +167,7 @@ export default function AuthRegisterForm() {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input
+                      <PasswordInput
                         type="password"
                         placeholder="Digíte sua senha..."
                         {...field}
@@ -173,7 +187,7 @@ export default function AuthRegisterForm() {
                   <FormItem>
                     <FormLabel>Confimar Senha</FormLabel>
                     <FormControl>
-                      <Input
+                      <PasswordInput
                         type="password"
                         placeholder="Confirme sua senha..."
                         {...field}
