@@ -1,7 +1,7 @@
 "use client";
 
 import BrandRoot from "@/components/BrandRoot";
-import PasswordInput from "@/components/PasswordInput";
+import { InputRoot } from "@/components/InputRoot";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,15 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { http } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -96,46 +88,21 @@ export default function AuthSignInForm() {
               <CardDescription>Faça login para continuar.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-              <FormField
+              <InputRoot
                 control={form.control}
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Digíte seu email..."
-                        {...field}
-                      />
-                    </FormControl>
-                    {/* <FormDescription>
-                    This is your public display name.
-                  </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="E-mail"
+                placeholder="Digite seu e-mail..."
+                type="email"
               />
 
-              <FormField
+              <InputRoot
                 control={form.control}
                 name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Senha</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        type="password"
-                        placeholder="Digíte sua senha..."
-                        {...field}
-                      />
-                    </FormControl>
-                    {/* <FormDescription>
-                    This is your public display name.
-                  </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Senha"
+                placeholder="Digite sua senha..."
+                type="password"
+                asPassword // usa PasswordInput
               />
             </CardContent>
             <CardFooter className="fex flex-col gap-y-3">

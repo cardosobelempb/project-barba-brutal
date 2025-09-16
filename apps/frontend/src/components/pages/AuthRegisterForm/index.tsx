@@ -1,7 +1,7 @@
 "use client";
 
 import BrandRoot from "@/components/BrandRoot";
-import PasswordInput from "@/components/PasswordInput";
+import { InputRoot } from "@/components/InputRoot";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,15 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { http } from "@/lib/api";
 import {
   RegisterZodSchema,
@@ -101,104 +93,46 @@ export default function AuthRegisterForm() {
               <CardDescription>Register para continuar.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
-              <FormField
+              <InputRoot
                 control={form.control}
                 name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Digíte seu nome completo..."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Nome"
+                placeholder="Digíte seu nome completo..."
+                type="text"
               />
-              <FormField
+
+              <InputRoot
                 control={form.control}
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Digíte seu email..."
-                        {...field}
-                      />
-                    </FormControl>
-                    {/* <FormDescription>
-                    This is your public display name.
-                  </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Email"
+                placeholder="Digíte seu email..."
+                type="email"
               />
 
-              <FormField
+              <InputRoot
                 control={form.control}
                 name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Telefone</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="tel"
-                        placeholder="Digíte seu telefone..."
-                        {...field}
-                      />
-                    </FormControl>
-                    {/* <FormDescription>
-                    This is your public display name.
-                  </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Telefone"
+                placeholder="Digíte seu telefone..."
+                type="tel"
               />
 
-              <FormField
+              <InputRoot
                 control={form.control}
                 name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Senha</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        type="password"
-                        placeholder="Digíte sua senha..."
-                        {...field}
-                      />
-                    </FormControl>
-                    {/* <FormDescription>
-                    This is your public display name.
-                  </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Senha"
+                placeholder="Digite sua senha..."
+                type="password"
+                asPassword // usa PasswordInput
               />
-              <FormField
+
+              <InputRoot
                 control={form.control}
                 name="passwordConfirm"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confimar Senha</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        type="password"
-                        placeholder="Confirme sua senha..."
-                        {...field}
-                      />
-                    </FormControl>
-                    {/* <FormDescription>
-                    This is your public display name.
-                  </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Confimar Senha"
+                placeholder="Confirme sua senha..."
+                type="password"
+                asPassword // usa PasswordInput
               />
             </CardContent>
             <CardFooter className="flex gap-y-3 flex-col">
