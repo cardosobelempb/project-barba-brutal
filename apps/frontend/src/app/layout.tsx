@@ -13,7 +13,7 @@ import "./globals.css";
 //   src: "./fonts/GeistMonoVF.woff",
 //   variable: "--font-geist-mono",
 //   weight: "100 900",
-// 
+//
 // });
 
 export const metadata: Metadata = {
@@ -28,9 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body
-        className={` antialiased`}
-      >
+      <body className={` antialiased`}>
         <ProviderRoot>{children}</ProviderRoot>
       </body>
     </html>

@@ -1,10 +1,10 @@
-import BrandRoot from "@/components/BrandRoot";
 import { ProfissionalSocial } from "@/components/professional";
+import BrandRoot from "@/components/shared/BrandRoot";
+import { IconRoot } from "@/components/shared/IconRoot";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
 
-import { IconRoot } from "@/components/IconRoot";
 import BoxRoot from "../BoxRoot";
 import ContainerRoot from "../ContainerRoot";
 import ContentRoot from "../ContentRoot";

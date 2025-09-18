@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 
 import { useMemo } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
-import PasswordInput from "../PasswordInput";
+import { InputPasswordRoot } from "../InputPasswordRoot";
 
 type InputRootProps<T extends FieldValues> = {
   control: Control<T>;
@@ -35,7 +35,7 @@ export function InputRoot<T extends FieldValues>({
   asPassword = false,
 }: InputRootProps<T>) {
   const InputComponent = useMemo(() => {
-    if (asPassword) return PasswordInput;
+    if (asPassword) return InputPasswordRoot;
     return Input;
   }, [asPassword]);
 

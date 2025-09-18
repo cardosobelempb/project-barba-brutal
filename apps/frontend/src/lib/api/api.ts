@@ -1,17 +1,12 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from "axios";
+import { parseCookies } from "nookies";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
-
-const http = (config: AxiosRequestConfig) => {
-  return axios({
-    baseURL: BASE_URL,
-    withCredentials: config.withCredentials ?? true, // define como padrão se quiser
-    ...config,
-    headers: {
-      'Content-Type': 'application/json',
-      ...config.headers,
-    },
+export function setupAPIClient(ctx = undefined) {
+  const cookies = parseCookies(ctx);
+  const api = axios.create({
+    baseURL: "https://nodejs-production-22cd.up.railway.app/api",
+    headers: { Authorization: `Bearer ${cookies["belezixadmin.token"]}` },
   });
-};
-
-export { http };
+  return api;
+}
+export const api = setupAPIClient();

@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { ReactNode } from "react";
 
+import { SessionProvider } from "@/contexts";
 import { ThemeProvider } from "./ThemeProvider";
 
 type ProviderRootProps = {
@@ -9,7 +10,7 @@ type ProviderRootProps = {
 
 export default function ProviderRoot({ children }: ProviderRootProps) {
   return (
-    <>
+    <SessionProvider>
       <ThemeProvider
         attribute="class"
         defaultTheme="dark"
@@ -19,6 +20,6 @@ export default function ProviderRoot({ children }: ProviderRootProps) {
         {children}
         <Toaster />
       </ThemeProvider>
-    </>
+    </SessionProvider>
   );
 }

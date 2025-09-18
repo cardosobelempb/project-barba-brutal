@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { http } from "@/lib/api";
+import { authUser } from "@/contexts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,6 +23,7 @@ import {
 } from "./../../../schemas/signInZodSchema";
 
 export default function AuthSignInForm() {
+  const { signIn, user, isAuthenticated } = authUser();
   const router = useRouter();
   const form = useForm<SignInZodSchema>({
     resolver: zodResolver(signInZodSchema),
@@ -33,17 +34,13 @@ export default function AuthSignInForm() {
   });
 
   async function onSubmit(values: SignInZodSchema) {
-    const response = await http({
-      method: "POST",
-      url: "/auth/signin",
-      data: {
-        email: values.email,
-        password: values.password,
-      },
-      withCredentials: true, // 🔥 IMPORTANTE
+    const response = await signIn({
+      email: values.email,
+      password: values.password,
     });
+    console.log(response);
     form.reset();
-    console.log(response.data);
+
     // await authClient.signIn.email({
     //   email: values.email,
     //   password: values.password,

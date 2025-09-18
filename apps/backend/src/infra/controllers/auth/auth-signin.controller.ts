@@ -3,7 +3,7 @@ import { AuthSignInService } from '@repo/auth';
 
 import type { AuthSignInProps } from '@repo/types';
 import { AuthSignInPresenter } from '@repo/types';
-import * as jwt from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 
 @Controller('/auth')
 export class AuthSignInController {
@@ -16,13 +16,10 @@ export class AuthSignInController {
     const jwtSecret = process.env.JWT_SECRET;
 
     return {
-      accessToken: jwt.sign(
-        AuthSignInPresenter.toHTTP(user),
-        jwtSecret as string,
-        {
-          expiresIn: '15d',
-        },
-      ),
+      user: AuthSignInPresenter.toHTTP(user),
+      accessToken: sign(AuthSignInPresenter.toHTTP(user), jwtSecret as string, {
+        expiresIn: '15d',
+      }),
     };
   }
 }

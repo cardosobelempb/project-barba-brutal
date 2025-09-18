@@ -1,20 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import {
+  forwardRef,
+  ForwardRefRenderFunction,
+  InputHTMLAttributes,
+  useState,
+} from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 import { Input } from "../../ui/input";
 import { IconRoot } from "../IconRoot/IconRoot";
 
-type PasswordInputProps = {} & React.ComponentProps<typeof Input>;
+interface InputPasswordProps extends InputHTMLAttributes<HTMLInputElement> {
+  name: string;
+}
 
-export default function PasswordInput({ ...props }: PasswordInputProps) {
+const InputPassword: ForwardRefRenderFunction<
+  HTMLInputElement,
+  InputPasswordProps
+> = ({ children, name, ...rest }, ref) => {
   const [visible, setVisible] = useState(false);
 
   return (
     <div className="flex items-center justify-end relative h-9 p-2">
       <Input
-        {...props}
+        {...rest}
+        data-testid="InputPasswordTestId"
+        id={name}
+        name={name}
+        ref={ref}
         type={visible ? "text" : "password"}
         onClick={() => setVisible((v) => !v)}
         className="absolute right-0 h-auto pr-1"
@@ -22,4 +36,6 @@ export default function PasswordInput({ ...props }: PasswordInputProps) {
       {visible ? <IconRoot icon={FiEyeOff} /> : <IconRoot icon={FiEye} />}
     </div>
   );
-}
+};
+
+export const InputPasswordRoot = forwardRef(InputPassword);
