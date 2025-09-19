@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { AuthRegisterService, AuthSignInService } from '@repo/auth';
 import { HashComparer, HashGenerator } from '@repo/core';
 import { UserRepository } from '@repo/user';
@@ -9,13 +10,20 @@ import {
 } from 'src/infra/BcryptHasher/bcrypt-hasher';
 import { AuthRegisterController } from 'src/infra/controllers/auth/auth-register.controller';
 import { AuthSignInController } from 'src/infra/controllers/auth/auth-signin.controller';
+import { AuthController } from 'src/infra/controllers/auth/auth.controller';
 
 import { DatabaseModule } from './database.module';
 import { HashModule } from './hasher.module';
 
 @Module({
-  imports: [DatabaseModule, HashModule],
-  controllers: [AuthRegisterController, AuthSignInController],
+  imports: [
+    DatabaseModule,
+    HashModule,
+    JwtModule.register({
+      secret: 'mVh2RvqG1hCx7y49QZtq3t41Ew5CLZza',
+    }),
+  ],
+  controllers: [AuthRegisterController, AuthSignInController, AuthController],
   providers: [
     {
       provide: AuthRegisterService,

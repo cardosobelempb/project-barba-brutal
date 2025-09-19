@@ -13,3 +13,10 @@ npm i @types/jsonwebtoken -D
 npm i prisma -D
 npx prisma init
 ```
+
+#jwt
+
+```bash
+npm i @nestjs/jwt
+npm i @nestjs/jwt@9.0.0
+```
