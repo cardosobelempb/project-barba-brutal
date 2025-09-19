@@ -2,6 +2,7 @@ import { Pagination } from '@repo/core';
 import { UserEntity } from '@repo/types';
 import { UserRepository } from '@repo/user';
 import { PrismaService } from 'src/application/services/database/prisma.service';
+
 import { UserPrismaMapper } from './mapper/UserPrisma.mapper';
 
 export class UserPrismaRepository implements UserRepository {
@@ -29,17 +30,20 @@ export class UserPrismaRepository implements UserRepository {
     const users = await this.prismaService.user.findMany();
     return users.map((user) => UserPrismaMapper.toDomain(user));
   }
-  // async create(entity: UserEntity): Promise<void> {
-  //   await this.prismaService.user.create({ data: entity });
-  // }
 
   async create(entity: UserEntity): Promise<void> {
     await this.prismaService.user.create({ data: entity });
   }
 
-  update(entity: UserEntity): Promise<void> {
-    throw new Error('Method not implemented.');
+  async update(entity: UserEntity): Promise<void> {
+    await this.prismaService.user.update({
+      data: entity,
+      where: {
+        id: entity.id,
+      },
+    });
   }
+
   async delete(entity: UserEntity): Promise<void> {
     await this.prismaService.user.delete({ where: { id: entity.id } });
   }
