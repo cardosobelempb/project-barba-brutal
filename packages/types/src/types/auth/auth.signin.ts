@@ -1,5 +1,6 @@
+import { EmailVO, PasswordVO } from '@repo/core'
 
 export interface AuthSignInProps {
-  email: string
-    password: string
-  }
+  email: EmailVO
+  password: PasswordVO
+}

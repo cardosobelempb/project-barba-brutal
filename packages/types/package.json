@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "dependencies": {
+    "@repo/core": "*"
+  },
   "devDependencies": {
     "tsup": "^8.5.0"
   }

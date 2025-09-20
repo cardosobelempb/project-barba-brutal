@@ -44,6 +44,15 @@ export class UserPrismaRepository implements UserRepository {
     });
   }
 
+  async passwordUpdate(entity: UserEntity): Promise<void> {
+    await this.prismaService.user.update({
+      data: { password: entity.password },
+      where: {
+        id: entity.id,
+      },
+    });
+  }
+
   async delete(entity: UserEntity): Promise<void> {
     await this.prismaService.user.delete({ where: { id: entity.id } });
   }

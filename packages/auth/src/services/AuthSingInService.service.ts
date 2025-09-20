@@ -1,4 +1,4 @@
-import { BadRequestError, ErrorConstants, HashComparer, ServiceAbstract } from '@repo/core';
+import { ErrorConstants, HashComparer, ServiceAbstract, UnauthorizedError } from '@repo/core';
 import { AuthSignInProps, UserEntity } from '@repo/types';
 import { UserRepository } from '@repo/user';
 
@@ -9,13 +9,13 @@ export class AuthSignInService implements ServiceAbstract<AuthSignInProps, UserE
   ) { }
 
   async execute({email, password}: AuthSignInProps): Promise<UserEntity> {
-    const user = await this.userRepository.findByEmail(email)
+    const user = await this.userRepository.findByEmail(email.getValue())
 
-    if (!user) throw new BadRequestError(ErrorConstants.INVALID_CREDENTIALS)
+    if (!user) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 
-    const hashComparer = await this.hashComparer.compare(password, user.password)
+    const hashComparer = await this.hashComparer.compare(password.getValue(), user.password)
 
-    if (!hashComparer) throw new BadRequestError(ErrorConstants.INVALID_CREDENTIALS)
+    if (!hashComparer) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 
    return user
 
