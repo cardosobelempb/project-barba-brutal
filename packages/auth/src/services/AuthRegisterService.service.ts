@@ -1,6 +1,5 @@
-import { BadRequestError, ErrorConstants, HashGenerator, ServiceAbstract } from '@repo/core';
+import { BadRequestError, ErrorConstants, HashGenerator, PasswordVO, ServiceAbstract } from '@repo/core';
 import { UserEntity } from '@repo/types';
-
 import { UserRepository } from '@repo/user';
 
 export class AuthRegisterService implements ServiceAbstract<UserEntity, UserEntity> {
@@ -10,15 +9,15 @@ export class AuthRegisterService implements ServiceAbstract<UserEntity, UserEnti
   ) { }
 
   async execute(request: UserEntity): Promise<any> {
-    const userExists = await this.userRepository.findByEmail(request.email)
+    const userExists = await this.userRepository.findByEmail(request.email.getValue())
 
     if (userExists) {
       throw new BadRequestError(ErrorConstants.CONFLICT_ERROR)
     }
 
-    const hashGenerator = await this.hashGenerator.hash(request.password)
+    const hashGenerator = await this.hashGenerator.hash(request.password.getValue())
 
-    await this.userRepository.create({ ...request, password: hashGenerator, barber: false })
+    await this.userRepository.create({ ...request, password: new PasswordVO(hashGenerator), barber: false })
 
   }
 

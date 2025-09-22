@@ -13,7 +13,7 @@ export class AuthSignInService implements ServiceAbstract<AuthSignInProps, UserE
 
     if (!user) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 
-    const hashComparer = await this.hashComparer.compare(password.getValue(), user.password)
+    const hashComparer = await this.hashComparer.compare(password.getValue(), user.password.getValue())
 
     if (!hashComparer) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 

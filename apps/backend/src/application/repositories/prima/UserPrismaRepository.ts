@@ -32,12 +32,22 @@ export class UserPrismaRepository implements UserRepository {
   }
 
   async create(entity: UserEntity): Promise<void> {
-    await this.prismaService.user.create({ data: entity });
+    await this.prismaService.user.create({
+      data: {
+        ...entity,
+        password: entity.password.getValue(),
+        email: entity.email.getValue(),
+      },
+    });
   }
 
   async update(entity: UserEntity): Promise<void> {
     await this.prismaService.user.update({
-      data: entity,
+      data: {
+        ...entity,
+        password: entity.password.getValue(),
+        email: entity.email.getValue(),
+      },
       where: {
         id: entity.id,
       },
@@ -46,7 +56,7 @@ export class UserPrismaRepository implements UserRepository {
 
   async passwordUpdate(entity: UserEntity): Promise<void> {
     await this.prismaService.user.update({
-      data: { password: entity.password },
+      data: { password: entity.password.getValue() },
       where: {
         id: entity.id,
       },

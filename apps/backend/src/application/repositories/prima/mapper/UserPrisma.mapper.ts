@@ -1,3 +1,4 @@
+import { EmailVO, PasswordVO } from '@repo/core';
 import { UserEntity } from '@repo/types';
 
 import { Prisma, User as UserMapper } from '../../../../../generated/prisma';
@@ -7,8 +8,8 @@ export class UserPrismaMapper {
     return {
       id: entity.id,
       name: entity.name,
-      email: entity.email,
-      password: entity.password,
+      email: new EmailVO(entity.email),
+      password: new PasswordVO(entity.password),
       phone: entity.phone,
       barber: entity.barber,
     };
@@ -18,8 +19,8 @@ export class UserPrismaMapper {
     return {
       id: entity.id,
       name: entity.name,
-      email: entity.email,
-      password: entity.password,
+      email: entity.email.getValue(),
+      password: entity.password.getValue(),
       phone: entity.phone,
       barber: entity.barber,
     };
