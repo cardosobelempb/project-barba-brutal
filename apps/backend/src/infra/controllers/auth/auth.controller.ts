@@ -1,11 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import type { AuthSignInProps, UserEntity } from '@repo/types';
+import type { SignInDTO, UserEntity } from '@repo/types';
 
 @Controller('auth')
 export class AuthController {
   @Post('login')
-  async login(@Body() body: AuthSignInProps) {}
+  async login(@Body() body: SignInDTO) {}
 
   @Post('register')
   async register(@Body() body: UserEntity) {}

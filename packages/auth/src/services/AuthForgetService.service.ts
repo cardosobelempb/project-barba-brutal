@@ -1,18 +1,18 @@
 import { ServiceAbstract } from '@repo/core';
-import { AuthForgetProps } from '@repo/types';
+import { ForgetDTO } from '@repo/types';
 import { UserRepository } from '@repo/user';
 
 // import { MailerService } from '@repo/mailer'; // hipotético
 
-export class AuthForgetService implements ServiceAbstract<AuthForgetProps, void> {
+export class AuthForgetService implements ServiceAbstract<ForgetDTO, void> {
   constructor(
     private readonly userRepository: UserRepository,
     // private readonly mailer: MailerService, // caso use
   ) {}
 
-  async execute({ email }: AuthForgetProps): Promise<void> {
+  async execute({ email }: ForgetDTO): Promise<void> {
     // 1. Verifica se o email é válido via VO (presumimos que já é VO aqui)
-    const user = await this.userRepository.findByEmail(email.getValue());
+    const user = await this.userRepository.findByEmail(email);
 
     // 2. Não revela se o email existe (opcional por segurança)
     if (!user) {

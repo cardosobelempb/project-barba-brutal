@@ -33,11 +33,7 @@ export class UserPrismaRepository implements UserRepository {
 
   async create(entity: UserEntity): Promise<void> {
     await this.prismaService.user.create({
-      data: {
-        ...entity,
-        password: entity.password.getValue(),
-        email: entity.email.getValue(),
-      },
+      data: UserPrismaMapper.toPrisma(entity),
     });
   }
 
@@ -45,26 +41,28 @@ export class UserPrismaRepository implements UserRepository {
     await this.prismaService.user.update({
       data: {
         ...entity,
-        password: entity.password.getValue(),
-        email: entity.email.getValue(),
+        password: entity.password,
+        email: entity.email,
       },
       where: {
-        id: entity.id,
+        id: entity.id.getValue(),
       },
     });
   }
 
   async passwordUpdate(entity: UserEntity): Promise<void> {
     await this.prismaService.user.update({
-      data: { password: entity.password.getValue() },
+      data: { password: entity.password },
       where: {
-        id: entity.id,
+        id: entity.id.getValue(),
       },
     });
   }
 
   async delete(entity: UserEntity): Promise<void> {
-    await this.prismaService.user.delete({ where: { id: entity.id } });
+    await this.prismaService.user.delete({
+      where: { id: entity.id.getValue() },
+    });
   }
 }
 

@@ -1,6 +1,6 @@
 
 export * from './data'
+export * from './dto'
 export * from './entities'
 export * from './presenters'
-export * from './types'
 
