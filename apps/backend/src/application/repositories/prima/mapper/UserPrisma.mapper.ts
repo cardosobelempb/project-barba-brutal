@@ -12,7 +12,7 @@ export class UserPrismaMapper {
         email: entity.email,
         password: entity.password,
         phone: entity.phone,
-        barber: entity.barber,
+        barber: entity.barber || false,
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,
         deletedAt: entity.deletedAt || undefined,

@@ -1,8 +1,8 @@
 import BrandRoot from "@/components/shared/BrandRoot";
+import { ModeToggleRoot } from "@/components/shared/ModeToggleRoot";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-import { ModeToggleRoot } from "../../ModeToggleRoot";
 import BoxRoot from "../BoxRoot";
 import ContainerRoot from "../ContainerRoot";
 import ContentRoot from "../ContentRoot";
