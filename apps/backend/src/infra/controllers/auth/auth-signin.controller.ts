@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthSignInService } from '@repo/auth';
 
-import type { SignInDTO } from '@repo/types';
+import type { SignInDTO, UserPayloadDTO } from '@repo/types';
 import { AuthSignInPresenter } from '@repo/types';
 import { JwtApp } from 'src/infra/jwt/JwtApp';
 
@@ -9,25 +9,37 @@ import { JwtApp } from 'src/infra/jwt/JwtApp';
 export class AuthSignInController {
   constructor(
     private readonly authSignInService: AuthSignInService,
-    private readonly jwtApp: JwtApp<{ userId: string; email: string }>,
+    private readonly jwtApp: JwtApp<UserPayloadDTO>,
   ) {}
 
   @Post('/signin')
   async handle(@Body() request: SignInDTO): Promise<AuthSignInPresenter> {
     const { email, password } = request;
-    const user = await this.authSignInService.execute({ email, password });
-    // const jwtSecret = process.env.JWT_SECRET;
+
+    // Tipagem explícita aqui (evita erro do ESLint)
+    const user = await this.authSignInService.execute({
+      email,
+      password,
+    });
+
+    const accessToken = this.jwtApp.createAccessToken({
+      userId: user.id.getValue(),
+      name: user.name,
+      email: user.email,
+      barber: user.barber,
+    });
+
+    const refreshToken = this.jwtApp.createRefreshToken({
+      userId: user.id.getValue(),
+      name: user.name,
+      email: user.email,
+      barber: user.barber,
+    });
 
     return {
       user: AuthSignInPresenter.toHTTP(user),
-      accessToken: this.jwtApp.createAccessToken({
-        userId: user.id.getValue(),
-        email: user.email,
-      }),
-      refreshToken: this.jwtApp.createRefreshToken({
-        userId: user.id.getValue(),
-        email: user.email,
-      }),
+      accessToken,
+      refreshToken,
     };
   }
 }

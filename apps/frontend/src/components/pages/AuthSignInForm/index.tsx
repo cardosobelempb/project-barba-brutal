@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { authUser } from "@/contexts";
+import { useAuthUser } from "@/contexts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ import {
 } from "./../../../schemas/signInZodSchema";
 
 export default function AuthSignInForm() {
-  const { signIn, user, isAuthenticated } = authUser();
+  const { signIn, user, isAuthenticated } = useAuthUser();
   const router = useRouter();
   const form = useForm<SignInZodSchema>({
     resolver: zodResolver(signInZodSchema),

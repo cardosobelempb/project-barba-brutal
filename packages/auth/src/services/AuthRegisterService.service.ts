@@ -22,9 +22,8 @@ export class AuthRegisterService implements ServiceAbstract<AuthRegisterDTO, Use
       password: hashGenerator
     })
 
-    const newUser = await this.userRepository.createResponse(user)
+    return await this.userRepository.createResponse(user)
 
-    return newUser;
   }
 
 }
