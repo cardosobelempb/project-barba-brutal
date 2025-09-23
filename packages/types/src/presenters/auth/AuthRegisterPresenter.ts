@@ -1,7 +1,7 @@
 import { UserEntity } from "../../entities";
 
 export class AuthRegisterPresenter {
-  static toHTTP(entity: Partial<UserEntity>) {
+  static toHTTP(entity: UserEntity) {
     return {
       id: entity.id,
       name: entity.name,

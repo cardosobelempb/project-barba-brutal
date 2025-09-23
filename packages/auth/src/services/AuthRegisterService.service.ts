@@ -1,33 +1,30 @@
 import { BadRequestError, ErrorConstants, HashGenerator, ServiceAbstract } from '@repo/core';
-import { UserEntity } from '@repo/types';
+import { AuthRegisterDTO, UserEntity } from '@repo/types';
 import { UserRepository } from '@repo/user';
 
-export class AuthRegisterService implements ServiceAbstract<UserEntity, UserEntity> {
+export class AuthRegisterService implements ServiceAbstract<AuthRegisterDTO, UserEntity> {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly hashGenerator: HashGenerator,
   ) { }
 
-  async execute(request: UserEntity): Promise<any> {
-    const userExists = await this.userRepository.findByEmail(request.email)
+  async execute(entity: AuthRegisterDTO): Promise<UserEntity> {
+    const userExists = await this.userRepository.findByEmail(entity.email)
 
     if (userExists) {
       throw new BadRequestError(ErrorConstants.CONFLICT_ERROR)
     }
 
-    const hashGenerator = await this.hashGenerator.hash(request.password)
+    const hashGenerator = await this.hashGenerator.hash(entity.password)
 
     const user = UserEntity.create({
-      ...request,
-      password: hashGenerator,
-      barber: request.barber || false,
-      name: request.name,
-      email: request.email,
-      phone: request.phone
+      ...entity,
+      password: hashGenerator
     })
 
-    await this.userRepository.create(user)
+    const newUser = await this.userRepository.createResponse(user)
 
+    return newUser;
   }
 
 }

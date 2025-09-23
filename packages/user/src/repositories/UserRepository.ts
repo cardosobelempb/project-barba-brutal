@@ -4,4 +4,5 @@ import { UserEntity } from '@repo/types';
 export abstract class UserRepository extends RepositoryAbstract<UserEntity> {
   abstract findByEmail(email: string): Promise<UserEntity | null>;
   abstract passwordUpdate(entity: UserEntity): Promise<void>;
+  abstract createResponse(entity: UserEntity): Promise<UserEntity>
 }

@@ -37,6 +37,14 @@ export class UserPrismaRepository implements UserRepository {
     });
   }
 
+  async createResponse(entity: UserEntity): Promise<UserEntity> {
+    const user = await this.prismaService.user.create({
+      data: UserPrismaMapper.toPrisma(entity),
+    });
+
+    return UserPrismaMapper.toDomain(user);
+  }
+
   async update(entity: UserEntity): Promise<void> {
     await this.prismaService.user.update({
       data: {
