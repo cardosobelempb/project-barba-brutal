@@ -1,40 +1,71 @@
-import { JwtAbstract } from '@repo/core';
-import * as jwt from 'jsonwebtoken';
+import { JwtAbstract, Tokens } from '@repo/core';
+import { sign, verify } from 'jsonwebtoken';
 
-export class JwtApp extends JwtAbstract {
-  private readonly secretKey = process.env.JWT_SECRET || 'fallback-secret';
+export class JwtApp<T extends object> extends JwtAbstract<T> {
+  private readonly jwtAccessTokenSecretKey =
+    process.env.JWT_ACCESS_TOKEN_SECRET || 'fallback-secret';
 
-  async createToken(payload: Record<string, unknown>): Promise<string> {
-    return new Promise((resolve, reject) => {
-      jwt.sign(payload, this.secretKey, { expiresIn: '1h' }, (err, token) => {
-        if (err) {
-          reject(new Error('Erro ao gerar o token'));
-        } else if (token) {
-          resolve(token);
-        } else {
-          reject(new Error('Token indefinido'));
-        }
-      });
+  private readonly jwtAccessTokenExpiration =
+    Number(process.env.JWT_ACCESS_TOKEN_EXPIRATION) || '1h';
+
+  private readonly jwtRefreshTokenSecretKey =
+    process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret';
+
+  private readonly jwtRefreshTokenExpiration =
+    Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION) || '7d';
+
+  createAccessToken(payload: T): string {
+    return sign(payload, this.jwtAccessTokenSecretKey, {
+      expiresIn: this.jwtAccessTokenExpiration,
     });
   }
 
-  async checkToken(token: string): Promise<Record<string, unknown>> {
-    try {
-      const decoded = await new Promise<Record<string, unknown>>(
-        (resolve, reject) => {
-          jwt.verify(token, this.secretKey, (err, decoded) => {
-            if (err || !decoded) {
-              reject(new Error('Token inválido'));
-            } else {
-              resolve(decoded as Record<string, unknown>);
-            }
-          });
-        },
-      );
+  createRefreshToken(payload: T): string {
+    return sign(payload, this.jwtRefreshTokenSecretKey, {
+      expiresIn: this.jwtRefreshTokenExpiration,
+    });
+  }
 
-      return decoded;
-    } catch (err) {
-      throw new Error('Token inválido');
+  createTokens(payload: T): Tokens {
+    return {
+      accessToken: this.createAccessToken(payload),
+      refreshToken: this.createRefreshToken(payload),
+    };
+  }
+
+  checkAccessToken(token: string): boolean {
+    try {
+      verify(token, this.jwtAccessTokenSecretKey);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  checkRefreshToken(token: string): boolean {
+    try {
+      verify(token, this.jwtRefreshTokenSecretKey);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  decodeAccessToken(token: string): T | null {
+    try {
+      const decoded = verify(token, this.jwtAccessTokenSecretKey);
+      return decoded as T;
+    } catch {
+      return null;
+    }
+  }
+
+  decodeRefreshToken(token: string): T | null {
+    try {
+      const decoded = verify(token, this.jwtRefreshTokenSecretKey);
+      return decoded as T;
+    } catch {
+      return null;
     }
   }
 }

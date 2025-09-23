@@ -5,7 +5,7 @@ import { UserRepository } from '@repo/user';
 export class AuthRegisterService implements ServiceAbstract<UserEntity, UserEntity> {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly hashGenerator: HashGenerator
+    private readonly hashGenerator: HashGenerator,
   ) { }
 
   async execute(request: UserEntity): Promise<any> {

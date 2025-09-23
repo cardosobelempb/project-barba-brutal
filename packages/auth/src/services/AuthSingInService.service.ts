@@ -5,7 +5,7 @@ import { UserRepository } from '@repo/user';
 export class AuthSignInService implements ServiceAbstract<SignInDTO, UserEntity> {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly hashComparer: HashComparer
+    private readonly hashComparer: HashComparer,
   ) { }
 
   async execute({email, password}: SignInDTO): Promise<UserEntity> {
@@ -17,7 +17,7 @@ export class AuthSignInService implements ServiceAbstract<SignInDTO, UserEntity>
 
     if (!hashComparer) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 
-   return user
+    return user;
 
   }
 

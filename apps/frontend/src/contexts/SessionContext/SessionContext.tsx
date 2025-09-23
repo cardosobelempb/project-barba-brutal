@@ -45,7 +45,7 @@ type SessionContextData = {
 const SessionContext = createContext({} as SessionContextData);
 
 // Nomes dos cookies como constantes (boa prática)
-const TOKEN_COOKIE = "belezixaadmin.token";
+const ACCESS_TOKEN_COOKIE = "belezixaadmin.accessToken";
 const REFRESH_TOKEN_COOKIE = "belezixaadmin.refreshToken";
 const USER_COOKIE = "belezixaadmin.user";
 
@@ -66,7 +66,7 @@ export function SessionProvider({ children }: AuthProviderProps) {
     // Recuperando cookies
     const cookies = parseCookies();
     const userComingFromCookie = cookies[USER_COOKIE];
-    // const refreshToken = cookies[REFRESH_TOKEN_COOKIE];
+    const refreshToken = cookies[REFRESH_TOKEN_COOKIE];
 
     const parsedUser = parseJSON(userComingFromCookie);
     if (parsedUser) {
@@ -91,24 +91,28 @@ export function SessionProvider({ children }: AuthProviderProps) {
         withCredentials: true, // 🔥 IMPORTANTE
       });
 
-      console.log(response);
+      console.log("Session Provider", response);
 
-      const { accessToken, user } = response.data || {};
+      const { accessToken, refreshToken, user } = response.data || {};
 
       if (!accessToken || !user) {
         throw new Error("Resposta do servidor inválida.");
       }
 
+      if (!refreshToken || !user) {
+        throw new Error("Resposta do servidor inválida.");
+      }
+
       // Salvando cookies
-      setCookie(undefined, TOKEN_COOKIE, accessToken, {
+      setCookie(undefined, ACCESS_TOKEN_COOKIE, accessToken, {
         maxAge: 60 * 60 * 24, // 1 dia
         path: "/",
       });
 
-      // setCookie(undefined, REFRESH_TOKEN_COOKIE, refreshToken, {
-      //   maxAge: 60 * 60 * 24, // 1 dia
-      //   path: "/",
-      // });
+      setCookie(undefined, REFRESH_TOKEN_COOKIE, refreshToken, {
+        maxAge: 60 * 60 * 24, // 1 dia
+        path: "/",
+      });
 
       setCookie(undefined, USER_COOKIE, JSON.stringify(user), {
         maxAge: 60 * 60 * 24, // 1 dia
@@ -147,7 +151,7 @@ export const authUser = () => useContext(SessionContext);
 
 // Função de logout
 export async function signOut(router?: ReturnType<typeof useRouter>) {
-  destroyCookie(undefined, TOKEN_COOKIE);
+  destroyCookie(undefined, ACCESS_TOKEN_COOKIE);
   destroyCookie(undefined, REFRESH_TOKEN_COOKIE);
   destroyCookie(undefined, USER_COOKIE);
   if (router) {

@@ -11,20 +11,24 @@ import {
 import { AuthRegisterController } from 'src/infra/controllers/auth/auth-register.controller';
 import { AuthSignInController } from 'src/infra/controllers/auth/auth-signin.controller';
 import { AuthController } from 'src/infra/controllers/auth/auth.controller';
+import { JwtApp } from 'src/infra/jwt/JwtApp';
 
 import { DatabaseModule } from './database.module';
 import { HashModule } from './hasher.module';
+import { SecretModule } from './secret.module';
 
 @Module({
   imports: [
     DatabaseModule,
     HashModule,
+    SecretModule,
     JwtModule.register({
       secret: 'mVh2RvqG1hCx7y49QZtq3t41Ew5CLZza',
     }),
   ],
   controllers: [AuthRegisterController, AuthSignInController, AuthController],
   providers: [
+    JwtApp,
     {
       provide: AuthRegisterService,
       useFactory: (
