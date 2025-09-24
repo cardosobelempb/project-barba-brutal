@@ -8,6 +8,7 @@ import {
   HASH_COMPARER,
   HASH_GENERATER,
 } from 'src/infra/BcryptHasher/bcrypt-hasher';
+import { AuthMeController } from 'src/infra/controllers/auth/auth-me.controller';
 import { AuthRegisterController } from 'src/infra/controllers/auth/auth-register.controller';
 import { AuthSignInController } from 'src/infra/controllers/auth/auth-signin.controller';
 import { AuthController } from 'src/infra/controllers/auth/auth.controller';
@@ -26,7 +27,12 @@ import { SecretModule } from './secret.module';
       secret: 'mVh2RvqG1hCx7y49QZtq3t41Ew5CLZza',
     }),
   ],
-  controllers: [AuthRegisterController, AuthSignInController, AuthController],
+  controllers: [
+    AuthRegisterController,
+    AuthSignInController,
+    AuthController,
+    AuthMeController,
+  ],
   providers: [
     JwtApp,
     {

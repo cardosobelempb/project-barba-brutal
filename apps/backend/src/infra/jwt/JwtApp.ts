@@ -1,4 +1,9 @@
-import { JwtAbstract, Tokens } from '@repo/core';
+import {
+  BadRequestError,
+  ErrorConstants,
+  JwtAbstract,
+  Tokens,
+} from '@repo/core';
 import { sign, verify } from 'jsonwebtoken';
 
 export class JwtApp<T extends object> extends JwtAbstract<T> {
@@ -9,7 +14,7 @@ export class JwtApp<T extends object> extends JwtAbstract<T> {
     Number(process.env.JWT_ACCESS_TOKEN_EXPIRATION) || '1h';
 
   private readonly jwtRefreshTokenSecretKey =
-    process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret';
+    process.env.JWT_REFRESH_TOKEN_SECRET || 'fallback-refresh-secret';
 
   private readonly jwtRefreshTokenExpiration =
     Number(process.env.JWT_REFRESH_TOKEN_EXPIRATION) || '7d';
@@ -33,12 +38,39 @@ export class JwtApp<T extends object> extends JwtAbstract<T> {
     };
   }
 
+  verifyAccessToken(token: string): T | null {
+    try {
+      const decoded = verify(token, this.jwtAccessTokenSecretKey);
+      if (typeof decoded === 'string') {
+        // If decoded is a string, it's not the expected payload type
+        return null;
+      }
+      return decoded as T;
+    } catch {
+      throw new BadRequestError('Invalid access token');
+    }
+  }
+
+  verifyRefreshToken(token: string): T | null {
+    try {
+      const decoded = verify(token, this.jwtAccessTokenSecretKey);
+      if (typeof decoded === 'string') {
+        // If decoded is a string, it's not the expected payload type
+        return null;
+      }
+      return decoded as T;
+    } catch {
+      new BadRequestError('Invalid access token');
+      return null;
+    }
+  }
+
   checkAccessToken(token: string): boolean {
     try {
       verify(token, this.jwtAccessTokenSecretKey);
       return true;
     } catch {
-      return false;
+      throw new BadRequestError(ErrorConstants.INVALID_CREDENTIALS);
     }
   }
 
@@ -47,7 +79,7 @@ export class JwtApp<T extends object> extends JwtAbstract<T> {
       verify(token, this.jwtRefreshTokenSecretKey);
       return true;
     } catch {
-      return false;
+      throw new BadRequestError(ErrorConstants.INVALID_CREDENTIALS);
     }
   }
 
@@ -56,6 +88,7 @@ export class JwtApp<T extends object> extends JwtAbstract<T> {
       const decoded = verify(token, this.jwtAccessTokenSecretKey);
       return decoded as T;
     } catch {
+      new BadRequestError('Invalid access token');
       return null;
     }
   }
@@ -65,6 +98,7 @@ export class JwtApp<T extends object> extends JwtAbstract<T> {
       const decoded = verify(token, this.jwtRefreshTokenSecretKey);
       return decoded as T;
     } catch {
+      new BadRequestError('Invalid access token');
       return null;
     }
   }

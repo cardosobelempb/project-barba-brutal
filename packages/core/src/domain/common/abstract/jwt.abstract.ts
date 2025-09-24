@@ -22,6 +22,16 @@ export abstract class JwtAbstract<T extends object> {
   /**
    * Verifica se um accessToken é válido.
    */
+  abstract verifyAccessToken(token: string): T | null;
+
+  /**
+   * Verifica se um refreshToken é válido.
+   */
+  abstract verifyRefreshToken(token: string): T | null;;
+
+   /**
+   * Verifica se um accessToken é válido.
+   */
   abstract checkAccessToken(token: string): boolean;
 
   /**
