@@ -1,9 +1,4 @@
-import {
-  BadRequestError,
-  ErrorConstants,
-  JwtAbstract,
-  Tokens,
-} from '@repo/core';
+import { BadRequestError, JwtAbstract, Tokens } from '@repo/core';
 import { sign, verify } from 'jsonwebtoken';
 
 export class JwtApp<T extends object> extends JwtAbstract<T> {
@@ -47,7 +42,7 @@ export class JwtApp<T extends object> extends JwtAbstract<T> {
       }
       return decoded as T;
     } catch {
-      throw new BadRequestError('Invalid access token');
+      return null;
     }
   }
 
@@ -60,26 +55,25 @@ export class JwtApp<T extends object> extends JwtAbstract<T> {
       }
       return decoded as T;
     } catch {
-      new BadRequestError('Invalid access token');
       return null;
     }
   }
 
-  checkAccessToken(token: string): boolean {
+  isAccessToken(token: string): boolean {
     try {
-      verify(token, this.jwtAccessTokenSecretKey);
+      this.verifyAccessToken(token);
       return true;
     } catch {
-      throw new BadRequestError(ErrorConstants.INVALID_CREDENTIALS);
+      return false;
     }
   }
 
-  checkRefreshToken(token: string): boolean {
+  isRefreshToken(token: string): boolean {
     try {
-      verify(token, this.jwtRefreshTokenSecretKey);
+      this.verifyRefreshToken(token);
       return true;
     } catch {
-      throw new BadRequestError(ErrorConstants.INVALID_CREDENTIALS);
+      return false;
     }
   }
 

@@ -1,7 +1,7 @@
 import { UserRepository } from './repositories'
-import { UserRegisterService } from './services'
+import { UserFindByIdService, UserRegisterService } from './services'
 
-export { UserRegisterService, UserRepository }
+export { UserFindByIdService, UserRegisterService, UserRepository }
 
 
 

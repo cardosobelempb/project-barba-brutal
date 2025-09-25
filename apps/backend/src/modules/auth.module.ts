@@ -17,12 +17,14 @@ import { JwtApp } from 'src/infra/jwt/JwtApp';
 import { DatabaseModule } from './database.module';
 import { HashModule } from './hasher.module';
 import { SecretModule } from './secret.module';
+import { UserModule } from './user.module';
 
 @Module({
   imports: [
     DatabaseModule,
     HashModule,
     SecretModule,
+    UserModule,
     JwtModule.register({
       secret: 'mVh2RvqG1hCx7y49QZtq3t41Ew5CLZza',
     }),

@@ -1,18 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { BadRequestError } from '@repo/core';
-// Ensure UserPayloadDTO is correctly imported from the right path
-import { UserPayloadDTO } from '@repo/types';
+import { Controller, Post, UseGuards } from '@nestjs/common';
+import { UserCreatePresenter, UserPayloadDTO } from '@repo/types';
+import { User } from 'src/decorators/user.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { JwtApp } from 'src/infra/jwt/JwtApp';
 
 @Controller('/auth')
 export class AuthMeController {
   constructor(private readonly jwtApp: JwtApp<UserPayloadDTO>) {}
 
+  @UseGuards(AuthGuard)
   @Post('/me')
-  handle(@Body() body: { accessToken: string }): UserPayloadDTO | null {
-    if (!body.accessToken) {
-      throw new BadRequestError('Access token is required');
-    }
-    return this.jwtApp.verifyAccessToken(body.accessToken);
+  handle(@User() user: UserCreatePresenter) {
+    return { user: UserCreatePresenter.toHTTP(user) };
   }
 }

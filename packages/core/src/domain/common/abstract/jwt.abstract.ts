@@ -32,12 +32,12 @@ export abstract class JwtAbstract<T extends object> {
    /**
    * Verifica se um accessToken é válido.
    */
-  abstract checkAccessToken(token: string): boolean;
+  abstract isAccessToken(token: string): boolean;
 
   /**
    * Verifica se um refreshToken é válido.
    */
-  abstract checkRefreshToken(token: string): boolean;
+  abstract isRefreshToken(token: string): boolean;
 
   /**
  * Decodifica e retorna o payload do accessToken, se válido.
