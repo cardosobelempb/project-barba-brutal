@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
+
 import {
-  BcryptHasher,
+  BcryptAdapter,
   HASH_COMPARER,
-  HASH_GENERATER,
-} from 'src/infra/BcryptHasher/bcrypt-hasher';
+  HASH_GENERATOR,
+} from './../infra/bcrypt/BcryptAdapter';
 
 @Module({
   providers: [
-    { provide: HASH_COMPARER, useClass: BcryptHasher },
-    { provide: HASH_GENERATER, useClass: BcryptHasher },
+    { provide: HASH_COMPARER, useClass: BcryptAdapter },
+    { provide: HASH_GENERATOR, useClass: BcryptAdapter },
   ],
-  exports: [HASH_COMPARER, HASH_GENERATER],
+  exports: [HASH_COMPARER, HASH_GENERATOR],
 })
 export class HashModule {}

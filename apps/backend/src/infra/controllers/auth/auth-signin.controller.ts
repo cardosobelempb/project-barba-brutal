@@ -3,13 +3,13 @@ import { AuthSignInService } from '@repo/auth';
 
 import type { SignInDTO, UserPayloadDTO } from '@repo/types';
 import { AuthSignInPresenter } from '@repo/types';
-import { JwtApp } from 'src/infra/jwt/JwtApp';
+import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
 
 @Controller('/auth')
 export class AuthSignInController {
   constructor(
     private readonly authSignInService: AuthSignInService,
-    private readonly jwtApp: JwtApp<UserPayloadDTO>,
+    private readonly jwtAdapter: JwtAdapter<UserPayloadDTO>,
   ) {}
 
   @Post('/signin')
@@ -22,14 +22,14 @@ export class AuthSignInController {
       password,
     });
 
-    const accessToken = this.jwtApp.createAccessToken({
+    const accessToken = this.jwtAdapter.createAccessToken({
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,
       barber: user.barber,
     });
 
-    const refreshToken = this.jwtApp.createRefreshToken({
+    const refreshToken = this.jwtAdapter.createRefreshToken({
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,

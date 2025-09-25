@@ -2,11 +2,11 @@ import { Controller, Post, UseGuards } from '@nestjs/common';
 import { UserCreatePresenter, UserPayloadDTO } from '@repo/types';
 import { User } from 'src/decorators/user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { JwtApp } from 'src/infra/jwt/JwtApp';
+import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
 
 @Controller('/auth')
 export class AuthMeController {
-  constructor(private readonly jwtApp: JwtApp<UserPayloadDTO>) {}
+  constructor(private readonly jwtAdapter: JwtAdapter<UserPayloadDTO>) {}
 
   @UseGuards(AuthGuard)
   @Post('/me')

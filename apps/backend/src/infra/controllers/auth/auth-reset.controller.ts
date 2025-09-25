@@ -3,13 +3,13 @@ import { AuthResetService } from '@repo/auth';
 
 import type { ResetDTO, UserPayloadDTO } from '@repo/types';
 import { UserEntity } from '@repo/types';
-import { JwtApp } from 'src/infra/jwt/JwtApp';
+import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
 
 @Controller('/auth')
 export class AuthResetController {
   constructor(
     private readonly authResetService: AuthResetService,
-    private readonly jwtApp: JwtApp<UserPayloadDTO>,
+    private readonly jwtAdapter: JwtAdapter<UserPayloadDTO>,
   ) {}
 
   @Post('/reset')
@@ -25,14 +25,14 @@ export class AuthResetController {
     });
 
     await this.authResetService.execute(user);
-    this.jwtApp.createAccessToken({
+    this.jwtAdapter.createAccessToken({
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,
       barber: user.barber,
     });
 
-    this.jwtApp.createRefreshToken({
+    this.jwtAdapter.createRefreshToken({
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,

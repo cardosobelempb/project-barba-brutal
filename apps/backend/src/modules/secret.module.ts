@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { JWT_APP, JwtApp } from 'src/infra/jwt/JwtApp';
+import { JWT_ADAPTER, JwtAdapter } from 'src/infra/jwt/JwtAdapter';
 
 @Module({
-  providers: [{ provide: JWT_APP, useClass: JwtApp }],
-  exports: [JWT_APP],
+  providers: [{ provide: JWT_ADAPTER, useClass: JwtAdapter }],
+  exports: [JWT_ADAPTER],
 })
 export class SecretModule {}

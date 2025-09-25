@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthRegisterService } from '@repo/auth';
 import { AuthRegisterPresenter } from '@repo/types';
-import { JwtApp } from 'src/infra/jwt/JwtApp';
+import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
 
 import type { AuthRegisterDTO } from '@repo/types';
 
@@ -9,7 +9,7 @@ import type { AuthRegisterDTO } from '@repo/types';
 export class AuthRegisterController {
   constructor(
     private readonly authRegisterService: AuthRegisterService,
-    private readonly jwtApp: JwtApp<{ userId: string; email: string }>,
+    private readonly jwtAdapter: JwtAdapter<{ userId: string; email: string }>,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -21,11 +21,11 @@ export class AuthRegisterController {
 
     return {
       user: AuthRegisterPresenter.toHTTP(user),
-      accessToken: this.jwtApp.createAccessToken({
+      accessToken: this.jwtAdapter.createAccessToken({
         userId: user.id.getValue(),
         email: user.email,
       }),
-      refreshToken: this.jwtApp.createRefreshToken({
+      refreshToken: this.jwtAdapter.createRefreshToken({
         userId: user.id.getValue(),
         email: user.email,
       }),

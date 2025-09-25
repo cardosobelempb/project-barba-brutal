@@ -3,7 +3,7 @@ import { ErrorConstants, UnauthorizedError } from '@repo/core';
 import { UserEntity, UserPayloadDTO } from '@repo/types';
 import { UserFindByIdService } from '@repo/user';
 import { Request } from 'express';
-import { JwtApp } from 'src/infra/jwt/JwtApp';
+import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
 
 interface RequestWithUser extends Request {
   tokenPayload?: UserPayloadDTO; // ou o tipo retornado por JwtApp.verifyAccessToken
@@ -14,7 +14,7 @@ interface RequestWithUser extends Request {
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly userFindByIdService: UserFindByIdService,
-    private readonly jwtApp: JwtApp<UserPayloadDTO>,
+    private readonly jwtAdapter: JwtAdapter<UserPayloadDTO>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
     const token = authorization.split(' ')[1];
 
     try {
-      const tokenData = this.jwtApp.verifyAccessToken(token);
+      const tokenData = this.jwtAdapter.verifyAccessToken(token);
       console.log('Token Data => ', tokenData);
 
       if (!tokenData) {

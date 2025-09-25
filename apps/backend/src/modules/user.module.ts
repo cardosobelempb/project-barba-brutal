@@ -6,7 +6,7 @@ import {
   UserRepository,
 } from '@repo/user';
 import { USER_PRISMA_REPOSITORY } from 'src/application/repositories/prima/UserPrismaRepository';
-import { HASH_GENERATER } from 'src/infra/BcryptHasher/bcrypt-hasher';
+import { HASH_GENERATOR } from 'src/infra/bcrypt/BcryptAdapter';
 import { UserRegisterController } from 'src/infra/controllers/user/UserRegisterController';
 
 import { DatabaseModule } from './database.module';
@@ -24,7 +24,7 @@ import { HashModule } from './hasher.module';
       ) => {
         return new UserRegisterService(userRepository, hashGenerator);
       },
-      inject: [USER_PRISMA_REPOSITORY, HASH_GENERATER],
+      inject: [USER_PRISMA_REPOSITORY, HASH_GENERATOR],
     },
     {
       provide: UserFindByIdService,
