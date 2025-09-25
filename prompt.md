@@ -13,59 +13,23 @@ Tecnologia: JavaScript com TypeScript
 
 Código:
 
-export interface Tokens {
-  accessToken: string;
-  refreshToken: string;
+```
+import { Body, Controller, Post } from '@nestjs/common';
+import { AuthForgetService } from '@repo/auth';
+
+import type { ForgetDTO } from '@repo/types';
+
+@Controller('/auth')
+export class AuthForgetController {
+  constructor(private readonly authForgetService: AuthForgetService) {}
+
+  @Post('/forget')
+  async handle(@Body() { email }: ForgetDTO): Promise<void> {
+    await this.authForgetService.execute({ email });
+  }
 }
 
-export abstract class JwtAbstract<T extends object> {
-  /**
-   * Cria um accessToken com base no payload.
-   */
-  abstract createAccessToken(payload: T): string;
-
-  /**
-   * Cria um refreshToken com base no payload.
-   */
-  abstract createRefreshToken(payload: T): string;
-
-  /**
-   * Cria ambos: accessToken e refreshToken.
-   */
-  abstract createTokens(payload: T): Tokens;
-
-  /**
-   * Verifica se um accessToken é válido.
-   */
-  abstract verifyAccessToken(token: string): T | null;
-
-  /**
-   * Verifica se um refreshToken é válido.
-   */
-  abstract verifyRefreshToken(token: string): T | null;;
-
-   /**
-   * Verifica se um accessToken é válido.
-   */
-  abstract isAccessToken(token: string): boolean;
-
-  /**
-   * Verifica se um refreshToken é válido.
-   */
-  abstract isRefreshToken(token: string): boolean;
-
-  /**
- * Decodifica e retorna o payload do accessToken, se válido.
- */
-abstract decodeAccessToken(token: string): T | null;
-
-/**
- * Decodifica e retorna o payload do refreshToken, se válido.
- */
-abstract decodeRefreshToken(token: string): T | null;
-
-}
-
+```
 
 Inclua:
 - Comentários explicativos

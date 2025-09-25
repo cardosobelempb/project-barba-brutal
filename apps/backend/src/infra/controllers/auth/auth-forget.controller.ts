@@ -8,7 +8,8 @@ export class AuthForgetController {
   constructor(private readonly authForgetService: AuthForgetService) {}
 
   @Post('/forget')
-  async handle(@Body() { email }: ForgetDTO): Promise<void> {
+  async handle(@Body() { email }: ForgetDTO): Promise<{ message: string }> {
     await this.authForgetService.execute({ email });
+    return { message: 'Token enviado para o e-mail informado.' };
   }
 }

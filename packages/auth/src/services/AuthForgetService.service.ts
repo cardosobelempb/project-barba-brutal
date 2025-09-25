@@ -2,31 +2,44 @@ import { ServiceAbstract } from '@repo/core';
 import { ForgetDTO } from '@repo/types';
 import { UserRepository } from '@repo/user';
 
-// import { MailerService } from '@repo/mailer'; // hipotético
+// import { MailerService } from '@repo/mailer'; // Futuro envio de email
+// import { TokenService } from '@repo/token'; // Futuro gerador/salvador de token
 
+/**
+ * Serviço responsável por iniciar o processo de recuperação de senha.
+ */
 export class AuthForgetService implements ServiceAbstract<ForgetDTO, void> {
   constructor(
     private readonly userRepository: UserRepository,
-    // private readonly mailer: MailerService, // caso use
+    // private readonly mailer: MailerService,
+    // private readonly tokenService: TokenService,
   ) {}
 
+  /**
+   * Executa a lógica de recuperação de senha:
+   * 1. Verifica se o e-mail pertence a um usuário válido.
+   * 2. Gera e salva o token de recuperação.
+   * 3. Dispara o e-mail com instruções.
+   */
   async execute({ email }: ForgetDTO): Promise<void> {
-    // 1. Verifica se o email é válido via VO (presumimos que já é VO aqui)
+    // Verifica se o e-mail existe na base de usuários
     const user = await this.userRepository.findByEmail(email);
 
-    // 2. Não revela se o email existe (opcional por segurança)
+    // Segurança: não revela se o e-mail está cadastrado ou não
     if (!user) {
-      // Opcional: logar internamente ou criar delay para evitar timing attack
+      // Opcional: inserir log, delay, métrica ou rastreamento
       return;
     }
 
-    // 3. Gerar token de recuperação (pseudocódigo)
-    // const resetToken = TokenGenerator.generate({ userId: user.id });
-    // await this.tokenRepository.save(resetToken);
+    // Gerar token de recuperação (pseudocódigo - pode ser JWT, UUID, etc.)
+    // const resetToken = await this.tokenService.generateForUser(user.id);
 
-    // 4. Enviar email (pseudocódigo)
+    // Persistir o token associado ao usuário (expiração, tipo, etc.)
+    // await this.tokenService.save(resetToken);
+
+    // Enviar o e-mail com o token para o usuário
     // await this.mailer.sendResetPasswordEmail(user.email, resetToken);
 
-    // 5. Pronto — serviço finalizado
+    // Finaliza o processo — nenhuma resposta é enviada ao usuário (por segurança)
   }
 }
