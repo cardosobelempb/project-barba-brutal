@@ -3,7 +3,7 @@ import { AuthSignInService } from '@repo/auth';
 
 import type { SignInDTO, UserPayloadDTO } from '@repo/types';
 import { AuthSignInPresenter } from '@repo/types';
-import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
+import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 
 @Controller('/auth')
 export class AuthSignInController {

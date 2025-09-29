@@ -3,7 +3,7 @@ import { ErrorConstants, UnauthorizedError } from '@repo/core';
 import { UserEntity, UserPayloadDTO } from '@repo/types';
 import { UserFindByIdService } from '@repo/user';
 import { Request } from 'express';
-import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
+import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 
 /**
  * Extensão do tipo Request para incluir payload e usuário autenticado.

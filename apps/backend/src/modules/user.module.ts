@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { HashGenerator } from '@repo/core';
 import {
-  UserFindByIdService,
-  UserRegisterService,
-  UserRepository,
+    UserFindByIdService,
+    UserRegisterService,
+    UserRepository,
 } from '@repo/user';
 import { USER_PRISMA_REPOSITORY } from 'src/application/repositories/prima/UserPrismaRepository';
-import { HASH_GENERATOR } from 'src/infra/bcrypt/BcryptAdapter';
+import { HASH_GENERATOR } from 'src/infra/adapters/BcryptAdapter';
 import { UserRegisterController } from 'src/infra/controllers/user/UserRegisterController';
 
 import { DatabaseModule } from './database.module';

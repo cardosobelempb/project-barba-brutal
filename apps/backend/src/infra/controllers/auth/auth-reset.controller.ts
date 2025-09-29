@@ -3,7 +3,7 @@ import { AuthResetService } from '@repo/auth';
 
 import type { ResetDTO, UserPayloadDTO } from '@repo/types';
 import { UserEntity } from '@repo/types';
-import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
+import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 
 @Controller('/auth')
 export class AuthResetController {

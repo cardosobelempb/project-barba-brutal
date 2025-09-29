@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthRegisterService } from '@repo/auth';
 import { AuthRegisterPresenter } from '@repo/types';
-import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
+import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 
 import type { AuthRegisterDTO } from '@repo/types';
 

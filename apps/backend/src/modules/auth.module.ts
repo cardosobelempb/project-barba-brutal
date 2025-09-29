@@ -4,12 +4,15 @@ import { AuthRegisterService, AuthSignInService } from '@repo/auth';
 import { HashComparer, HashGenerator } from '@repo/core';
 import { UserRepository } from '@repo/user';
 import { USER_PRISMA_REPOSITORY } from 'src/application/repositories/prima/UserPrismaRepository';
-import { HASH_COMPARER, HASH_GENERATOR } from 'src/infra/bcrypt/BcryptAdapter';
+import {
+  HASH_COMPARER,
+  HASH_GENERATOR,
+} from 'src/infra/adapters/BcryptAdapter';
+import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 import { AuthMeController } from 'src/infra/controllers/auth/auth-me.controller';
 import { AuthRegisterController } from 'src/infra/controllers/auth/auth-register.controller';
 import { AuthSignInController } from 'src/infra/controllers/auth/auth-signin.controller';
 import { AuthController } from 'src/infra/controllers/auth/auth.controller';
-import { JwtAdapter } from 'src/infra/jwt/JwtAdapter';
 
 import { DatabaseModule } from './database.module';
 import { HashModule } from './hasher.module';
