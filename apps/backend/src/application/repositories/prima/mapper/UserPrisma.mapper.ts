@@ -12,10 +12,11 @@ export class UserPrismaMapper {
         email: entity.email,
         password: entity.password,
         phone: entity.phone,
-        barber: entity.barber || false,
+        barber: entity.barber,
+        role: entity.role,
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,
-        deletedAt: entity.deletedAt || undefined,
+        deletedAt: entity.deletedAt,
       },
       new UUIDVO(entity.id),
     );
@@ -28,7 +29,8 @@ export class UserPrismaMapper {
       email: entity.email,
       password: entity.password,
       phone: entity.phone,
-      barber: entity.barber || false,
+      barber: entity.barber,
+      role: entity.role ?? 1,
     };
   }
 }
