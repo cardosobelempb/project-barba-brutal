@@ -7,6 +7,7 @@ export class AuthRegisterPresenter {
       name: entity.name,
       email: entity.email,
       phone: entity.phone,
+      role: entity.role
     }
   }
 }

@@ -22,6 +22,7 @@ model User {
   phone    String
   barber   Boolean? @default(false)
 
+  role      Int       @default(1)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthRegisterService, AuthSignInService } from '@repo/auth';
 import { HashComparer, HashGenerator } from '@repo/core';
@@ -24,7 +24,7 @@ import { UserModule } from './user.module';
     DatabaseModule,
     HashModule,
     SecretModule,
-    UserModule,
+    forwardRef(() => UserModule),
     JwtModule.register({
       secret: 'mVh2RvqG1hCx7y49QZtq3t41Ew5CLZza',
     }),

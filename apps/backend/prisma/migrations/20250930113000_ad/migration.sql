@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "public"."user" ADD COLUMN     "role" INTEGER NOT NULL DEFAULT 1,
+ALTER COLUMN "barber" DROP NOT NULL,
+ALTER COLUMN "barber" SET DEFAULT false;

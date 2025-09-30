@@ -8,8 +8,10 @@ export class AuthSignInService implements ServiceAbstract<SignInDTO, UserEntity>
     private readonly hashComparer: HashComparer,
   ) { }
 
-  async execute({email, password}: SignInDTO): Promise<UserEntity> {
+  async execute({ email, password }: SignInDTO): Promise<UserEntity> {
+    console.log('AuthSignInService')
     const user = await this.userRepository.findByEmail(email)
+    console.log(user?.role)
 
     if (!user) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 

@@ -22,11 +22,14 @@ export class AuthSignInController {
       password,
     });
 
+    console.log('User =>', user);
+
     const accessToken = this.jwtAdapter.createAccessToken({
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,
       barber: user.barber,
+      role: user.role,
     });
 
     const refreshToken = this.jwtAdapter.createRefreshToken({
@@ -34,6 +37,7 @@ export class AuthSignInController {
       name: user.name,
       email: user.email,
       barber: user.barber,
+      role: user.role,
     });
 
     return {

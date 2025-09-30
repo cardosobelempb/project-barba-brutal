@@ -8,6 +8,7 @@ export class AuthSignInPresenter {
       email: entity.email,
       phone: entity.phone,
       barber: entity.barber,
+      role: entity.role,
     }
   }
 }

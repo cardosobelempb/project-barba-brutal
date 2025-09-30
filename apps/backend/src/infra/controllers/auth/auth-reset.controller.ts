@@ -29,14 +29,16 @@ export class AuthResetController {
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,
-      barber: user.barber,
+      barber: user.barber ?? false,
+      role: user.role ?? 1,
     });
 
     this.jwtAdapter.createRefreshToken({
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,
-      barber: user.barber,
+      barber: user.barber ?? false,
+      role: user.role ?? 1,
     });
   }
 }

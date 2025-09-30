@@ -37,6 +37,10 @@ export class UserEntity extends Entity<User> {
     return this.props.barber
   }
 
+  get role() {
+    return this.props.role
+  }
+
   get createdAt() {
     return this.props.createdAt
   }
@@ -69,6 +73,8 @@ export class UserEntity extends Entity<User> {
     const User = new UserEntity(
       {
         ...props,
+        barber: props.barber ?? false,
+        role: props.role ?? 1,
         createdAt: props.createdAt ?? new Date(),
       },
       id,
