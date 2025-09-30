@@ -8,7 +8,9 @@ import { MapperRoot } from './mapper-root.abstract'
 import { RepositoryRoot } from './repository.abstract'
 import { WatchedList } from './watched-list.abstract'
 
+export * from './email'
 export * from './jwt.abstract'
+export * from './upload'
 
 export {
   AggregateRoot, Encrypter,
