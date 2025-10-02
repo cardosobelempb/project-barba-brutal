@@ -1,6 +1,7 @@
 "use client";
 
 import BrandRoot from "@/components/shared/BrandRoot";
+import { HeadRoot } from "@/components/shared/HeadRoot";
 import { InputRoot } from "@/components/shared/InputRoot";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +17,7 @@ import { useAuthUser } from "@/contexts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   SignInZodSchema,
@@ -32,6 +34,12 @@ export default function AuthSignInForm() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated]);
 
   async function onSubmit(values: SignInZodSchema) {
     const response = await signIn({
@@ -76,6 +84,10 @@ export default function AuthSignInForm() {
 
   return (
     <>
+      <HeadRoot
+        title="Belezix Admin | Login"
+        description="Página de login do painel Admin do Belezix"
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card className="w-[300px] sm:w-[350px] border-none ">

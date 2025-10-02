@@ -1,3 +1,4 @@
+import { ACCESS_TOKEN_COOKIE } from '@/contexts';
 import axios from 'axios';
 import { parseCookies } from 'nookies';
 
@@ -14,7 +15,7 @@ export const http = axios.create({
 // Interceptor para adicionar token automaticamente
 http.interceptors.request.use((config) => {
   const cookies = parseCookies();
-  const token = cookies['belezixadmin.token'];
+  const token = cookies[ACCESS_TOKEN_COOKIE];
   console.log("interceptors =>", cookies, token)
 
   if (token && config.headers) {
