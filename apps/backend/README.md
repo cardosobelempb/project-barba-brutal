@@ -11,6 +11,7 @@ npm i @types/jsonwebtoken -D
 
 ```bash
 npm i prisma -D
+npm i prisma/client
 npx prisma init
 ```
 

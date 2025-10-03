@@ -1,7 +1,7 @@
 import { Pagination } from '@repo/core';
 import { UserEntity } from '@repo/types';
 import { UserRepository } from '@repo/user';
-import { PrismaService } from 'src/application/services/database/prisma.service';
+import { PrismaService } from 'src/application/database/prisma.service';
 
 import { UserPrismaMapper } from './mapper/UserPrisma.mapper';
 
@@ -74,4 +74,6 @@ export class UserPrismaRepository implements UserRepository {
   }
 }
 
-export const USER_PRISMA_REPOSITORY = 'UserPrismaRepository';
+// export const USER_PRISMA_REPOSITORY = 'UserPrismaRepository';
+export const USER_PRISMA_REPOSITORY = Symbol('USER_PRISMA_REPOSITORY');
+

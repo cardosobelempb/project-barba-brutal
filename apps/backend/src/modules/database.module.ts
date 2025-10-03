@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
-import {
-  USER_PRISMA_REPOSITORY,
-  UserPrismaRepository,
-} from 'src/application/repositories/prima/UserPrismaRepository';
-import { PrismaService } from 'src/application/services/database/prisma.service';
+import { PrismaService } from 'src/application/database/prisma.service';
+import { USER_PRISMA_REPOSITORY, UserPrismaRepository } from 'src/application/repositories/prima/UserPrismaRepository';
 
 @Module({
   providers: [
     PrismaService,
+
+    /**
+     * Provedor para o repositório de usuários baseado em Prisma.
+     * Usa injeção de dependência explícita com token,
+     * facilitando substituição por mocks ou outras implementações.
+     */
     {
-      provide: USER_PRISMA_REPOSITORY, // O token constante para o UserRepository
-      useFactory: (prismaService: PrismaService) => {
-        return new UserPrismaRepository(prismaService);
-      },
-      inject: [PrismaService], // Injetando o PrismaService
+      provide: USER_PRISMA_REPOSITORY,
+      useFactory: (prisma: PrismaService) => new UserPrismaRepository(prisma),
+      inject: [PrismaService],
     },
   ],
-  exports: [USER_PRISMA_REPOSITORY],
+  exports: [USER_PRISMA_REPOSITORY], // Exporta o repositório via token
 })
 export class DatabaseModule {}

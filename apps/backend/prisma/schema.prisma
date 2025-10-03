@@ -22,10 +22,26 @@ model User {
   phone    String
   barber   Boolean? @default(false)
 
-  role      Int       @default(1)
+  role      Int        @default(1)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime?  @updatedAt @map("updated_at")
+  deletedAt DateTime?  @map("deleted_at")
+  questions Question[]
+
+  @@map("user")
+}
+
+model Question {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title    String
+  slug     String @unique
+  content  String
+  authorId String @map("author_id") @db.Uuid
+  author   User   @relation(fields: [authorId], references: [id])
+
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  @@map("user")
+  @@map("question")
 }
