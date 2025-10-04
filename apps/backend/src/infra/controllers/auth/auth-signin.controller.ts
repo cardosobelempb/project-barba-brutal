@@ -22,8 +22,6 @@ export class AuthSignInController {
       password,
     });
 
-    console.log('User =>', user);
-
     const accessToken = this.jwtAdapter.createAccessToken({
       userId: user.id.getValue(),
       name: user.name,

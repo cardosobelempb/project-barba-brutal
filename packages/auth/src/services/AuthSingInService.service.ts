@@ -9,9 +9,8 @@ export class AuthSignInService implements ServiceAbstract<SignInDTO, UserEntity>
   ) { }
 
   async execute({ email, password }: SignInDTO): Promise<UserEntity> {
-    console.log('AuthSignInService')
     const user = await this.userRepository.findByEmail(email)
-    console.log(user?.role)
+    // console.log(user?.role)
 
     if (!user) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 
