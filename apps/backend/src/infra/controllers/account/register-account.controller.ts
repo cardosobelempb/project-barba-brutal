@@ -1,9 +1,9 @@
 import { Body, ConflictException, Controller, Post, UsePipes } from "@nestjs/common";
 import { ErrorConstants } from "@repo/core";
 import { PrismaService } from "src/application/database/prisma.service";
-import { registerAccountSchema } from "src/shared/schemas/registerAccount.schema";
+import { registerAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
 
-import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccount.schema";
+import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
 
 import { createZodValidationPipe } from "src/pipes/createZodValidationPipe";
 import { BcryptAdapter } from './../../adapters/BcryptAdapter';
@@ -14,7 +14,7 @@ export class RegisterAccountControlle {
   constructor(private prismaService: PrismaService, private readonly bcryptAdapter: BcryptAdapter){}
 
   @Post("/register")
-  @UsePipes(createZodValidationPipe(registerAccountSchema))
+  @UsePipes(createZodValidationPipe(registerAccountZodSchema))
   async handle(@Body() body: RegisterAccountZodSchema) {
     const { name, email, password, phone } = body
 
