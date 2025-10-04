@@ -10,13 +10,14 @@ async function bootstrap() {
   });
 
   const configService = app.get<ConfigService<EnvZod, true>>(ConfigService);
-  const port = configService.get("APP_PORT", {infer: true})
+  const PORT = configService.get("PORT", { infer: true })
+  const FRONTEND_URL = configService.get("FRONTEND_URL", { infer: true})
 
   app.enableCors({
-    origin: [process.env.FRONTEND_URL], // ✅ frontend URL exata
+    origin: [FRONTEND_URL], // ✅ frontend URL exata
     credentials: true, // ✅ permite cookies/sessão/autenticação
   });
 
-  await app.listen(port);
+  await app.listen(PORT);
 }
 bootstrap();
