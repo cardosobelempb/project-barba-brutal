@@ -29,12 +29,12 @@ export const envZodSchema = z.object({
   REDIS_PORT: z.coerce.number().default(6379),
   REDIS_DB: z.coerce.number().default(0),
 
-  // Porta da aplicação (opcional, default: 3333)
-  APP_PORT: z.coerce.number().default(3333),
+  // Porta da aplicação (opcional, default: 4000)
+  APP_PORT: z.coerce.number().default(4000),
 })
 
 /**
  * Tipo inferido a partir do schema Zod.
  * Útil para tipar objetos validados ou o processo de configuração.
  */
-export type EnvType = z.infer<typeof envZodSchema>
+export type EnvZod = z.infer<typeof envZodSchema>
