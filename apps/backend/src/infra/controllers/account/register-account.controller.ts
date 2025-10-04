@@ -1,7 +1,11 @@
-import { Body, ConflictException, Controller, Post } from "@nestjs/common";
+import { Body, ConflictException, Controller, Post, UsePipes } from "@nestjs/common";
 import { ErrorConstants } from "@repo/core";
 import { PrismaService } from "src/application/database/prisma.service";
+import { registerAccountSchema } from "src/shared/schemas/registerAccount.schema";
 
+import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccount.schema";
+
+import { createZodValidationPipe } from "src/pipes/createZodValidationPipe";
 import { BcryptAdapter } from './../../adapters/BcryptAdapter';
 
 @Controller("/accounts")
@@ -10,7 +14,8 @@ export class RegisterAccountControlle {
   constructor(private prismaService: PrismaService, private readonly bcryptAdapter: BcryptAdapter){}
 
   @Post("/register")
-  async handle(@Body() body: any) {
+  @UsePipes(createZodValidationPipe(registerAccountSchema))
+  async handle(@Body() body: RegisterAccountZodSchema) {
     const { name, email, password, phone } = body
 
     const userWithSameEmail = await this.prismaService.user.findUnique({
