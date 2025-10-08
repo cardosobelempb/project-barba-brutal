@@ -13,6 +13,9 @@ export const envZodSchema = z.object({
   NODE_ENV: z.string().default("development"),
 
   // Config JWT
+  JWT_PRIVATE_KEY: z.string(),
+  JWT_PUBLIC_KEY: z.string(),
+  JWT_EXPIRES_IN: z.string(),
   JWT_SECRET: z.string(),
   JWT_ACCESS_TOKEN_SECRET: z.string(),
   JWT_ACCESS_TOKEN_EXPIRATION: z.string().default("15m"),

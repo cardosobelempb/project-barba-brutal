@@ -1,15 +1,17 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { AuthSignInService } from '@repo/auth';
 
-import type { SignInDTO, UserPayloadDTO } from '@repo/types';
+import type { SignInDTO } from '@repo/types';
 import { AuthSignInPresenter } from '@repo/types';
-import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
+// import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 
 @Controller('/auth')
 export class AuthSignInController {
   constructor(
     private readonly authSignInService: AuthSignInService,
-    private readonly jwtAdapter: JwtAdapter<UserPayloadDTO>,
+    private readonly jwtService: JwtService,
+    // private readonly jwtAdapter: JwtAdapter<UserPayloadDTO>,
   ) {}
 
   @Post('/signin')
@@ -22,21 +24,17 @@ export class AuthSignInController {
       password,
     });
 
-    const accessToken = this.jwtAdapter.createAccessToken({
+    const payload = {
       userId: user.id.getValue(),
       name: user.name,
       email: user.email,
       barber: user.barber,
       role: user.role,
-    });
+    };
 
-    const refreshToken = this.jwtAdapter.createRefreshToken({
-      userId: user.id.getValue(),
-      name: user.name,
-      email: user.email,
-      barber: user.barber,
-      role: user.role,
-    });
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    const refreshToken = await this.jwtService.signAsync(payload);
 
     return {
       user: AuthSignInPresenter.toHTTP(user),
@@ -44,4 +42,5 @@ export class AuthSignInController {
       refreshToken,
     };
   }
+
 }

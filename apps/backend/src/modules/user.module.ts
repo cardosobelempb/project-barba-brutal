@@ -1,15 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { HashGenerator } from '@repo/core';
-import {
-  UserFindByIdService,
-  UserRegisterService,
-  UserRepository,
-} from '@repo/user';
+import { UserFindByIdService, UserRegisterService, UserRepository } from '@repo/user';
 import { USER_PRISMA_REPOSITORY } from 'src/application/repositories/prima/UserPrismaRepository';
 import { HASH_GENERATOR } from 'src/infra/adapters/BcryptAdapter';
 import { UserRegisterController } from 'src/infra/controllers/user/UserRegisterController';
 
-import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
+// import { AuthModule } from 'src/infra/adapters/JwtAdapter';
 import { AuthModule } from './auth.module';
 import { DatabaseModule } from './database.module';
 import { HashModule } from './hasher.module';
@@ -18,7 +14,7 @@ import { HashModule } from './hasher.module';
   imports: [DatabaseModule, HashModule, forwardRef(() => AuthModule)],
   controllers: [UserRegisterController],
   providers: [
-    JwtAdapter,
+    // JwtAdapter,
     {
       provide: UserRegisterService,
       useFactory: (
