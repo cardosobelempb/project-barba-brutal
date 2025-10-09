@@ -22,26 +22,26 @@ export class AuthSignInController {
       password,
     });
 
-    const accessToken = this.jwtAdapter.createAccessToken({
-      userId: user.id.getValue(),
-      name: user.name,
-      email: user.email,
-      barber: user.barber,
-      role: user.role,
-    });
+    // const accessToken = await this.jwtAdapter.createAsyncAccessToken({
+    //   userId: user.id.getValue(),
+    //   name: user.name,
+    //   email: user.email,
+    //   barber: user.barber,
+    //   role: user.role,
+    // });
 
-    const refreshToken = this.jwtAdapter.createRefreshToken({
-      userId: user.id.getValue(),
-      name: user.name,
-      email: user.email,
-      barber: user.barber,
-      role: user.role,
-    });
+    // const refreshToken = await this.jwtAdapter.createAsyncRefreshToken({
+    //   userId: user.id.getValue(),
+    //   name: user.name,
+    //   email: user.email,
+    //   barber: user.barber,
+    //   role: user.role,
+    // });
 
     return {
       user: AuthSignInPresenter.toHTTP(user),
-      accessToken,
-      refreshToken,
+      // accessToken,
+      // refreshToken,
     };
   }
 }

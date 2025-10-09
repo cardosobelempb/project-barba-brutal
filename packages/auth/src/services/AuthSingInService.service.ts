@@ -18,7 +18,7 @@ export class AuthSignInService implements ServiceAbstract<SignInDTO, UserEntity>
 
     if (!hashComparer) throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
 
-    return user;
+    return user
 
   }
 

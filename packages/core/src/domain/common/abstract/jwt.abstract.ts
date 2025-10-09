@@ -22,6 +22,7 @@ export abstract class JwtAbstract<T extends object> {
    * @returns accessToken como string.
    */
   abstract createAccessToken(payload: T): string;
+  abstract createAsyncAccessToken(payload: T): Promise<string>;
 
   /**
    * Gera um refreshToken a partir do payload.
@@ -29,6 +30,7 @@ export abstract class JwtAbstract<T extends object> {
    * @returns refreshToken como string.
    */
   abstract createRefreshToken(payload: T): string;
+  abstract createAsyncRefreshToken(payload: T): Promise<string>;
 
   /**
    * Gera accessToken e refreshToken simultaneamente.

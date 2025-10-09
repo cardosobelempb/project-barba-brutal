@@ -1,5 +1,7 @@
-import { User } from "../user/user";
+import { UserPayloadDTO } from "../user";
 
-export interface TokenDTO extends User {
-    token: string
-  }
+export interface TokenDTO {
+  user: UserPayloadDTO
+  accessToken?: string,
+  refreshToken?: string
+}
