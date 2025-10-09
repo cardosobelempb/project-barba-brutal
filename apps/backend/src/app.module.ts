@@ -12,7 +12,11 @@ import { envZodSchema } from './shared/schemas/envZod.schema';
   imports: [ConfigModule.forRoot({
     validate: (env) => envZodSchema.parse(env),
     isGlobal: true
+<<<<<<< HEAD
   }), AccountModule, AuthenticationModule, UserModule, DatabaseModule],
+=======
+  }), AccountModule, AuthModule, UserModule, DatabaseModule],
+>>>>>>> 76c59092360c13693d66e096b815d5bc4273c6a9
   controllers: [AppController],
   providers: [],
 })

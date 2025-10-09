@@ -30,7 +30,10 @@
     "@repo/service": "*",
     "@repo/types": "*",
     "@repo/user": "*",
+<<<<<<< HEAD
     "passport": "^0.7.0",
+=======
+>>>>>>> 76c59092360c13693d66e096b815d5bc4273c6a9
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -45,7 +48,6 @@
     "@nestjs/testing": "^11.0.1",
     "@rocketseat/eslint-config": "^2.2.2",
     "@types/express": "^5.0.0",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "bcryptjs": "^3.0.2",

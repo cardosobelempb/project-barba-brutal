@@ -1,66 +1,68 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { ErrorConstants, UnauthorizedError } from '@repo/core';
-import { UserEntity, UserPayloadDTO } from '@repo/types';
-import { UserFindByIdService } from '@repo/user';
-import { Request } from 'express';
-import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
+// import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+// import { JwtService } from '@nestjs/jwt';
+// import { ErrorConstants, UnauthorizedError } from '@repo/core';
+// import { UserEntity, UserPayloadDTO } from '@repo/types';
+// import { UserFindByIdService } from '@repo/user';
+// import { Request } from 'express';
 
-/**
- * Extensão do tipo Request para incluir payload e usuário autenticado.
- */
-interface RequestWithUser extends Request {
-  tokenPayload?: UserPayloadDTO;
-  user?: UserEntity;
-}
+// // import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 
-@Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(
-    private readonly userFindByIdService: UserFindByIdService,
-    private readonly jwtAdapter: JwtAdapter<UserPayloadDTO>,
-  ) {}
+// /**
+//  * Extensão do tipo Request para incluir payload e usuário autenticado.
+//  */
+// interface RequestWithUser extends Request {
+//   tokenPayload?: UserPayloadDTO;
+//   user?: UserEntity;
+// }
 
-  /**
-   * Método principal do Guard. Valida o token e anexa o usuário à requisição.
-   */
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<RequestWithUser>();
-    const token = this.extractToken(request);
+// @Injectable()
+// export class AuthGuard implements CanActivate {
+//   constructor(
+//     private readonly userFindByIdService: UserFindByIdService,
+//     private readonly jwtService: JwtService,
+//   ) {}
 
-    if (!token) {
-      throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
-    }
+//   /**
+//    * Método principal do Guard. Valida o token e anexa o usuário à requisição.
+//    */
+//   async canActivate(context: ExecutionContext): Promise<boolean> {
+//     const request = context.switchToHttp().getRequest<RequestWithUser>();
+//     const token = this.extractToken(request);
 
-    const tokenPayload = this.jwtAdapter.verifyAccessToken(token);
+//     if (!token) {
+//       throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
+//     }
 
-    if (!tokenPayload) {
-      throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
-    }
+//     const tokenPayload = this.jwtService.verifyAsync(token);
 
-    const user = await this.userFindByIdService.execute(tokenPayload.userId);
+//     if (!tokenPayload) {
+//       throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
+//     }
 
-    if (!user) {
-      throw new UnauthorizedError(ErrorConstants.UNAUTHORIZED);
-    }
+//     const user = await this.userFindByIdService.execute(tokenPayload.userId);
 
-    // Enriquecendo o request com os dados autenticados
-    request.tokenPayload = tokenPayload;
-    request.user = user;
+//     if (!user) {
+//       throw new UnauthorizedError(ErrorConstants.UNAUTHORIZED);
+//     }
 
-    return true;
-  }
+//     // Enriquecendo o request com os dados autenticados
+//     request.tokenPayload = tokenPayload;
+//     request.user = user;
 
-  /**
-   * Extrai e valida o token do header Authorization.
-   */
-  private extractToken(request: Request): string | null {
-    const authHeader = request.headers.authorization;
+//     return true;
+//   }
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null;
-    }
+//   /**
+//    * Extrai e valida o token do header Authorization.
+//    */
+//   private extractToken(request: Request): string | null {
+//     const authHeader = request.headers.authorization;
 
-    const [, token] = authHeader.split(' ');
-    return token || null;
-  }
-}
+//     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+//       return null;
+//     }
+
+//     const [, token] = authHeader.split(' ');
+//     return token || null;
+//   }
+// }

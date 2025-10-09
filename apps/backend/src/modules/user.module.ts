@@ -7,6 +7,10 @@ import { HASH_GENERATOR } from 'src/infra/adapters/BcryptAdapter';
 import { JwtAdapter } from 'src/infra/adapters/JwtAdapter';
 import { UserRegisterController } from 'src/infra/controllers/user/UserRegisterController';
 
+<<<<<<< HEAD
+=======
+// import { AuthModule } from 'src/infra/adapters/JwtAdapter';
+>>>>>>> 76c59092360c13693d66e096b815d5bc4273c6a9
 import { AuthModule } from './auth.module';
 import { DatabaseModule } from './database.module';
 import { HashModule } from './hasher.module';
@@ -15,8 +19,12 @@ import { HashModule } from './hasher.module';
   imports: [DatabaseModule, HashModule, forwardRef(() => AuthModule)],
   controllers: [UserRegisterController],
   providers: [
+<<<<<<< HEAD
     JwtAdapter,
     JwtService,
+=======
+    // JwtAdapter,
+>>>>>>> 76c59092360c13693d66e096b815d5bc4273c6a9
     {
       provide: UserRegisterService,
       useFactory: (
