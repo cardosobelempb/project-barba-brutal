@@ -24,23 +24,6 @@ export class AuthSignInController {
       password,
     });
 
-<<<<<<< HEAD
-    // const accessToken = await this.jwtAdapter.createAsyncAccessToken({
-    //   userId: user.id.getValue(),
-    //   name: user.name,
-    //   email: user.email,
-    //   barber: user.barber,
-    //   role: user.role,
-    // });
-
-    // const refreshToken = await this.jwtAdapter.createAsyncRefreshToken({
-    //   userId: user.id.getValue(),
-    //   name: user.name,
-    //   email: user.email,
-    //   barber: user.barber,
-    //   role: user.role,
-    // });
-=======
     const payload = {
       userId: user.id.getValue(),
       name: user.name,
@@ -52,7 +35,6 @@ export class AuthSignInController {
     const accessToken = await this.jwtService.signAsync(payload);
 
     const refreshToken = await this.jwtService.signAsync(payload);
->>>>>>> 76c59092360c13693d66e096b815d5bc4273c6a9
 
     return {
       user: AuthSignInPresenter.toHTTP(user),
