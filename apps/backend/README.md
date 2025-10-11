@@ -22,6 +22,13 @@ npm i @nestjs/jwt
 npm i @nestjs/jwt@9.0.0
 ```
 
+# GIT
+- git add .
+- git commit -m ""
+- git rm --cached
+- git push
+- git pull
+
 ## KEY
 # 1. Gerar chave privada RSA (2048 bits)
 openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
