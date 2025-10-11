@@ -30,10 +30,7 @@
     "@repo/service": "*",
     "@repo/types": "*",
     "@repo/user": "*",
-<<<<<<< HEAD
     "passport": "^0.7.0",
-=======
->>>>>>> 76c59092360c13693d66e096b815d5bc4273c6a9
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",

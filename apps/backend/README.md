@@ -22,7 +22,6 @@ npm i @nestjs/jwt
 npm i @nestjs/jwt@9.0.0
 ```
 
-<<<<<<< HEAD
 ## KEY
 # 1. Gerar chave privada RSA (2048 bits)
 openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
@@ -101,7 +100,6 @@ Mas se a intenção for segurança, considere usar criptografia real.
 
 Se você quiser me dizer **qual o seu objetivo específico com esse comando**, posso sugerir a melhor prática para ele.
 
-=======
 # JWT para gerar o token
 
 ```bash
@@ -111,4 +109,3 @@ openssl base64 -in private_key.pem -A > private_base64.txt
 openssl rsa -pubout -in private_key.pem -out public_key.pem
 openssl base64 -in public_key.pem -A > public_base64.txt
 ```
->>>>>>> 76c59092360c13693d66e096b815d5bc4273c6a9
