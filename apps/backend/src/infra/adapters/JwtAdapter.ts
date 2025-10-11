@@ -8,8 +8,8 @@ import { UserPayloadDTO } from '@repo/types';
  */
 export class JwtAdapter<T extends UserPayloadDTO> implements JwtAbstract<T> {
   constructor(private readonly jwtService: JwtService) {
-     console.log('JwtAdapter constructor called');
-    console.log('JwtService is', jwtService ? 'defined' : 'undefined');
+    //  console.log('JwtAdapter constructor called');
+    // console.log('JwtService is', jwtService ? 'defined' : 'undefined');
   }
 
   // ==============================
@@ -26,7 +26,7 @@ export class JwtAdapter<T extends UserPayloadDTO> implements JwtAbstract<T> {
     expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION || '7d',
   };
 
-  private readonly privateKey = process.env.JWT_PRIVATE_KEY;
+  private readonly privateKey = Buffer.from(`${process.env.JWT_PRIVATE_KEY}`, "base64");
 
   // ==============================
   // API pública - Criação de tokens

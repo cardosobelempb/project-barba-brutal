@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthSignInService } from '@repo/auth';
+import { JwtAbstract } from '@repo/core';
 
-import { JwtService } from '@nestjs/jwt';
 import type { SignInDTO, TokenDTO } from '@repo/types';
 import { AuthSignInPresenter } from '@repo/types';
 
@@ -10,8 +10,8 @@ import { AuthSignInPresenter } from '@repo/types';
 export class AuthenticationController {
   constructor(
     private authSignInService: AuthSignInService,
-    // private jwtAdapter: JwtAbstract<TokenDTO>,
-    private readonly jwtService: JwtService
+    private jwtAdapter: JwtAbstract<TokenDTO>,
+    // private readonly jwtService: JwtService
   ) { }
 
   @Post('login')
@@ -28,32 +28,13 @@ export class AuthenticationController {
       throw new Error('Credenciais inválidas');
     }
 
-    const payload: TokenDTO = {user:  {name: user.name ,email: user.email, userId: user.id.getValue(), barber: user.barber} };
-    const accessToken = await this.jwtService.sign(payload);
+    const payload: TokenDTO = {user:  {name: user.name ,email: user.email, userId: user.id.getValue(), barber: user.barber, role: user.role} };
+    const accessToken = await this.jwtAdapter.createAsyncAccessToken(payload);
+    const refreshToken = await this.jwtAdapter.createAsyncRefreshToken(payload);
     return {
       user: AuthSignInPresenter.toHTTP(user),
-      accessToken
-    };
-  }
-  @Post('test')
-  async test(@Body() body: SignInDTO): Promise<AuthSignInPresenter> {
-    const { email, password } = body;
-    console.log(email, password)
-
-    const user = await this.authSignInService.execute({
-      email,
-      password,
-    });
-
-    if (!user) {
-      throw new Error('Credenciais inválidas');
-    }
-
-    const payload: TokenDTO = {user:  {name: user.name ,email: user.email, userId: user.id.getValue(), barber: user.barber} };
-    const accessToken = await this.jwtService.signAsync(payload);
-    return {
-      user: AuthSignInPresenter.toHTTP(user),
-      accessToken
+      accessToken,
+      refreshToken
     };
   }
 }

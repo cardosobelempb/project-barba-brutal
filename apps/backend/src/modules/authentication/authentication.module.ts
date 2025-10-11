@@ -30,8 +30,6 @@ import { AuthenticationController } from './authentication.controller';
           throw new Error('JWT_PRIVATE_KEY is missing');
         }
 
-        console.log('PRIVATE KEY LOADED:', PRIVATE_KEY);
-
         return {
           privateKey: Buffer.from(PRIVATE_KEY, 'base64'),
           publicKey: Buffer.from(PUBLIC_KEY, 'base64'),
