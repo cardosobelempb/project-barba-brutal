@@ -4,7 +4,7 @@ import {
   BcryptAdapter,
   HASH_COMPARER,
   HASH_GENERATOR,
-} from '../infra/adapters/BcryptAdapter';
+} from './auth/adapters/BcryptAdapter';
 
 @Module({
   providers: [

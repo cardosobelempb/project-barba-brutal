@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/application/database/prisma.service';
-import { USER_PRISMA_REPOSITORY, UserPrismaRepository } from 'src/application/repositories/prima/UserPrismaRepository';
+import { PrismaService } from 'src/shared/application/database/prisma.service';
+
+import { USER_PRISMA_REPOSITORY, UserPrismaRepository } from './user/application/repositories/prima/UserPrismaRepository';
 
 @Module({
   providers: [

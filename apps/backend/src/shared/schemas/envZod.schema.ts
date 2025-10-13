@@ -30,6 +30,7 @@ export const envZodSchema = z.object({
 
   // Conexão com o banco de dados
   DATABASE_URL: z.url(),
+  PREFIX_URL: z.string(),
 
   // Chaves JWT para autenticação
   // JWT_PRIVATE_KEY: z.string(),

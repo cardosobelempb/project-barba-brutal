@@ -11,13 +11,15 @@ async function bootstrap() {
 
   const configService = app.get<ConfigService<EnvZod, true>>(ConfigService);
   const PORT = configService.get("PORT", { infer: true })
-  const FRONTEND_URL = configService.get("FRONTEND_URL", { infer: true})
+  const FRONTEND_URL = configService.get("FRONTEND_URL", { infer: true })
+  const PREFIX_URL = configService.get('PREFIX_URL')
 
   app.enableCors({
     origin: [FRONTEND_URL], // ✅ frontend URL exata
     credentials: true, // ✅ permite cookies/sessão/autenticação
   });
 
+  app.setGlobalPrefix(PREFIX_URL)
   await app.listen(PORT);
 }
 bootstrap();
