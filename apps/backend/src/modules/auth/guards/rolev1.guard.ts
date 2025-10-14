@@ -5,32 +5,41 @@ import { Role } from 'src/modules/auth/enums/role.enum';
 
 import { ROLES_KEY } from '../decorators/roles.decorator';
 
+/**
+ * Interface que estende o objeto Request para incluir o usuário autenticado
+ */
 interface RequestWithUser extends Request {
   user?: UserEntity;
 }
 
 @Injectable()
-export class RoleGuard implements CanActivate {
+export class RoleGuardV1 implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
+
   canActivate(context: ExecutionContext): boolean {
-    console.log('RoleGuard');
+    // Recupera as roles exigidas da rota ou do controller usando metadados do decorator @Roles
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
 
+    // Se nenhuma role for exigida, o acesso é liberado
     if (!requiredRoles) return true;
 
-    const { user } = context.switchToHttp().getRequest<RequestWithUser>();
-    const rolesFilted = requiredRoles.filter((role) => role === user?.role);
-    console.log(
-      rolesFilted.map((r) => r),
-      user?.role,
-    );
+    // Extrai o usuário do request
+    const request = context.switchToHttp().getRequest<RequestWithUser>();
+    const user = request.user;
 
-    return rolesFilted.length > 0;
+    // Bloqueia o acesso se não houver usuário no request
+    if (!user?.role) return false;
+
+    // Verifica se a role do usuário está entre as roles exigidas
+    const hasRequiredRole = requiredRoles.includes(user.role);
+
+    return hasRequiredRole;
   }
 }
+
 
 
 /**

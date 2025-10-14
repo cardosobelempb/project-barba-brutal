@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       algorithms: ['RS256'],
 
       // Chave pública usada para validar o token JWT (vinda do .env, codificada em base64)
-      secretOrKey: JwtStrategy.getPublicKeyFromEnv(),
+      secretOrKey: JwtStrategy.getPublicKey(),
     });
   }
 
@@ -43,7 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * Recupera e decodifica a chave pública do arquivo `.env`, que deve estar em base64.
    * Se a variável de ambiente não estiver definida, lança um erro descritivo.
    */
-  private static getPublicKeyFromEnv(): string {
+  private static getPublicKey(): string {
     const configService = new  ConfigService<EnvZod, true>()
     const base64Key = configService.get<string>('JWT_PUBLIC_KEY');
 

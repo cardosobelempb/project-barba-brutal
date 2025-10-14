@@ -23,7 +23,7 @@ export const User = createParamDecorator(
 );
 
 /**
- @Get()
+@Get()
 getProfile(@User() user: UserEntity) {}
 
 @Get('email')

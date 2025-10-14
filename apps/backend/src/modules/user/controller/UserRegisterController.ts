@@ -8,7 +8,7 @@ import { Role } from 'src/modules/auth/enums/role.enum';
 // import { AuthGuard } from 'src/guards/auth.guard';
 
 // @UseGuards(AuthGuard, RoleGuard)
-@Roles(Role.Admin)
+@Roles(Role.ADMIN)
 @Controller('/users')
 export class UserRegisterController {
   constructor(private readonly userRegisterService: UserRegisterService) {}

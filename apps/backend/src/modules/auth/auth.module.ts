@@ -18,6 +18,7 @@ import { USER_PRISMA_REPOSITORY } from '../user/application/repositories/prima/U
 import { UserModule } from '../user/user.module';
 import { HASH_COMPARER, HASH_GENERATOR } from './adapters/BcryptAdapter';
 import { JwtAdapter } from './adapters/JwtAdapter';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { JwtAdapter } from './adapters/JwtAdapter';
       global: true,
        useFactory(config: ConfigService<EnvZod, true>) {
         const PRIVATE_KEY = config.get<string>('JWT_PRIVATE_KEY');
-        const PUBLIC_KEY = config.get<string>('JWT_PUBLIC_KEY');
+        // const PUBLIC_KEY = config.get<string>('JWT_PUBLIC_KEY');
         const EXPIRES_IN = config.get<string>('JWT_EXPIRES_IN') || '1h';
 
         if (!PRIVATE_KEY) {
@@ -39,7 +40,7 @@ import { JwtAdapter } from './adapters/JwtAdapter';
 
         return {
           privateKey: Buffer.from(PRIVATE_KEY, 'base64'),
-          publicKey: Buffer.from(PUBLIC_KEY, 'base64'),
+          // publicKey: Buffer.from(PUBLIC_KEY, 'base64'),
           signOptions: {
             algorithm: 'RS256',
             expiresIn: EXPIRES_IN,
@@ -55,6 +56,7 @@ import { JwtAdapter } from './adapters/JwtAdapter';
     AuthMeController,
   ],
   providers: [
+    JwtStrategy,
     {
       provide: JwtAdapter,
       useFactory: (
