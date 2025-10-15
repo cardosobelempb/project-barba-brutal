@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AccountModule } from './modules/account/account.module';
-import { DatabaseModule } from './modules/database.module';
+import { DatabaseModule } from './modules/database/database.module';
 import { QuestionModule } from './modules/question/question.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { UserModule } from './modules/user/user.module';

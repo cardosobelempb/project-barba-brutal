@@ -1,12 +1,11 @@
 import { Module } from "@nestjs/common";
-import { QuestionCreateController } from "src/modules/question/controller/question-create.controller";
+import { QuestionCreateController } from "src/modules/question/controller/QuestionCreate.controller";
 
 import { JwtStrategy } from "../auth/strategy/jwt.strategy";
-import { DatabaseModule } from "../database.module";
 import { SettingsModule } from "../settings/settings.module";
 
 @Module({
-  imports: [DatabaseModule, SettingsModule],
+  imports: [SettingsModule],
   controllers: [QuestionCreateController],
   providers: [JwtStrategy],
   exports: []

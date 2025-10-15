@@ -13,7 +13,7 @@ export class UserPrismaMapper {
         password: entity.password,
         phone: entity.phone,
         barber: entity.barber,
-        role: entity.role,
+        role: entity.role ?? [],
         createdAt: entity.createdAt,
         updatedAt: entity.updatedAt,
         deletedAt: entity.deletedAt,

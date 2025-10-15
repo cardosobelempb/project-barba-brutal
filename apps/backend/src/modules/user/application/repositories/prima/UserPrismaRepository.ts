@@ -74,6 +74,5 @@ export class UserPrismaRepository implements UserRepository {
   }
 }
 
-// export const USER_PRISMA_REPOSITORY = 'UserPrismaRepository';
-export const USER_PRISMA_REPOSITORY = Symbol('USER_PRISMA_REPOSITORY');
+export const USER_PRISMA_REPOSITORY = UserPrismaRepository;
 

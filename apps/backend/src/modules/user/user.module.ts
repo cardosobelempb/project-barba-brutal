@@ -7,13 +7,13 @@ import { JwtAdapter } from 'src/modules/auth/adapters/JwtAdapter';
 import { UserRegisterController } from 'src/modules/user/controller/UserRegisterController';
 
 import { AuthModule } from '../auth/auth.module';
-import { DatabaseModule } from '../database.module';
 import { HashModule } from '../hasher.module';
+import { DatabaseModule } from './../database/database.module';
 import { USER_PRISMA_REPOSITORY } from './application/repositories/prima/UserPrismaRepository';
 
 @Module({
   imports: [DatabaseModule, HashModule, forwardRef(() => AuthModule)],
-  controllers: [UserRegisterController],
+controllers: [UserRegisterController],
   providers: [
     JwtAdapter,
     JwtService,

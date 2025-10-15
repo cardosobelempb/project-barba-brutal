@@ -1,10 +1,9 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-import type { UserCreateDTO } from '@repo/types';
+import { Role, type UserCreateDTO } from '@repo/types';
 import { UserRegisterService } from '@repo/user';
 import { Roles } from 'src/modules/auth/decorators/roles.decorator';
 
-import { Role } from 'src/modules/auth/enums/role.enum';
 // import { AuthGuard } from 'src/guards/auth.guard';
 
 // @UseGuards(AuthGuard, RoleGuard)

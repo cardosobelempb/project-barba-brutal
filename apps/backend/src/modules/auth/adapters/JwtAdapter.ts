@@ -166,4 +166,4 @@ export class JwtAdapter<T extends TokenDTO> implements JwtAbstract<T> {
 }
 
 
-export const JWT_ADAPTER = 'JwtAdapter';
+export const JWT_ADAPTER = JwtAdapter;

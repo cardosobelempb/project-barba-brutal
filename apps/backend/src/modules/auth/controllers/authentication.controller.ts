@@ -26,7 +26,15 @@ export class AuthenticationController {
       throw new Error('Credenciais inválidas');
     }
 
-    const payload: TokenDTO = { user: { name: user.name, email: user.email, userId: user.id.getValue(), barber: user.barber, role: user.role } };
+    const payload: TokenDTO = {
+      user: {
+        name: user.name,
+        email: user.email,
+        userId: user.id.getValue(),
+        barber: user.barber,
+        role: user.role
+      }
+    };
 
     const accessToken = await this.jwtAdapter.createAsyncAccessToken(payload);
     const refreshToken = await this.jwtAdapter.createAsyncRefreshToken(payload);

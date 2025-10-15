@@ -27,3 +27,5 @@ export class AuthRegisterService implements ServiceAbstract<AuthRegisterDTO, Use
   }
 
 }
+
+export const AUTH_REGISTER_SERVICE = AuthRegisterService;

@@ -22,3 +22,5 @@ export class AuthSignInService implements ServiceAbstract<SignInDTO, UserEntity>
   }
 
 }
+
+export const AUTH_SIGN_IN_SERVICE = AuthSignInService;

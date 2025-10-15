@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EnvZod } from 'src/shared/schemas/envZod.schema';
 
-@Injectable()
 export class EnvSettingsService {
   constructor(private readonly configService: ConfigService<EnvZod, true>) {}
 
@@ -20,3 +18,5 @@ export class EnvSettingsService {
 
   // ... outros getters com validação e fallback, se necessário
 }
+
+export const ENV_SETTINGS = EnvSettingsService;

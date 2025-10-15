@@ -2,28 +2,27 @@ import { forwardRef, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { AuthRegisterService, AuthSignInService } from '@repo/auth';
+import { AUTH_REGISTER_SERVICE, AUTH_SIGN_IN_SERVICE, AuthRegisterService, AuthSignInService } from '@repo/auth';
 import { HashComparer, HashGenerator } from '@repo/core';
-import { UserRepository } from '@repo/user';
 // import { AuthMeController } from 'src/infra/adapters/JwtAdapter';
 import { AuthMeController } from 'src/modules/auth/controllers/auth-me.controller';
 import { AuthRegisterController } from 'src/modules/auth/controllers/auth-register.controller';
 import { AuthSignInController } from 'src/modules/auth/controllers/auth-signin.controller';
 import { EnvZod } from 'src/shared/schemas/envZod.schema';
 
-import { DatabaseModule } from '../database.module';
+import { DatabaseModule } from '../database/database.module';
 import { HashModule } from '../hasher.module';
 import { SecretModule } from '../secret.module';
-import { USER_PRISMA_REPOSITORY } from '../user/application/repositories/prima/UserPrismaRepository';
+import { USER_PRISMA_REPOSITORY, UserPrismaRepository } from '../user/application/repositories/prima/UserPrismaRepository';
 import { UserModule } from '../user/user.module';
 import { HASH_COMPARER, HASH_GENERATOR } from './adapters/BcryptAdapter';
-import { JwtAdapter } from './adapters/JwtAdapter';
+import { JWT_ADAPTER, JwtAdapter } from './adapters/JwtAdapter';
 import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
-    DatabaseModule,
     HashModule,
+    DatabaseModule,
     SecretModule,
     forwardRef(() => UserModule),
     PassportModule,
@@ -58,7 +57,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
   providers: [
     JwtStrategy,
     {
-      provide: JwtAdapter,
+      provide: JWT_ADAPTER,
       useFactory: (
         jwtService: JwtService
       ) => {
@@ -67,22 +66,22 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       inject: [JwtService],
     },
     {
-      provide: AuthRegisterService,
+      provide: AUTH_REGISTER_SERVICE,
       useFactory: (
-        userRepository: UserRepository,
+        userPrismaRepository: UserPrismaRepository,
         hashGenerator: HashGenerator,
       ) => {
-        return new AuthRegisterService(userRepository, hashGenerator);
+        return new AuthRegisterService(userPrismaRepository, hashGenerator);
       },
       inject: [USER_PRISMA_REPOSITORY, HASH_GENERATOR],
     },
     {
-      provide: AuthSignInService,
+      provide: AUTH_SIGN_IN_SERVICE,
       useFactory: (
-        userRepository: UserRepository,
+        userPrismaRepository: UserPrismaRepository,
         hashComparer: HashComparer,
       ) => {
-        return new AuthSignInService(userRepository, hashComparer);
+        return new AuthSignInService(userPrismaRepository, hashComparer);
       },
       inject: [USER_PRISMA_REPOSITORY, HASH_COMPARER],
     },
