@@ -1,3 +1,4 @@
+"use client";
 import { LeadingRoot } from "@/components/LeadingRoot/LeadingRoot";
 import { ProfissionalMapper } from "@/components/professional";
 import { ServiceMapper } from "@/components/services";

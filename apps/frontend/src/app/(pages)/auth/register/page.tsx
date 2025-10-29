@@ -18,6 +18,7 @@ export default function RegisterPage() {
           title="Entrar na sua conta | MeuApp"
           description="Acesse sua conta para gerenciar seus dados, acompanhar pedidos ou continuar suas atividades."
         />
+
         <RegisterForm />
       </LayoutCenter>
     </BackgroundRoot>

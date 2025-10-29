@@ -2,7 +2,7 @@ import { ACCESS_TOKEN_COOKIE } from '@/contexts';
 import axios from 'axios';
 import { parseCookies } from 'nookies';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1';
 
 export const http = axios.create({
   baseURL: BASE_URL,
