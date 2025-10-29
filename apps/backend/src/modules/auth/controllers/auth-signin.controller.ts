@@ -31,8 +31,8 @@ export class AuthSignInController {
 
     return {
       user: AuthSignInPresenter.toHTTP(user),
-      access_token: accessToken,
-      refresh_token: refreshToken
+      accessToken,
+      refreshToken
     };
   }
 

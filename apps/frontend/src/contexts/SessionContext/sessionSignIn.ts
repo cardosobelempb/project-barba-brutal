@@ -1,4 +1,5 @@
 import { api } from "@/lib/api/api";
+
 import type { SessionCredentials, UserEntity } from "@repo/types";
 import { setCookie } from "nookies";
 import { toast } from "sonner"; // Biblioteca de notificações
@@ -43,6 +44,8 @@ export async function sessionSignIn(
       password,
       passwordConfirmation: password, // Se exigido pela API
     });
+
+    console.log(response.data)
 
     const { accessToken, refreshToken, user } = response.data;
 

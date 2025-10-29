@@ -38,7 +38,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
 
     const parsedUser = parseJSON(userCookie);
 
-    if (parsedUser || refreshToken) {
+    if (parsedUser && refreshToken) {
       setUser(parsedUser); // If user is found in cookies, update the state
     } else {
       sessionSignOut(router); // If no valid user found, sign out

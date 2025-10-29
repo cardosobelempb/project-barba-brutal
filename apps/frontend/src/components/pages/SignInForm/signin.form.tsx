@@ -1,7 +1,6 @@
 "use client";
 
 import BrandRoot from "@/components/shared/BrandRoot";
-import { HeadRoot } from "@/components/shared/HeadRoot";
 import { InputRoot } from "@/components/shared/InputRoot";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,26 +13,17 @@ import {
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useAuthUser } from "@/contexts";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+
+import { HeadRoot } from "@/components/shared/HeadRoot";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import {
-  SignInZodSchema,
-  signInZodSchema,
-} from "./../../../schemas/signInZodSchema";
+import { useSignin } from "./signin.hook";
 
-export default function AuthSignInForm() {
-  const { signIn, user, isAuthenticated } = useAuthUser();
+export const SignInForm = () => {
+  const { isAuthenticated } = useAuthUser();
+  const { formProps, handleSignin } = useSignin();
   const router = useRouter();
-  const form = useForm<SignInZodSchema>({
-    resolver: zodResolver(signInZodSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -41,55 +31,17 @@ export default function AuthSignInForm() {
     }
   }, [isAuthenticated]);
 
-  async function onSubmit(values: SignInZodSchema) {
-    const response = await signIn({
-      email: values.email,
-      password: values.password,
-    });
-    console.log(response);
-    form.reset();
-
-    // await authClient.signIn.email({
-    //   email: values.email,
-    //   password: values.password,
-    //   fetchOptions: {
-    //     onSuccess: () => {
-    //       toast.success("Login realizado com sucesso!");
-    //       router.push("/");
-    //     },
-    //     onError: (ctx) => {
-    //       if (ctx.error.code === "USER_NOT_FOUND") {
-    //         toast.error("Email não cadastrado.");
-    //         return form.setError("email", {
-    //           type: "manual",
-    //           message: "Email ou senha inválidos.",
-    //         });
-    //       }
-    //       if (ctx.error.code === "INVALID_EMAIL_OR_PASSWORD") {
-    //         toast.error("Email ou senha inválidos.");
-    //         form.setError("email", {
-    //           type: "manual",
-    //           message: "Email ou senha inválidos.",
-    //         });
-    //         return form.setError("password", {
-    //           type: "manual",
-    //           message: "Email ou senha inválidos.",
-    //         });
-    //       }
-    //       toast.error(ctx.error.message || "Erro ao realizar login.");
-    //     },
-    //   },
-    // });
-  }
-
   return (
     <>
       <HeadRoot
         title="Belezix Admin | Login"
         description="Página de login do painel Admin do Belezix"
       />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <Form {...formProps}>
+        <form
+          onSubmit={formProps.handleSubmit(handleSignin)}
+          className="space-y-8"
+        >
           <Card className="w-[300px] sm:w-[350px] border-none ">
             <CardHeader>
               <BrandRoot className="self-center" />
@@ -98,7 +50,7 @@ export default function AuthSignInForm() {
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
               <InputRoot
-                control={form.control}
+                control={formProps.control}
                 name="email"
                 label="E-mail"
                 placeholder="Digite seu e-mail..."
@@ -106,7 +58,7 @@ export default function AuthSignInForm() {
               />
 
               <InputRoot
-                control={form.control}
+                control={formProps.control}
                 name="password"
                 label="Senha"
                 placeholder="Digite sua senha..."
@@ -136,4 +88,4 @@ export default function AuthSignInForm() {
       </Form>
     </>
   );
-}
+};
