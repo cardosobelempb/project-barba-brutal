@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog/primitive";
 import { IconType } from "react-icons";
 
 import { IconRoot } from "../IconRoot";
@@ -33,6 +33,8 @@ export interface ModalRootProps {
   confirmLabel?: string;
   /** Função executada ao confirmar (por exemplo, submit de formulário) */
   onConfirm?: () => void;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
 }
 
 /**

@@ -1,7 +1,9 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
+import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { ErrorFilter } from './filters/error.filter';
 import { EnvZod } from './shared/schemas/envZod.schema';
 
 async function bootstrap() {
@@ -19,7 +21,13 @@ async function bootstrap() {
     credentials: true, // ✅ permite cookies/sessão/autenticação
   });
 
+  // 🔹 Registra o filtro globalmente
+  app.useGlobalFilters(new ErrorFilter());
+
+  // 🔹 Logger padrão
+  const logger = new Logger('Bootstrap');
   app.setGlobalPrefix(PREFIX_URL)
   await app.listen(PORT);
+   logger.log(`🚀 Backend rodando em: http://localhost:${PORT}/${PREFIX_URL}`);
 }
 bootstrap();

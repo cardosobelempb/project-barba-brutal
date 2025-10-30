@@ -76,7 +76,12 @@ export const RegisterForm = () => {
               />
             </CardContent>
             <CardFooter className="flex gap-y-3 flex-col">
-              <Button className="w-full" variant={"default"} type="submit">
+              <Button
+                disabled={formProps.formState.isSubmitting}
+                className="w-full"
+                variant={"default"}
+                type="submit"
+              >
                 Registrar
               </Button>
 

@@ -58,9 +58,10 @@ export function SessionProvider({ children }: SessionProviderProps) {
       router.push("/"); // Redirect to the home page
     } catch (error) {
       console.error("Erro ao autenticar:", error); // Log error for debugging
-      alert(
-        "Erro ao autenticar. Verifique suas credenciais ou tente mais tarde.",
-      ); // Show a user-friendly error message
+      // toast.error(
+      //   "Erro ao autenticar. Verifique suas credenciais ou tente mais tarde.",
+      // );
+      // Show a user-friendly error message
     }
   };
 
