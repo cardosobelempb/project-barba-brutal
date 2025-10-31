@@ -4,7 +4,8 @@ import { registerAccountZodSchema } from "src/shared/schemas/registerAccountZod.
 
 import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
 
-import { createZodValidationPipe } from "src/pipes/create-zod-validation.pipe";
+
+import { createZodValidationPipe } from "src/pipes/libs/zod/create-zod-validation.pipe";
 import { PrismaService } from "src/shared/application/database/prisma.service";
 import { BcryptAdapter } from '../../auth/adapters/BcryptAdapter';
 

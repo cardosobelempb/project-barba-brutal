@@ -1,10 +1,12 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, UsePipes } from "@nestjs/common";
 import { AuthSignInService } from "@repo/auth";
 import { ErrorConstants, UnauthorizedError } from "@repo/core";
 
 import type { SignInDTO, TokenDTO } from "@repo/types";
 import { AuthSignInPresenter } from "@repo/types";
 import { JwtAdapter } from "src/modules/auth/adapters/JwtAdapter";
+import { createZodValidationPipe } from "src/pipes/libs/zod/create-zod-validation.pipe";
+import { signInZodSchema } from "src/shared/schemas/signInZod.schema";
 
 /**
  * 🎯 Controller responsável pela autenticação de usuários.
@@ -30,6 +32,7 @@ export class AuthSignInController {
    * @returns Dados do usuário autenticado + tokens
    */
   @Post("/signin")
+  @UsePipes(createZodValidationPipe(signInZodSchema))
   @HttpCode(HttpStatus.OK) // ✅ Evita resposta 201 desnecessária
   async handle(@Body() request: SignInDTO): Promise<AuthSignInPresenter> {
     const { email, password } = request;
