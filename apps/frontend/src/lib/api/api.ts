@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from "axios"; // Importação do axios e tipagem
 import { parseCookies } from "nookies"; // Função para obter cookies, útil tanto no lado do cliente quanto no lado do servidor
 
 // URL base da API. Utiliza a variável de ambiente para definir o URL ou um valor padrão para desenvolvimento.
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1';
 
 /**
  * Função responsável por configurar e criar a instância do cliente da API

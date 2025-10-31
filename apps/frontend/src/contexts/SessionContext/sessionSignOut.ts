@@ -6,31 +6,37 @@ import {
 } from "./sessionCookies";
 
 /**
- * Remove todos os cookies relacionados à sessão do usuário
+ * Lista de cookies relacionados à sessão do usuário.
+ * Facilita manutenção futura (adicionar/remover cookies de sessão).
  */
-const clearSessionCookies = () => {
-  const cookiesToRemove = [
-    ACCESS_TOKEN_COOKIE,
-    REFRESH_TOKEN_COOKIE,
-    USER_COOKIE,
-  ];
-
-  cookiesToRemove.forEach((cookieName) => {
-    destroyCookie(undefined, cookieName);
-  });
-};
+const SESSION_COOKIES = [
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  USER_COOKIE,
+];
 
 /**
- * Encerra a sessão do usuário removendo cookies e redirecionando para a home (opcional)
+ * Remove todos os cookies relacionados à sessão do usuário.
  *
- * @param router - Objeto de roteamento do Next.js, opcional. Se fornecido, redireciona para a home.
+ * ⚠️ Importante: Deve ser chamado sempre que a sessão expirar ou usuário fizer logout.
  */
-export async function sessionSignOut(
-  router?: { push: (path: string) => void }
-): Promise<void> {
-  clearSessionCookies(); // Remove tokens e dados do usuário
+export function clearSessionCookies(): void {
+  SESSION_COOKIES.forEach((cookieName) => {
+    destroyCookie(undefined, cookieName, { path: "/" }); // Garante remoção correta em todas as rotas
+  });
+}
 
-  if (router) {
+/**
+ * Encerra a sessão do usuário.
+ * - Remove cookies de sessão
+ * - Redireciona para a home se o router for fornecido
+ *
+ * @param router - Objeto de roteamento do Next.js (opcional)
+ */
+export function sessionSignOut(router?: { push: (path: string) => void }): void {
+  clearSessionCookies();
+
+  if (router?.push) {
     router.push("/"); // Redireciona para a página inicial
   }
 }

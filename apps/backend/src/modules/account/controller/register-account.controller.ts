@@ -1,17 +1,20 @@
-import { Body, ConflictException, Controller, Post, UsePipes } from "@nestjs/common";
-import { ErrorConstants } from "@repo/core";
+import { Body, Controller, Post, UsePipes } from "@nestjs/common";
+import { ConflictError, ErrorConstants } from "@repo/core";
 import { registerAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
 
 import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
 
-import { createZodValidationPipe } from "src/pipes/createZodValidationPipe";
+import { createZodValidationPipe } from "src/pipes/create-zod-validation.pipe";
 import { PrismaService } from "src/shared/application/database/prisma.service";
 import { BcryptAdapter } from '../../auth/adapters/BcryptAdapter';
 
 @Controller("/accounts")
 export class RegisterAccountControlle {
 
-  constructor(private prismaService: PrismaService, private readonly bcryptAdapter: BcryptAdapter){}
+  constructor(
+    private prismaService: PrismaService,
+    private readonly bcryptAdapter: BcryptAdapter
+  ) { }
 
   @Post("/register")
   @UsePipes(createZodValidationPipe(registerAccountZodSchema))
@@ -25,7 +28,8 @@ export class RegisterAccountControlle {
     })
 
     if (userWithSameEmail) {
-      throw new ConflictException(ErrorConstants.CONFLICT_ERROR)
+      console.log("Conflict: User with same email already exists.")
+      throw new ConflictError(ErrorConstants.CONFLICT_ERROR)
     }
 
     const hashedPawword = await this.bcryptAdapter.hash(password)

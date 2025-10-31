@@ -1,14 +1,13 @@
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
-import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { ErrorFilter } from './filters/error.filter';
 import { EnvZod } from './shared/schemas/envZod.schema';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    // logger: false
+    logger: false
   });
 
   const configService = app.get<ConfigService<EnvZod, true>>(ConfigService);
@@ -22,7 +21,7 @@ async function bootstrap() {
   });
 
   // 🔹 Registra o filtro globalmente
-  app.useGlobalFilters(new ErrorFilter());
+  // app.useGlobalFilters(new ErrorFilter());
 
   // 🔹 Logger padrão
   const logger = new Logger('Bootstrap');

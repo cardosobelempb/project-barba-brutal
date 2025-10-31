@@ -15,64 +15,83 @@ import type {
   UserEntity,
 } from "@repo/types";
 
-export function SessionProvider({ children }: SessionProviderProps) {
-  // State to store the user data, initially null
-  const [user, setUser] = useState<UserEntity | null>(null);
-  const isAuthenticated = !!user; // Boolean indicating if the user is authenticated
+/**
+ * Utilitário seguro para parsing de JSON.
+ * Evita crash caso o JSON seja inválido.
+ */
+function safeJSONParse<T>(json: string | undefined | null): T | null {
+  if (!json) return null;
+  try {
+    return JSON.parse(json) as T;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Hook para gerenciar sessão do usuário.
+ * Isola lógica de leitura e atualização de cookies e estado.
+ */
+function useSessionManager() {
   const router = useRouter();
+  const [user, setUser] = useState<UserEntity | null>(null);
+  const isAuthenticated = !!user;
 
-  // Helper function to safely parse JSON, returning null in case of error
-  const parseJSON = useCallback((json: string) => {
-    try {
-      return JSON.parse(json);
-    } catch {
-      return null; // Return null if parsing fails
-    }
-  }, []);
-
-  // Load the session data from cookies
+  /**
+   * Carrega sessão a partir dos cookies.
+   * Se não encontrar sessão válida, desloga.
+   */
   const loadSession = useCallback(() => {
     const cookies = parseCookies();
     const userCookie = cookies[USER_COOKIE];
-    const refreshToken = cookies[REFRESH_TOKEN_COOKIE]; // We are extracting the refresh token for possible future use
+    const refreshToken = cookies[REFRESH_TOKEN_COOKIE];
 
-    const parsedUser = parseJSON(userCookie);
+    const parsedUser = safeJSONParse<UserEntity>(userCookie);
 
     if (parsedUser && refreshToken) {
-      setUser(parsedUser); // If user is found in cookies, update the state
+      setUser(parsedUser);
     } else {
-      sessionSignOut(router); // If no valid user found, sign out
+      // Deslogar de forma centralizada
+      sessionSignOut(router);
     }
-  }, [router, parseJSON]);
+  }, [router]);
 
-  // Effect to load the session when the component mounts
+  /**
+   * Realiza login e atualiza estado da sessão.
+   * Em caso de falha, apenas loga o erro (UI deve tratar).
+   */
+  const signIn = useCallback(
+    async (credentials: SessionCredentials) => {
+      try {
+        const loggedUser = await sessionSignIn(credentials);
+        setUser(loggedUser);
+        router.push("/"); // Redireciona após login
+      } catch (error) {
+        console.error("Erro ao autenticar:", error);
+        // Aqui podemos disparar toast ou outro mecanismo de feedback
+      }
+    },
+    [router],
+  );
+
   useEffect(() => {
     loadSession();
   }, [loadSession]);
 
-  // Function to handle user sign-in
-  const signIn = async (credentials: SessionCredentials) => {
-    try {
-      const user = await sessionSignIn(credentials); // Sign in with credentials
-      setUser(user); // On success, set the user state
-      router.push("/"); // Redirect to the home page
-    } catch (error) {
-      console.error("Erro ao autenticar:", error); // Log error for debugging
-      // toast.error(
-      //   "Erro ao autenticar. Verifique suas credenciais ou tente mais tarde.",
-      // );
-      // Show a user-friendly error message
-    }
-  };
+  return { user, isAuthenticated, signIn };
+}
 
-  // Memoize the context value to avoid unnecessary re-renders
+/**
+ * Provedor de sessão.
+ * Responsável apenas por fornecer contexto, sem lógica complexa.
+ */
+export function SessionProvider({ children }: SessionProviderProps) {
+  const { user, isAuthenticated, signIn } = useSessionManager();
+
+  // Memoriza contexto para evitar re-renderizações desnecessárias
   const contextValue = useMemo(
-    () => ({
-      signIn,
-      isAuthenticated,
-      user,
-    }),
-    [user, isAuthenticated], // Only update when user or isAuthenticated changes
+    () => ({ user, isAuthenticated, signIn }),
+    [user, isAuthenticated, signIn],
   );
 
   return (

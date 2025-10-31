@@ -1,10 +1,10 @@
 import { api } from "@/lib/api/api";
+import { setCookie } from "nookies";
+import { toast } from "sonner";
 
 import type { SessionCredentials, UserEntity } from "@repo/types";
-import { setCookie } from "nookies";
-import { toast } from "sonner"; // Biblioteca de notificações
+import { SessionResponse } from "@repo/types";
 
-import { SessionResponse } from "@repo/types"; // Importando a interface tipada
 import {
   ACCESS_TOKEN_COOKIE,
   ACCESS_TOKEN_COOKIE_MAX_AGE,
@@ -14,23 +14,36 @@ import {
   USER_COOKIE_MAX_AGE,
 } from "./sessionCookies";
 
-
-
 /**
- * Função utilitária para salvar cookies com configuração padrão
+ * Salva um cookie de forma segura com configuração padrão
  */
-const saveCookie = (name: string, value: string, maxAge: number) => {
+function saveCookie(name: string, value: string, maxAge: number): void {
+  if (!name || !value) {
+    console.warn(`Tentativa de salvar cookie inválido: ${name}`);
+    return;
+  }
+
   setCookie(undefined, name, value, {
     maxAge,
     path: "/",
+    sameSite: "lax", // Evita CSRF básico
+    secure: process.env.NODE_ENV === "production", // Cookies seguros em produção
   });
-};
+}
 
 /**
- * Autentica o usuário na API e armazena os dados nos cookies
- * @param credentials - Credenciais do usuário (email e senha)
- * @returns Dados do usuário autenticado
- * @throws Erro em caso de falha na autenticação
+ * Configura o token de autenticação padrão na instância da API
+ */
+function setAuthToken(token: string): void {
+  api.defaults.headers["Authorization"] = `Bearer ${token}`;
+}
+
+/**
+ * Função principal para autenticar o usuário.
+ * - Chama a API de login
+ * - Salva cookies
+ * - Configura token para futuras requisições
+ * - Retorna usuário autenticado
  */
 export async function sessionSignIn(
   credentials: SessionCredentials
@@ -38,44 +51,50 @@ export async function sessionSignIn(
   try {
     const { email, password } = credentials;
 
-    // Requisição para autenticar usuário
+    // Validação mínima antes da requisição
+    if (!email || !password) {
+      throw new Error("Email e senha são obrigatórios.");
+    }
+
+    // Requisição de login
     const response = await api.post<SessionResponse>("/auth/signin", {
       email,
       password,
-      passwordConfirmation: password, // Se exigido pela API
+      passwordConfirmation: password, // Caso a API exija
     });
-
-    console.log(response.data)
 
     const { accessToken, refreshToken, user } = response.data;
 
     // Validação da resposta
     if (!accessToken || !refreshToken || !user) {
-      throw new Error("Dados incompletos retornados da API.");
+      throw new Error("Resposta incompleta da API.");
     }
 
-    // Salvar tokens e dados do usuário nos cookies
+    // Salva dados nos cookies
     saveCookie(ACCESS_TOKEN_COOKIE, accessToken, ACCESS_TOKEN_COOKIE_MAX_AGE);
     saveCookie(REFRESH_TOKEN_COOKIE, refreshToken, REFRESH_TOKEN_COOKIE_MAX_AGE);
     saveCookie(USER_COOKIE, JSON.stringify(user), USER_COOKIE_MAX_AGE);
 
-    // Configurar token padrão nos headers para futuras requisições
-    api.defaults.headers["Authorization"] = `Bearer ${accessToken}`;
-    api.defaults.timeout = 5000;
+    // Configura token padrão
+    setAuthToken(accessToken);
 
+    // Feedback ao usuário
     toast.success("Login realizado com sucesso!");
+
     return user;
-
   } catch (error: any) {
-    console.error("Erro ao autenticar usuário:", error);
-
-    // Mensagem personalizada baseada no tipo de erro
+    // Extrai mensagem de erro de forma segura
     const message =
-      error?.response?.data?.message ??
-      error?.message ??
+      error?.response?.data?.message ||
+      error?.message ||
       "Erro inesperado. Tente novamente mais tarde.";
 
     toast.error(`Falha no login: ${message}`);
-    throw error; // Repropaga o erro para quem chamou, se necessário
+
+    // Log detalhado para debugging
+    console.error("sessionSignIn error:", error);
+
+    // Repropaga o erro para tratamento externo (ex.: componente)
+    throw new Error(message);
   }
 }

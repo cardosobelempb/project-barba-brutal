@@ -4,7 +4,7 @@ import {
   ExceptionFilter,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import {
   BadRequestError,
   ConflictError,
@@ -14,25 +14,34 @@ import {
   MethodArgumentNotValidError,
   NotAllwedError,
   ResourceNotFoundError,
-} from '@repo/core';
-import { Request, Response } from 'express';
-import { ZodError } from 'zod';
+} from '@repo/core'
+import { Request, Response } from 'express'
+import { ZodError } from 'zod'
 
-// ==== Tipos base para resposta ====
+// ============================================================
+// 📘 Tipos base de erro
+// ============================================================
+
 interface StandardError {
-  timestamp: string;
-  status: number;
-  error: string;
-  message: string;
-  path: string;
+  timestamp: string
+  status: number
+  error: string
+  message: string
+  path: string
 }
 
 interface ValidationError extends StandardError {
-  errors?: Array<{ field: string; message: string }>;
+  errors?: Array<{ field: string; message: string }>
 }
 
-// ==== Mapeamento de exceções customizadas ====
-const ExceptionMap = new Map<Function, { status: HttpStatus; errorCode: string }>([
+// ============================================================
+// ⚙️ Mapeamento de exceções conhecidas (customizadas do domínio)
+// ============================================================
+
+const ExceptionMap = new Map<
+  new (...args: any[]) => Error,
+  { status: HttpStatus; errorCode: string }
+>([
   [ConflictError, { status: HttpStatus.CONFLICT, errorCode: ErrorConstants.CONFLICT_ERROR }],
   [ResourceNotFoundError, { status: HttpStatus.NOT_FOUND, errorCode: ErrorConstants.RESOURCE_NOT_FOUND }],
   [EntityNotFoundError, { status: HttpStatus.NOT_FOUND, errorCode: ErrorConstants.NOT_FOUND }],
@@ -40,22 +49,29 @@ const ExceptionMap = new Map<Function, { status: HttpStatus; errorCode: string }
   [DataIntegrityViolationError, { status: HttpStatus.UNPROCESSABLE_ENTITY, errorCode: ErrorConstants.DATA_INTEGRITY_VIOLATION }],
   [BadRequestError, { status: HttpStatus.BAD_REQUEST, errorCode: ErrorConstants.BAD_REQUEST }],
   [MethodArgumentNotValidError, { status: HttpStatus.BAD_REQUEST, errorCode: ErrorConstants.INTEGRITY_VIOLATION }],
-]);
+])
+
+// ============================================================
+// 🧱 Filtro Global de Erros — Centraliza o tratamento
+// ============================================================
 
 @Catch()
 export class ErrorFilter implements ExceptionFilter {
-  private readonly logger = new Logger(ErrorFilter.name);
+  private readonly logger = new Logger(ErrorFilter.name)
 
   catch(exception: Error | ZodError, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const ctx = host.switchToHttp()
+    const response = ctx.getResponse<Response>()
+    const request = ctx.getRequest<Request>()
 
-    // ==== Caso específico: validação Zod ====
+    // ========================================================
+    // 🧩 1. Caso específico: erros de validação Zod
+    // ========================================================
     if (exception instanceof ZodError) {
-      this.logger.error('Zod validation error detected', exception.stack);
+      this.logger.warn('Zod validation error detected', exception.stack)
 
-      const status = HttpStatus.UNPROCESSABLE_ENTITY;
+      const status = HttpStatus.UNPROCESSABLE_ENTITY
+
       const validationError: ValidationError = {
         timestamp: new Date().toISOString(),
         status,
@@ -66,15 +82,17 @@ export class ErrorFilter implements ExceptionFilter {
           message: issue.message,
         })),
         path: request.url,
-      };
+      }
 
-      return response.status(status).json(validationError);
+      return response.status(status).json(validationError)
     }
 
-    // ==== Erros conhecidos (mapeados no ExceptionMap) ====
-    const mapped = this.mapException(exception);
+    // ========================================================
+    // ⚙️ 2. Erros conhecidos mapeados (domínio / core)
+    // ========================================================
+    const mapped = this.mapException(exception)
     if (mapped) {
-      this.logger.error(`${exception.name} detected`, exception.stack);
+      this.logger.error(`[${exception.name}]`, exception.stack)
 
       const standardError: StandardError = {
         timestamp: new Date().toISOString(),
@@ -82,13 +100,18 @@ export class ErrorFilter implements ExceptionFilter {
         error: mapped.errorCode,
         message: exception.message || 'Unexpected error',
         path: request.url,
-      };
+      }
 
-      return response.status(mapped.status).json(standardError);
+      return response.status(mapped.status).json(standardError)
     }
 
-    // ==== Fallback genérico ====
-    this.logger.error('Unhandled exception detected', exception.stack || exception.message);
+    // ========================================================
+    // 🚨 3. Fallback genérico (erro não tratado)
+    // ========================================================
+    this.logger.error(
+      'Unhandled exception detected',
+      exception.stack || exception.message,
+    )
 
     const fallback: StandardError = {
       timestamp: new Date().toISOString(),
@@ -96,16 +119,19 @@ export class ErrorFilter implements ExceptionFilter {
       error: 'INTERNAL_SERVER_ERROR',
       message: exception.message || 'Unexpected internal error',
       path: request.url,
-    };
+    }
 
-    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(fallback);
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(fallback)
   }
 
-  /** Mapeia uma exceção para seu status e código padrão */
-  private mapException(exception: Error): { status: HttpStatus; errorCode: string } | undefined {
+  /**
+   * 🔍 Mapeia exceções conhecidas para status/código padrão.
+   * Permite extensão futura com novos tipos de erro sem alterar o core.
+   */
+  private mapException(exception: Error) {
     for (const [type, info] of ExceptionMap.entries()) {
-      if (exception instanceof type) return info;
+      if (exception instanceof type) return info
     }
-    return undefined;
+    return undefined
   }
 }
