@@ -5,7 +5,7 @@ import { registerAccountZodSchema } from "src/shared/schemas/registerAccountZod.
 import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
 
 
-import { createZodValidationPipe } from "src/pipes/libs/zod/create-zod-validation.pipe";
+import { zodValidationPipe } from "src/pipes/libs/zod/zod-validation.pipe";
 import { PrismaService } from "src/shared/application/database/prisma.service";
 import { BcryptAdapter } from '../../auth/adapters/BcryptAdapter';
 
@@ -18,7 +18,7 @@ export class RegisterAccountControlle {
   ) { }
 
   @Post("/register")
-  @UsePipes(createZodValidationPipe(registerAccountZodSchema))
+  @UsePipes(zodValidationPipe(registerAccountZodSchema))
   async handle(@Body() body: RegisterAccountZodSchema) {
     const { name, email, password, phone } = body
 

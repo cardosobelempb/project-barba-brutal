@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { QuestionCreateController } from "src/modules/question/controller/QuestionCreate.controller";
+import { QuestionCreateController } from "src/modules/question/controller/question-create.controller";
 
 import { JwtAdapter } from "../auth/adapters/JwtAdapter";
 import { SettingsModule } from "../settings/settings.module";

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { TokenDTO } from '@repo/types';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { EnvZod } from 'src/shared/schemas/envZod.schema';
+import { ENVIRONMENT_ZOD_SCHEMA } from 'src/modules/settings/env/env.zod';
 
 /**
  * Estratégia JWT customizada para autenticação usando Passport no NestJS.
@@ -44,7 +44,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * Se a variável de ambiente não estiver definida, lança um erro descritivo.
    */
   private static getPublicKey(): string {
-    const configService = new  ConfigService<EnvZod, true>()
+    const configService = new  ConfigService<ENVIRONMENT_ZOD_SCHEMA, true>()
     const base64Key = configService.get<string>('JWT_PUBLIC_KEY');
 
     if (!base64Key) {
@@ -58,24 +58,4 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 }
 
-/**
- * Interface opcional para tipar o payload do JWT decodificado.
- * Ajuda no autocomplete e entendimento do payload esperado.
- */
-interface JwtPayload {
-  sub: string;
-  username: string;
-  email: string;
-  roles: string[];
-}
-
-/**
- * Interface para tipar o usuário validado que será inserido no contexto da requisição.
- */
-interface ValidatedUser {
-  userId: string;
-  username: string;
-  email: string;
-  roles: string[];
-}
 

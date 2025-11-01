@@ -8,7 +8,7 @@ import { HashComparer, HashGenerator } from '@repo/core';
 import { AuthMeController } from 'src/modules/auth/controllers/auth-me.controller';
 import { AuthRegisterController } from 'src/modules/auth/controllers/auth-register.controller';
 import { AuthSignInController } from 'src/modules/auth/controllers/auth-signin.controller';
-import { EnvZod } from 'src/shared/schemas/envZod.schema';
+import { ENVIRONMENT_ZOD_SCHEMA } from 'src/modules/settings/env/env.zod';
 
 import { DatabaseModule } from '../database/database.module';
 import { HashModule } from '../hasher.module';
@@ -28,7 +28,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     PassportModule,
     JwtModule.registerAsync({
       global: true,
-       useFactory(config: ConfigService<EnvZod, true>) {
+       useFactory(config: ConfigService<ENVIRONMENT_ZOD_SCHEMA, true>) {
         const PRIVATE_KEY = config.get<string>('JWT_PRIVATE_KEY');
         // const PUBLIC_KEY = config.get<string>('JWT_PUBLIC_KEY');
         const EXPIRES_IN = config.get<string>('JWT_EXPIRES_IN') || '1h';

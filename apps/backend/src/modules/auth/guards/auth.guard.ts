@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { ErrorConstants, UnauthorizedError } from '@repo/core';
 import { TokenDTO, UserEntity } from '@repo/types';
 import { UserFindByIdService } from '@repo/user';
@@ -13,7 +8,7 @@ import { JwtAdapter } from 'src/modules/auth/adapters/JwtAdapter';
 /**
  * Extensão do tipo Request para incluir informações autenticadas.
  */
-interface RequestWithUser extends Request {
+export interface RequestWithUser extends Request {
   tokenPayload?: TokenDTO;
   user?: UserEntity;
 }

@@ -1,38 +1,21 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  PipeTransform,
-} from '@nestjs/common'
-import { ZodError, ZodType } from 'zod'
-import { createValidationError } from './create-validation.error'
+import { ZodType } from 'zod'
+
+import { ValidationPipe } from './zod-validation.lib'
 
 /**
- * 🎯 Pipe genérico para validação com Zod.
- * - Realiza validação de dados em rotas NestJS.
- * - Mantém tipagem forte do tipo de retorno.
- * - Padroniza formato de erro HTTP.
+ * 🧱 Fábrica de instâncias do ZodValidationPipe.
+ *
+ * ✅ Compatível com todas as versões do Zod.
+ * ✅ Tipagem forte e segura.
+ * ✅ Lança erro se schema não for informado.
+ *
+ * @param schema Schema Zod com tipo inferido
+ * @returns Instância do pipe tipado
  */
-export class ZodValidationPipe<T> implements PipeTransform<unknown, T> {
-  constructor(private readonly schema: ZodType<T>) {}
-
-  transform(value: unknown, metadata: ArgumentMetadata): T {
-    try {
-      // ✅ Valida os dados conforme o schema
-      const parsedValue = this.schema.parse(value)
-      return parsedValue
-    } catch (error) {
-      // ⚠️ Tratamento específico de erros do Zod
-      if (error instanceof ZodError) {
-        // ✅ Erro padronizado seguindo convenções REST
-        throw new BadRequestException(createValidationError(error, metadata?.type))
-      }
-
-      // 🚨 Erro inesperado
-      throw new BadRequestException({
-        statusCode: 400,
-        message: 'Validation failed due to unexpected error',
-        error: 'Bad Request',
-      })
-    }
+export function zodValidationPipe<T>(schema: ZodType<T>): ValidationPipe<T> {
+  if (!schema) {
+    throw new Error('❌ Schema Zod é obrigatório para criar o pipe de validação.')
   }
+
+  return new ValidationPipe<T>(schema)
 }

@@ -1,20 +1,24 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { EnvZod } from 'src/shared/schemas/envZod.schema';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-import { ENV_SETTINGS, EnvSettingsService } from "./EnvSettings.service";
+import { envZodSchema } from './env/env.zod';
+import { ENVIRONMENT_CONFIG_SERVICE } from './env/environment-config.service';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  })],
-  providers: [{
-    provide: ENV_SETTINGS,
-    inject: [ConfigService],
-    useFactory: (configService: ConfigService<EnvZod, true>) => {
-      return new EnvSettingsService(configService)
-    }
-  }],
-  exports: [ENV_SETTINGS]
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: (env) => {
+        const parsed = envZodSchema.safeParse(env);
+        if (!parsed.success) {
+          console.error('❌ Erro ao validar variáveis de ambiente:', parsed.error.format());
+          throw new Error('Configuração de ambiente inválida');
+        }
+        return parsed.data;
+      },
+    }),
+  ],
+  providers: [ENVIRONMENT_CONFIG_SERVICE],
+  exports: [ENVIRONMENT_CONFIG_SERVICE],
 })
-export class SettingsModule { }
+export class SettingsModule {}
