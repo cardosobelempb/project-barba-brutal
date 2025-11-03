@@ -1,26 +1,7 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common'
-import {
-  BadRequestError,
-  ConflictError,
-  DataIntegrityViolationError,
-  EntityNotFoundError,
-  ErrorConstants,
-  MethodArgumentNotValidError,
-  NotAllwedError,
-  ResourceNotFoundError,
-} from '@repo/core'
+import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common'
+import { BadRequestError, ConflictError, DataIntegrityViolationError, EntityNotFoundError, ErrorConstants, MethodArgumentNotValidError, NotAllwedError, ResourceNotFoundError } from '@repo/core'
 import { Request, Response } from 'express'
 import { ZodError } from 'zod'
-
-// ============================================================
-// 📘 Tipos base de erro
-// ============================================================
 
 interface StandardError {
   timestamp: string
@@ -34,104 +15,94 @@ interface ValidationError extends StandardError {
   errors?: Array<{ field: string; message: string }>
 }
 
-// ============================================================
-// ⚙️ Mapeamento de exceções conhecidas (customizadas do domínio)
-// ============================================================
-
-const ExceptionMap = new Map<
-  new (...args: any[]) => Error,
-  { status: HttpStatus; errorCode: string }
->([
-  [ConflictError, { status: HttpStatus.CONFLICT, errorCode: ErrorConstants.CONFLICT_ERROR }],
-  [ResourceNotFoundError, { status: HttpStatus.NOT_FOUND, errorCode: ErrorConstants.RESOURCE_NOT_FOUND }],
-  [EntityNotFoundError, { status: HttpStatus.NOT_FOUND, errorCode: ErrorConstants.NOT_FOUND }],
-  [NotAllwedError, { status: HttpStatus.METHOD_NOT_ALLOWED, errorCode: ErrorConstants.METHOD_NOT_ALLOWED }],
-  [DataIntegrityViolationError, { status: HttpStatus.UNPROCESSABLE_ENTITY, errorCode: ErrorConstants.DATA_INTEGRITY_VIOLATION }],
-  [BadRequestError, { status: HttpStatus.BAD_REQUEST, errorCode: ErrorConstants.BAD_REQUEST }],
-  [MethodArgumentNotValidError, { status: HttpStatus.BAD_REQUEST, errorCode: ErrorConstants.INTEGRITY_VIOLATION }],
-])
-
-// ============================================================
-// 🧱 Filtro Global de Erros — Centraliza o tratamento
-// ============================================================
-
 @Catch()
 export class ErrorFilter implements ExceptionFilter {
   private readonly logger = new Logger(ErrorFilter.name)
 
-  catch(exception: Error | ZodError, host: ArgumentsHost) {
+  catch(exception: Error | ZodError | BadRequestException, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
 
     // ========================================================
-    // 🧩 1. Caso específico: erros de validação Zod
+    // ⚙️ 1. BadRequestException (incluindo erros Zod do pipe)
     // ========================================================
-    if (exception instanceof ZodError) {
-      this.logger.warn('Zod validation error detected', exception.stack)
+    if (exception instanceof BadRequestException) {
+      const res = exception.getResponse() as any
 
-      const status = HttpStatus.UNPROCESSABLE_ENTITY
-
-      const validationError: ValidationError = {
-        timestamp: new Date().toISOString(),
-        status,
-        error: ErrorConstants.INTEGRITY_VIOLATION,
-        message: 'Validation failed',
-        errors: exception.issues.map((issue) => ({
-          field: issue.path.join('.'),
-          message: issue.message,
-        })),
-        path: request.url,
+      // 🚨 Caso venha do ValidationPipe (com erros do Zod)
+      if (res?.errors && Array.isArray(res.errors)) {
+        const validationError: ValidationError = {
+          timestamp: new Date().toISOString(),
+          status: HttpStatus.BAD_REQUEST,
+          error: ErrorConstants.BAD_REQUEST,
+          message: res.message || 'Validation failed',
+          errors: res.errors,
+          path: request.url,
+        }
+        this.logger.warn(`Zod validation error detected at ${request.url}`)
+        return response.status(HttpStatus.BAD_REQUEST).json(validationError)
       }
 
-      return response.status(status).json(validationError)
-    }
-
-    // ========================================================
-    // ⚙️ 2. Erros conhecidos mapeados (domínio / core)
-    // ========================================================
-    const mapped = this.mapException(exception)
-    if (mapped) {
-      this.logger.error(`[${exception.name}]`, exception.stack)
-
+      // ⚙️ Caso padrão (sem erros detalhados)
       const standardError: StandardError = {
         timestamp: new Date().toISOString(),
-        status: mapped.status,
-        error: mapped.errorCode,
-        message: exception.message || 'Unexpected error',
+        status: HttpStatus.BAD_REQUEST,
+        error: ErrorConstants.BAD_REQUEST,
+        message: (res as any)?.message || exception.message,
         path: request.url,
       }
-
-      return response.status(mapped.status).json(standardError)
+      this.logger.warn(`Bad request detected at ${request.url}`)
+      return response.status(HttpStatus.BAD_REQUEST).json(standardError)
     }
 
     // ========================================================
-    // 🚨 3. Fallback genérico (erro não tratado)
+    // ⚙️ 2. Erros conhecidos (domínio)
     // ========================================================
-    this.logger.error(
-      'Unhandled exception detected',
-      exception.stack || exception.message,
-    )
+    if (exception instanceof ConflictError) {
+      return this.handleError(exception, HttpStatus.CONFLICT, ErrorConstants.CONFLICT_ERROR, request, response)
+    }
+    if (exception instanceof ResourceNotFoundError || exception instanceof EntityNotFoundError) {
+      return this.handleError(exception, HttpStatus.NOT_FOUND, ErrorConstants.RESOURCE_NOT_FOUND, request, response)
+    }
+    if (exception instanceof BadRequestError || exception instanceof MethodArgumentNotValidError) {
+      return this.handleError(exception, HttpStatus.BAD_REQUEST, ErrorConstants.BAD_REQUEST, request, response)
+    }
+    if (exception instanceof DataIntegrityViolationError) {
+      return this.handleError(exception, HttpStatus.UNPROCESSABLE_ENTITY, ErrorConstants.DATA_INTEGRITY_VIOLATION, request, response)
+    }
+    if (exception instanceof NotAllwedError) {
+      return this.handleError(exception, HttpStatus.METHOD_NOT_ALLOWED, ErrorConstants.METHOD_NOT_ALLOWED, request, response)
+    }
 
-    const fallback: StandardError = {
+    // ========================================================
+    // 🚨 3. Fallback genérico
+    // ========================================================
+    this.logger.error('Unhandled exception detected', exception.stack || exception.message)
+
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       timestamp: new Date().toISOString(),
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       error: 'INTERNAL_SERVER_ERROR',
       message: exception.message || 'Unexpected internal error',
       path: request.url,
-    }
-
-    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(fallback)
+    })
   }
 
-  /**
-   * 🔍 Mapeia exceções conhecidas para status/código padrão.
-   * Permite extensão futura com novos tipos de erro sem alterar o core.
-   */
-  private mapException(exception: Error) {
-    for (const [type, info] of ExceptionMap.entries()) {
-      if (exception instanceof type) return info
-    }
-    return undefined
+  private handleError(
+    exception: Error,
+    status: number,
+    errorCode: string,
+    request: Request,
+    response: Response
+  ) {
+    this.logger.error(`[${exception.name}]`, exception.stack)
+    return response.status(status).json({
+      timestamp: new Date().toISOString(),
+      status,
+      error: errorCode,
+      message: exception.message || 'Unexpected error',
+      path: request.url,
+    })
   }
 }

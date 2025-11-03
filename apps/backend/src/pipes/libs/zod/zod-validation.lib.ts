@@ -1,32 +1,22 @@
 import { ArgumentMetadata, BadRequestException, PipeTransform } from '@nestjs/common'
 import { ZodError, ZodType } from 'zod'
 
-import { validationError } from './validation.error'
+import { formatZodError } from './format.zod.error'
 
-/**
- * 🎯 Pipe genérico para validação com Zod.
- * - Realiza validação de dados em rotas NestJS.
- * - Mantém tipagem forte do tipo de retorno.
- * - Padroniza formato de erro HTTP.
- */
 export class ValidationPipe<T> implements PipeTransform<unknown, T> {
   constructor(private readonly schema: ZodType<T>) {}
 
   transform(value: unknown, metadata: ArgumentMetadata): T {
     try {
-      // ✅ Valida os dados conforme o schema
-      const parsedValue = this.schema.parse(value)
-      return parsedValue
+      return this.schema.parse(value)
     } catch (error) {
-      // ⚠️ Tratamento específico de erros do Zod
       if (error instanceof ZodError) {
-        // ✅ Erro padronizado seguindo convenções REST
-        throw new BadRequestException(validationError(error, metadata?.type))
+        // 🚀 Aqui preservamos o contexto do Zod no BadRequestException
+        throw new BadRequestException(formatZodError(error, metadata.type))
       }
 
       // 🚨 Erro inesperado
       throw new BadRequestException({
-        statusCode: 400,
         message: 'Validation failed due to unexpected error',
         error: 'Bad Request',
       })

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import type { SessionCredentials, UserEntity } from "@repo/types";
 import { SessionResponse } from "@repo/types";
 
+import { AxiosError } from "axios";
 import {
   ACCESS_TOKEN_COOKIE,
   ACCESS_TOKEN_COOKIE_MAX_AGE,
@@ -63,6 +64,8 @@ export async function sessionSignIn(
       passwordConfirmation: password, // Caso a API exija
     });
 
+    console.log("Resposta da API de login:", response.data);
+
     const { accessToken, refreshToken, user } = response.data;
 
     // Validação da resposta
@@ -83,18 +86,24 @@ export async function sessionSignIn(
 
     return user;
   } catch (error: any) {
-    // Extrai mensagem de erro de forma segura
-    const message =
-      error?.response?.data?.message ||
-      error?.message ||
-      "Erro inesperado. Tente novamente mais tarde.";
+    console.log("Erro ao tentar fazer login:", error.response.data.errors);
 
-    toast.error(`Falha no login: ${message}`);
+    if(error instanceof AxiosError && error.response?.status === 401) {
+      toast.error("Credenciais inválidas. Verifique seu email e senha.");
+      throw new Error("Credenciais inválidas.");
+    }
+    // Extrai mensagem de erro de forma segura
+    // const message =
+    //   error?.response?.data?.message ||
+    //   error?.message ||
+    //   "Erro inesperado. Tente novamente mais tarde.";
+
+    // toast.error(`Falha no login: ${message}`);
 
     // Log detalhado para debugging
-    console.error("sessionSignIn error:", error);
+    // console.error("sessionSignIn error:", error);
 
     // Repropaga o erro para tratamento externo (ex.: componente)
-    throw new Error(message);
+    throw new Error(error);
   }
 }

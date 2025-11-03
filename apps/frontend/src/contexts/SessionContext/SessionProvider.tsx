@@ -14,6 +14,8 @@ import type {
   SessionProviderProps,
   UserEntity,
 } from "@repo/types";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 /**
  * Utilitário seguro para parsing de JSON.
@@ -67,7 +69,11 @@ function useSessionManager() {
         setUser(loggedUser);
         router.push("/"); // Redireciona após login
       } catch (error) {
-        console.error("Erro ao autenticar:", error);
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          toast.error("Credenciais inválidas. Verifique seu email e senha.");
+          throw new Error("Credenciais inválidas.");
+        }
+        // console.error("Erro ao autenticar:", error);
         // Aqui podemos disparar toast ou outro mecanismo de feedback
       }
     },
