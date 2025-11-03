@@ -5,6 +5,11 @@ import { TokenDTO } from '@repo/types';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ENVIRONMENT_ZOD_SCHEMA } from 'src/modules/settings/env/env.zod';
 
+// const tokenSchema = z.object({
+//   sub: z.uuid(),
+// })
+
+// type TokenPayload = z.infer<typeof tokenSchema>;
 /**
  * Estratégia JWT customizada para autenticação usando Passport no NestJS.
  * Utiliza o algoritmo RS256 com validação de chave pública.

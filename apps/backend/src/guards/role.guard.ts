@@ -1,9 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role, UserEntity } from '@repo/types';
+import { ROLES_KEY } from 'src/decorators/roles.decorator';
 
 
-import { ROLES_KEY } from '../decorators/roles.decorator';
+
 
 interface RequestWithUser extends Request {
   user?: UserEntity;

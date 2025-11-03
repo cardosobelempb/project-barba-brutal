@@ -8,8 +8,9 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Role, UserEntity } from '@repo/types';
 import { Request } from 'express';
+import { ROLES_KEY } from 'src/decorators/roles.decorator';
 
-import { ROLES_KEY } from '../decorators/roles.decorator';
+
 
 /**
  * Interface que estende o Request do Express,

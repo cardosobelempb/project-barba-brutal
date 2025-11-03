@@ -7,7 +7,7 @@ import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccoun
 
 import { zodValidationPipe } from "src/pipes/libs/zod/zod-validation.pipe";
 import { PrismaService } from "src/shared/application/database/prisma.service";
-import { BcryptAdapter } from '../../auth/adapters/BcryptAdapter';
+import { BcryptAdapter } from '../../../adapters/BcryptAdapter';
 
 @Controller("/accounts")
 export class RegisterAccountControlle {

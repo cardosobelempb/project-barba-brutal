@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
 import {
-  BcryptAdapter,
-  HASH_COMPARER,
-  HASH_GENERATOR,
-} from './auth/adapters/BcryptAdapter';
+    BcryptAdapter,
+    HASH_COMPARER,
+    HASH_GENERATOR,
+} from '../adapters/BcryptAdapter';
 
 @Module({
   providers: [

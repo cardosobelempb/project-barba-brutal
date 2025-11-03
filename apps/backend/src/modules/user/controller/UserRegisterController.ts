@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
 import { Role, type UserCreateDTO } from '@repo/types';
 import { UserRegisterService } from '@repo/user';
-import { Roles } from 'src/modules/auth/decorators/roles.decorator';
+import { Roles } from 'src/decorators/roles.decorator';
 
 // import { AuthGuard } from 'src/guards/auth.guard';
 

@@ -2,8 +2,8 @@ import { forwardRef, Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { HashGenerator } from '@repo/core';
 import { UserFindByIdService, UserRegisterService, UserRepository } from '@repo/user';
-import { HASH_GENERATOR } from 'src/modules/auth/adapters/BcryptAdapter';
-import { JwtAdapter } from 'src/modules/auth/adapters/JwtAdapter';
+import { HASH_GENERATOR } from 'src/adapters/BcryptAdapter';
+import { JwtAdapter } from 'src/adapters/JwtAdapter';
 import { UserRegisterController } from 'src/modules/user/controller/UserRegisterController';
 
 import { AuthModule } from '../auth/auth.module';

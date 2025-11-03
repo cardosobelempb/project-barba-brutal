@@ -10,13 +10,13 @@ import { AuthRegisterController } from 'src/modules/auth/controllers/auth-regist
 import { AuthSignInController } from 'src/modules/auth/controllers/auth-signin.controller';
 import { ENVIRONMENT_ZOD_SCHEMA } from 'src/modules/settings/env/env.zod';
 
+import { HASH_COMPARER, HASH_GENERATOR } from '../../adapters/BcryptAdapter';
+import { JWT_ADAPTER, JwtAdapter } from '../../adapters/JwtAdapter';
 import { DatabaseModule } from '../database/database.module';
 import { HashModule } from '../hasher.module';
 import { SecretModule } from '../secret.module';
 import { USER_PRISMA_REPOSITORY, UserPrismaRepository } from '../user/application/repositories/prima/UserPrismaRepository';
 import { UserModule } from '../user/user.module';
-import { HASH_COMPARER, HASH_GENERATOR } from './adapters/BcryptAdapter';
-import { JWT_ADAPTER, JwtAdapter } from './adapters/JwtAdapter';
 import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({

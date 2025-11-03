@@ -4,7 +4,7 @@ import { ErrorConstants, UnauthorizedError } from "@repo/core";
 
 import type { SignInDTO, TokenDTO } from "@repo/types";
 import { AuthSignInPresenter } from "@repo/types";
-import { JwtAdapter } from "src/modules/auth/adapters/JwtAdapter";
+import { JwtAdapter } from "src/adapters/JwtAdapter";
 import { zodValidationPipe } from "src/pipes/libs/zod/zod-validation.pipe";
 import { signInZodSchema } from "src/shared/schemas/signInZod.schema";
 
