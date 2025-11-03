@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ErrorConstants, NotFoundError } from '@repo/core';
+import { ErrorConstants, NotFoundError, UnauthorizedError } from '@repo/core';
 import { UserEntity } from '@repo/types';
 import { Request } from 'express';
 
@@ -8,9 +8,9 @@ import { Request } from 'express';
  * Essa estrutura é preenchida pelo JwtAuthGuard após a autenticação.
  */
 interface AuthenticatedRequest extends Request {
-  // user?: UserEntity;
+  user?: UserEntity;
   // accessToken?: string;
-  refreshToken?: string;
+  // refreshToken?: string;
 }
 
 /**
@@ -24,25 +24,26 @@ interface AuthenticatedRequest extends Request {
 export const User = createParamDecorator(
   (data: keyof UserEntity | undefined, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    const  user  = request;
-    console.log("User =>",  user)
+    const  {user}  = request;
+    console.log("User 01 =>",  user)
+    console.log("DATA =>", data)
 
     // ✅ Recupera tokens do local correto
-    const authHeader = request.headers.authorization;
+    // const authHeader = request.headers.authorization;
 
-    const accessToken = authHeader?.startsWith('Bearer ')
-      ? authHeader.replace('Bearer ', '')
-      : undefined;
+    // const accessToken = authHeader?.startsWith('Bearer ')
+    //   ? authHeader.replace('Bearer ', '')
+    //   : undefined;
 
-    const refreshToken =
-      (request.headers['x-refresh-token'] as string) ||
-      request.cookies?.['refresh_token'] ||
-      request.refreshToken ||
-      undefined;
+    // const refreshToken =
+    //   (request.headers['x-refresh-token'] as string) ||
+    //   request.cookies?.['refresh_token'] ||
+    //   request.refreshToken ||
+    //   undefined;
 
     // ✅ Validação: usuário obrigatório
     if (!user) {
-      throw new NotFoundError(
+      throw new UnauthorizedError(
         `${ErrorConstants.ENTITY_NOT_FOUND}: usuário não encontrado no request.
          Use um AuthGuard (ex: JwtAuthGuard) antes do decorator @User().`,
       );
@@ -50,7 +51,7 @@ export const User = createParamDecorator(
 
     // ✅ Retorna apenas a propriedade solicitada (ex: @User('email'))
     if (data) {
-      const value = user[data] as UserEntity;
+      const value = user[data];
       console.log(value)
       if (value === undefined) {
         throw new NotFoundError(
@@ -61,6 +62,6 @@ export const User = createParamDecorator(
     }
 
     // ✅ Retorna o objeto completo
-    return { user, accessToken, refreshToken };
+    return  user ;
   },
 );

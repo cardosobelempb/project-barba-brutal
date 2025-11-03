@@ -1,6 +1,6 @@
 import { Controller, Post } from '@nestjs/common';
 import { UserCreatePresenter } from '@repo/types';
-import { User } from 'src/modules/user/decorators/user.decorator';
+import { User } from 'src/decorators/user.decorator';
 
 // import { AuthGuard } from 'src/guards/auth.guard';
 

@@ -37,6 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * O retorno desse método será injetado no `@Request()` como `request.user`.
    */
   async validate(payload: TokenDTO): Promise<TokenDTO> {
+    console.log('Payload JWT validado:', payload);
     return {
       user: payload.user,
       accessToken: payload.accessToken,
