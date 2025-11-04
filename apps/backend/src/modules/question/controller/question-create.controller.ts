@@ -1,18 +1,18 @@
-import { Controller, Post, UseGuards } from "@nestjs/common";
-import { UserV1 } from "src/decorators/userv2.decorator";
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { ParamNumber } from "src/decorators/params/param-number.decorator";
 import { JwtAuthGuard } from "src/guards/jwt-auth.guard";
 import { RolesGuard } from "src/guards/roles.guard";
-
 
 @Controller("questions")
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class QuestionCreateController {
   constructor() { }
 
-  @Post()
+  @Get(':id')
   // @Roles(Role.ADMIN, Role.USER)
-  async handle(@UserV1("email") email: string) {
-    console.log("User 02 =>", email);
+  async handle(@ParamNumber('id') id: number) {
+
+    console.log("User =>", id);
     return "ok"
   }
 }

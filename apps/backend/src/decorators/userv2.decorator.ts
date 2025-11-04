@@ -1,11 +1,5 @@
-import {
-  createParamDecorator,
-  ExecutionContext,
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { UserEntity } from '@repo/types';
+import { createParamDecorator, ExecutionContext, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UserPayloadDTO } from '@repo/types';
 import { Request } from 'express';
 
 /**
@@ -13,10 +7,10 @@ import { Request } from 'express';
  * - @UserV1() retorna o usuário completo.
  * - @UserV1('email') retorna apenas o campo "email".
  */
-export const UserV1 = createParamDecorator(
-  (data: keyof UserEntity | undefined, context: ExecutionContext) => {
+export const UserV2 = createParamDecorator(
+  (data: keyof UserPayloadDTO | undefined, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest<Request>();
-    const user = request.user as UserEntity | undefined;
+    const user = request.user as UserPayloadDTO | undefined;
     console.log('USER DECORATOR PAYLOAD =>', request.user);
 
 
