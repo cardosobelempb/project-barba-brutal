@@ -9,8 +9,8 @@ import { JwtAdapter } from 'src/adapters/JwtAdapter';
  * Extensão do tipo Request para incluir informações autenticadas.
  */
 export interface RequestWithUser extends Request {
-  tokenPayload?: TokenDTO;
   user?: UserEntity;
+  tokenPayload?: TokenDTO;
 }
 
 export class AuthGuard implements CanActivate {
@@ -80,7 +80,7 @@ export class AuthGuard implements CanActivate {
    * Recupera o usuário do banco com base no payload.
    */
   private async loadUser(payload: TokenDTO): Promise<UserEntity> {
-    const userId = payload?.user?.userId;
+    const userId = payload?.userId;
     if (!userId) {
       this.logger.warn('Payload inválido: campo userId ausente.');
       throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);

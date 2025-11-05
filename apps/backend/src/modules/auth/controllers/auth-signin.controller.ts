@@ -43,13 +43,11 @@ export class AuthSignInController {
 
       // 2️⃣ Monta o payload do JWT (somente dados seguros)
       const payload: TokenDTO = {
-        user: {
           name: user.name,
           email: user.email,
           userId: user.id.getValue(),
           barber: user.barber,
           role: user.role,
-        },
       };
 
       // 3️⃣ Gera os tokens JWT

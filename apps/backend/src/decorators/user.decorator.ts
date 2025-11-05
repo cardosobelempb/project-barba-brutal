@@ -1,8 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { ErrorConstants, NotFoundError, UnauthorizedError } from '@repo/core';
-
-// import { TokenDTO, UserEntity, UserPayloadDTO } from '@repo/types';
-import type { TokenDTO, UserEntity, UserPayloadDTO } from '@repo/types';
+import { TokenDTO } from '@repo/types';
+// import { Request } from '@repo/types';
 
 import { Request } from 'express';
 
@@ -10,11 +9,7 @@ import { Request } from 'express';
  * Interface estendida para incluir o usuário autenticado e tokens JWT.
  * Essa estrutura é preenchida pelo JwtAuthGuard após a autenticação.
  */
-interface AuthenticatedRequest extends Request {
-  user?: UserEntity;
-  // accessToken?: string;
-  // refreshToken?: string;
-}
+interface AuthenticatedRequest extends Request, TokenDTO {}
 
 /**
  * Decorator @User()
@@ -25,11 +20,9 @@ interface AuthenticatedRequest extends Request {
  * - `@User('email')` → retorna o email do usuário autenticado
  */
 export const User = createParamDecorator(
-  (data: keyof UserPayloadDTO | undefined, context: ExecutionContext) => {
-    console.log("DATA =>", data)
-    const request = context.switchToHttp().getRequest<TokenDTO>();
+  (data: keyof AuthenticatedRequest | undefined, context: ExecutionContext) => {
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const  {user}  = request;
-    console.log("USER =>",  user)
 
     // ✅ Recupera tokens do local correto
     // const authHeader = request.headers.authorization;
@@ -40,7 +33,7 @@ export const User = createParamDecorator(
 
     // const refreshToken =
     //   (request.headers['x-refresh-token'] as string) ||
-    //   request.cookies?.['refresh_token'] ||
+    //   request.cookies?.['refreshToken'] ||
     //   request.refreshToken ||
     //   undefined;
 

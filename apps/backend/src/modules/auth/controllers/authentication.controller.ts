@@ -27,13 +27,11 @@ export class AuthenticationController {
     }
 
     const payload: TokenDTO = {
-      user: {
         name: user.name,
         email: user.email,
         userId: user.id.getValue(),
         barber: user.barber,
         role: user.role
-      }
     };
 
     const accessToken = await this.jwtAdapter.createAsyncAccessToken(payload);

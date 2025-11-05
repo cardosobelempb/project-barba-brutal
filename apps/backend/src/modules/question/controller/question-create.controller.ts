@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from "@nestjs/common";
-import { ParamNumber } from "src/decorators/params/param-number.decorator";
+import { ParamUser } from "src/decorators/params/param-user.decorator";
 import { JwtAuthGuard } from "src/guards/jwt-auth.guard";
 import { RolesGuard } from "src/guards/roles.guard";
 
@@ -10,9 +10,8 @@ export class QuestionCreateController {
 
   @Get(':id')
   // @Roles(Role.ADMIN, Role.USER)
-  async handle(@ParamNumber('id') id: number) {
-
-    console.log("User =>", id);
+  async handle(@ParamUser()  id: string  ) {
+    console.log("User =>", id)
     return "ok"
   }
 }

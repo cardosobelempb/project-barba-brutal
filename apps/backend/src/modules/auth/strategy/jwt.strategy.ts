@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { TokenDTO } from '@repo/types';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { RequestWithUser } from 'src/guards/auth.guard';
 import { ENVIRONMENT_ZOD_SCHEMA } from 'src/modules/settings/env/env.zod';
 
 // const tokenSchema = z.object({
@@ -36,7 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * Função de validação do JWT decodificado.
    * O retorno desse método será injetado no `@Request()` como `request.user`.
    */
-  async validate(payload: TokenDTO): Promise<TokenDTO> {
+  async validate(payload: RequestWithUser): Promise<RequestWithUser> {
     console.log('Payload JWT validado:', payload);
     return payload;
   }
