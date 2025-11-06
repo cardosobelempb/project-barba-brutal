@@ -6,9 +6,9 @@ import { z } from 'zod'
  * - Máximo de 100 caracteres.
  * - Mensagens de erro personalizadas.
  */
-export const nameZodSchema = z.string()
+export const stringZodSchema = z.string()
   .min(2, { message: 'O nome deve ter pelo menos 2 caracteres.' })
   .max(100, { message: 'O nome é muito longo.' })
   .transform((name) => name.trim().replace(/\b\w/g, (c) => c.toUpperCase()))
 
-export type NameZodSchema = z.infer<typeof nameZodSchema>
+export type StringZodSchema = z.infer<typeof stringZodSchema>

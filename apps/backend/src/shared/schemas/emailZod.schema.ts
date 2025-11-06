@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 /**
  * Schema de validação para e-mails.
@@ -9,3 +9,4 @@ export const emailZodSchema = z
   .email({ message: 'E-mail inválido.' })
   .transform((val) => val.toLowerCase())
 
+export type EmailZodSchema = z.infer<typeof emailZodSchema>;

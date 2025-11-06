@@ -1,6 +1,6 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { passwordZodSchema } from './passwordZod.schema'
+import { passwordZodSchema } from './passwordZod.schema';
 
 /**
  * Schema para validação de senha com confirmação.
@@ -24,3 +24,5 @@ export const passwordConfirmZodSchema = z
       })
     }
   })
+
+  export type PasswordConfirmeZodSchema = z.infer<typeof passwordConfirmZodSchema>;

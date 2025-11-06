@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 /**
  * Schema para validação de número de telefone brasileiro.
@@ -19,3 +19,4 @@ export const phoneZodSchema = z.string().regex(
   { message: 'Número de telefone inválido' }
 ).transform((phone) => phone.trim())
 
+export type PhoneZodSchema = z.infer<typeof phoneZodSchema>;

@@ -1,7 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { ErrorConstants, NotFoundError, UnauthorizedError } from '@repo/core';
-import { TokenDTO } from '@repo/types';
+
 import { RequestWithUser } from 'src/guards/auth.guard';
+import { UserPayloadZodSchema } from 'src/shared/schemas';
 
 /**
  * Interface estendida do Request padrão do Express.
@@ -15,11 +16,11 @@ import { RequestWithUser } from 'src/guards/auth.guard';
  * Permite acessar o usuário autenticado ou uma propriedade específica dele.
  *
  * Exemplos:
- *  - `@ParamUser()` → retorna o usuário completo (UserEntity)
+ *  - `@ParamUser()` → retorna o usuário completo (UserPayloadDTO)
  *  - `@ParamUser('email')` → retorna o e-mail do usuário autenticado
  */
 export const ParamUser = createParamDecorator(
-  (property: keyof TokenDTO | undefined, ctx: ExecutionContext) => {
+  (property: keyof UserPayloadZodSchema | undefined, ctx: ExecutionContext) => {
     // Obtém o request HTTP a partir do contexto atual
     const request = ctx.switchToHttp().getRequest<RequestWithUser>();
     const { user } = request;
@@ -28,7 +29,7 @@ export const ParamUser = createParamDecorator(
     if (!user) {
       throw new UnauthorizedError(
         `${ErrorConstants.ENTITY_NOT_FOUND}: Usuário não encontrado na requisição.
-         Certifique-se de aplicar um AuthGuard (ex: JwtAuthGuard) antes do @User().`,
+         Certifique-se de aplicar um AuthGuard (ex: JwtAuthGuard) antes do @ParamUser().`,
       );
     }
 

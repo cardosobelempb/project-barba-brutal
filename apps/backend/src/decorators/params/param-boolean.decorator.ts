@@ -1,22 +1,7 @@
 // param-boolean.decorator.ts
-import { z } from 'zod';
 
+import { booleanZodSchema } from 'src/shared/schemas';
 import { ParamValidated } from './param-validated.decorator';
-
-/**
- * Schema Zod para validação booleana em parâmetros de rota.
- * Aceita "true"/"false", "1"/"0" e valores booleanos equivalentes.
- */
-export const booleanSchema = z
-  .string()
-  .transform((value) => {
-    const normalized = value.trim().toLowerCase();
-    if (['true', '1'].includes(normalized)) return true;
-    if (['false', '0'].includes(normalized)) return false;
-    throw new Error(
-      `Valor inválido '${value}'. Esperado 'true', 'false', '1' ou '0'.`,
-    );
-  });
 
 /**
  * Decorator para parâmetros booleanos.
@@ -28,7 +13,7 @@ export const booleanSchema = z
  * }
  */
 export const ParamBoolean = (paramName: string) =>
-  ParamValidated({ paramName, schema: booleanSchema });
+  ParamValidated({ paramName, schema: booleanZodSchema });
 
 // 🧪 Exemplos de Uso
 // user.controller.ts

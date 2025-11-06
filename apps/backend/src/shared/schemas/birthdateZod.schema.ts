@@ -25,3 +25,5 @@ export const birthdateZodSchema = z
   }, {
     message: 'É necessário ter pelo menos 18 anos.',
   })
+
+export type BirthdateZodDTO = z.infer<typeof birthdateZodSchema>;

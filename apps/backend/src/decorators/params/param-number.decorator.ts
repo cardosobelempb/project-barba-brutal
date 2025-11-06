@@ -1,42 +1,7 @@
 // param-number.decorator.ts
-import { z } from 'zod';
 
+import { numberZodSchema } from 'src/shared/schemas';
 import { ParamValidated } from './param-validated.decorator';
-
-/**
- * Cria dinamicamente um schema numérico com base nas opções.
- */
-export const createNumberSchema = ({
-  allowZero = false,
-  min,
-  max,
-  messagePrefix = 'Parâmetro',
-}: {
-  allowZero?: boolean;
-  min?: number;
-  max?: number;
-  messagePrefix?: string;
-} = {}) => {
-  let schema = z
-    .string()
-    .regex(/^-?\d+$/, `${messagePrefix} deve ser um número inteiro.`)
-    .transform(Number)
-    .refine((n) => (allowZero ? n >= 0 : n > 0), {
-      message: `${messagePrefix} deve ser ${allowZero ? 'não negativo' : 'maior que zero'}.`,
-    });
-
-  if (min !== undefined)
-    schema = schema.refine((n) => n >= min, {
-      message: `${messagePrefix} deve ser maior ou igual a ${min}.`,
-    });
-
-  if (max !== undefined)
-    schema = schema.refine((n) => n <= max, {
-      message: `${messagePrefix} deve ser menor ou igual a ${max}.`,
-    });
-
-  return schema;
-};
 
 /**
  * Decorator para parâmetros numéricos validados com Zod.
@@ -53,11 +18,11 @@ export const createNumberSchema = ({
  */
 export const ParamNumber = (
   paramName: string,
-  options?: Parameters<typeof createNumberSchema>[0],
+  options?: Parameters<typeof numberZodSchema>[0],
 ) =>
   ParamValidated({
     paramName,
-    schema: createNumberSchema({
+    schema: numberZodSchema({
       ...options,
       messagePrefix: `Parâmetro '${paramName}'`,
     }),

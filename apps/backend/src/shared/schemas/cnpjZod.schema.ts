@@ -14,3 +14,5 @@ export const cnpjZodSchema = z
   .refine((cnpj) => isValidCNPJ(cnpj), {
     message: 'CNPJ inválido. Deve conter 14 dígitos numéricos.',
   })
+
+  export type CnpjZodSchema = z.infer<typeof cnpjZodSchema>;

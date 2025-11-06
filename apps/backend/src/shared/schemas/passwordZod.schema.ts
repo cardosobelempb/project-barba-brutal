@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 /**
  * Schema para validação de senha.
@@ -15,3 +15,5 @@ export const passwordZodSchema = z.string()
   .regex(/[a-z]/, { message: 'A senha deve conter pelo menos uma letra minúscula.' })
   .regex(/\d/, { message: 'A senha deve conter pelo menos um número.' })
   .regex(/[@$!%*?&]/, { message: 'A senha deve conter pelo menos um caractere especial (@$!%*?&).' })
+
+export type PasswordZodSchema = z.infer<typeof passwordZodSchema>;

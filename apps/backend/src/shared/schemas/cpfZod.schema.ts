@@ -1,6 +1,6 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { isValidCPF } from '../utils/validations/isValidCPF'
+import { isValidCPF } from '../utils/validations/isValidCPF';
 
 /**
  * Schema para validação de CPF.
@@ -14,3 +14,5 @@ export const cpfZodSchema = z
   .refine((cpf) => isValidCPF(cpf), {
     message: 'CPF inválido. Deve conter 11 dígitos numéricos.',
   })
+
+  export type CpfZodSchema = z.infer<typeof cpfZodSchema>;

@@ -1,15 +1,7 @@
 // param-uuid.decorator.ts
-import { z } from 'zod';
 
+import { uuidZodSchema } from 'src/shared/schemas';
 import { ParamValidated } from './param-validated.decorator';
-
-/**
- * Schema Zod para validação de UUID.
- * - Garante que o valor seja uma string com formato UUID válido.
- */
-export const uuidSchema = z
-  .string()
-  .uuid('Parâmetro deve ser um UUID válido.');
 
 /**
  * Decorator para validar parâmetros UUID.
@@ -21,7 +13,7 @@ export const uuidSchema = z
  * }
  */
 export const ParamUUID = (paramName: string) =>
-  ParamValidated({ paramName, schema: uuidSchema });
+  ParamValidated({ paramName, schema: uuidZodSchema });
 
 // Example usage:
 // user.controller.ts
