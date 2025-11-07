@@ -1,4 +1,4 @@
-import { QuestionEntity } from './entities/QuestionEntity';
+export * from './entities'
+export * from './useCases'
 
-export type { QuestionEntity };
 

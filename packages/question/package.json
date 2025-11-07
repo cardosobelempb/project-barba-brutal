@@ -11,7 +11,12 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "dependencies": {
+    "@repo/core": "*",
+    "@repo/user": "*"
+  },
   "devDependencies": {
-    "tsup": "^8.5.0"
+    "tsup": "^8.5.0",
+    "@repo/vitest-config": "*"
   }
 }
