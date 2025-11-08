@@ -1,4 +1,4 @@
-export * from './entities'
+export * from './domain/entities'
 export * from './useCases'
 
 

@@ -1,4 +1,5 @@
 import { UUIDVO } from '@repo/core';
+
 export interface QuestionProps {
   id: UUIDVO
   title: string, content: string, authorId: string
@@ -14,7 +15,7 @@ export class QuestionEntity {
   constructor(props: QuestionProps, id?: UUIDVO) {
     this.id = id ?? new UUIDVO(id);
     this.title = props.title;
-    this.authorId = props.authorId;
     this.content = props.content;
+    this.authorId = props.authorId;
   }
 }
