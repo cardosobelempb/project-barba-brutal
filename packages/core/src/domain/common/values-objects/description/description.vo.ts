@@ -20,7 +20,7 @@ export class DescriptionVO {
     options: DescriptionValidationOptions = { required: true, maxLength: 500 },
   ): DescriptionVO {
     const msg = messages[lang] ?? messages['en']
-    const value = rawValue?.trim() ?? ''
+    const value = DescriptionVO.normalize(rawValue)
 
     const { required = true, maxLength = 500, minLength = 0 } = options
 
@@ -29,18 +29,19 @@ export class DescriptionVO {
     }
 
     if (value.length < minLength) {
-      throw new BadRequestError(
-        msg.TOO_SHORT ?? `Minimum length is ${minLength}`,
-      )
+      throw new BadRequestError(msg.TOO_SHORT ?? `Minimum length is ${minLength}`)
     }
 
     if (value.length > maxLength) {
-      throw new BadRequestError(
-        msg.TOO_LONG ?? `Maximum length is ${maxLength}`,
-      )
+      throw new BadRequestError(msg.TOO_LONG ?? `Maximum length is ${maxLength}`)
     }
 
     return new DescriptionVO(value)
+  }
+
+  // Normaliza: trim + remove múltiplos espaços
+  private static normalize(value: string): string {
+    return (value ?? '').trim().replace(/\s+/g, ' ')
   }
 
   public getValue(): string {
@@ -50,4 +51,29 @@ export class DescriptionVO {
   public toString(): string {
     return this.value
   }
+
+  // Compara com outro DescriptionVO
+  public equals(other: DescriptionVO): boolean {
+    return this.value === other.getValue()
+  }
 }
+
+/**
+ * Exemplo prático:
+ const desc1 = DescriptionVO.create('  Esta é uma descrição de teste.  ')
+console.log(desc1.getValue())
+// "Esta é uma descrição de teste."
+
+const desc2 = DescriptionVO.create('Esta é uma descrição de teste.')
+console.log(desc1.equals(desc2))
+// true
+
+// Tentativa de criar descrição vazia com required = true
+try {
+  DescriptionVO.create('', 'pt', { required: true })
+} catch (err) {
+  console.error(err.message)
+  // Ex: "Campo obrigatório" (dependendo do msg do PT)
+}
+
+ */

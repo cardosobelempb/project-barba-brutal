@@ -23,4 +23,9 @@ export class LongitudeVO {
   public toString(): string {
     return this._value.toString()
   }
+
+  /** Compara com outro LongitudeVO */
+  public equals(other: LongitudeVO): boolean {
+    return this._value === other.value
+  }
 }

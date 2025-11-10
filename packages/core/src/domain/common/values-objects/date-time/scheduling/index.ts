@@ -1,4 +1,5 @@
-import { ScheduledVO } from './scheduled.vo'
-import { AbstractScheduled } from './scheduling.abstract'
+import { AbstractScheduled } from './AbstractScheduled'
+import { ScheduledVO } from './ScheduledVO'
 
-export { ScheduledVO, AbstractScheduled }
+export { AbstractScheduled, ScheduledVO }
+

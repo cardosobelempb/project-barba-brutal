@@ -1,3 +1,2 @@
-import { CpfVO } from './cpf.vo'
+export * from './CpfVO';
 
-export { CpfVO }

@@ -1,8 +1,8 @@
-import { DateTimeVO } from './date-time.vo'
-import { DATEVO } from './date.vo'
-import { TIMEVO } from './time.vo'
 export * from './birth'
 export * from './checks'
+export * from './date'
+export * from './date-time.vo'
 export * from './scheduling'
+export * from './time'
+export * from './time/TimeVO'
 
-export { DATEVO, DateTimeVO, TIMEVO }

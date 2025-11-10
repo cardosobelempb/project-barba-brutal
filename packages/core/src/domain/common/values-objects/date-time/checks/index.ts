@@ -1,5 +1,4 @@
-import { CheckOutVO } from './ckeck-out.vo'
-import { CheckInVO } from './check-in.vo'
-import { ChecksAbstract } from './checks.abstract'
+export * from './CheckInVO'
+export * from './CheckOutVO'
+export * from './ChecksAbstract'
 
-export { CheckInVO, ChecksAbstract, CheckOutVO }

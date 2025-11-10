@@ -1,4 +1,2 @@
-import { DateOfBirthVO } from './date-of-birth.vo'
-import { AbstractDateOfBirth } from './date-of-birth.abstract'
+export * from './DateOfBirthVO';
 
-export { AbstractDateOfBirth, DateOfBirthVO }
