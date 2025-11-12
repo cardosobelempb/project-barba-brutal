@@ -1,3 +1,3 @@
-import { UUIDVO } from './uuid.vo'
+import { UUIDVO } from './UuidVO'
 
 export { UUIDVO }

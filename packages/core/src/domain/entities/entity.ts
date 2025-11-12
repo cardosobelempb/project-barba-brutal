@@ -6,7 +6,7 @@ export abstract class Entity<Props> {
 
   protected constructor(props: Props, id?: UUIDVO) {
     this.props = props
-    this._id = id ?? new UUIDVO(id)
+    this._id = id ?? UUIDVO.create(id)
   }
 
   get id() {

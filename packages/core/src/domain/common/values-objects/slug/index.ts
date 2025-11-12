@@ -1,3 +1,2 @@
-import { SlugVO } from './slug.vo'
+export * from './SlugVO';
 
-export { SlugVO }

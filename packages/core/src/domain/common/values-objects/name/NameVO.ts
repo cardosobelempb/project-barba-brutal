@@ -49,12 +49,13 @@ export class NameVO {
 
   /** Normaliza o nome: trim, remove múltiplos espaços e hífens duplicados */
   private static normalize(name: string): string {
-    return name
-      .normalize('NFKD')                // Normaliza acentos
-      .replace(/[\u0300-\u036f]/g, '') // Remove diacríticos
-      .trim()
-      .replace(/\s+/g, ' ')             // Espaços duplicados
-      .replace(/-+/g, '-')              // Hífens duplicados
+     return name.trim().replace(/\s+/g, ' ')
+    // return name
+    //   .normalize('NFKD')                // Normaliza acentos
+    //   .replace(/[\u0300-\u036f]/g, '') // Remove diacríticos
+    //   .trim()
+    //   .replace(/\s+/g, ' ')             // Espaços duplicados
+    //   .replace(/-+/g, '-')              // Hífens duplicados
   }
 
   /** Valida o nome completo */

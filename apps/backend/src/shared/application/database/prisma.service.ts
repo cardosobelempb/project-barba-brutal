@@ -1,36 +1,59 @@
-import { Global, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from 'generated/prisma';
+import { Global, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
 /**
- * Serviço responsável por encapsular o PrismaClient
- * e integrá-lo ao ciclo de vida do NestJS (inicialização e destruição de módulo).
+ * ✅ PrismaService
+ *
+ * Serviço responsável por encapsular o PrismaClient e integrá-lo ao ciclo de vida do NestJS.
+ * - Garante conexão/desconexão automáticas.
+ * - Centraliza configurações de log.
+ * - Facilita extensão com middlewares (ex: auditoria, métricas, interceptação de queries).
+ * - Pode ser facilmente mockado em testes.
  */
-@Global() // Torna o serviço acessível globalmente sem necessidade de importação em outros módulos
+@Global() // Disponibiliza o serviço globalmente sem precisar importar em cada módulo
 @Injectable()
 export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  // Logger do Nest para observabilidade e debugging
+  private readonly logger = new Logger(PrismaService.name);
+
   constructor() {
-    // Configuração dos níveis de log do Prisma
     super({
-      log: ['warn', 'error'], // Evita logs verbosos em produção
+      log: ['warn', 'error'], // Evita poluição de logs (use 'query' em ambiente de desenvolvimento se necessário)
     });
   }
 
   /**
-   * Conecta ao banco de dados assim que o módulo é iniciado.
-   * O NestJS chama esse método automaticamente.
+   * 🔌 Inicializa a conexão com o banco de dados assim que o módulo é carregado.
    */
   async onModuleInit(): Promise<void> {
-    await this.$connect();
+    try {
+      await this.$connect();
+      this.logger.log('✅ Conectado ao banco de dados com sucesso.');
+    } catch (error) {
+      this.logger.error('❌ Falha ao conectar ao banco de dados:', error);
+      throw error;
+    }
   }
 
   /**
-   * Desconecta do banco de dados quando o módulo é encerrado.
-   * Ideal para garantir liberação de recursos em encerramentos controlados.
+   * 🧹 Desconecta do banco de dados quando o módulo é encerrado.
+   * Boa prática para liberação de recursos e encerramento limpo.
    */
   async onModuleDestroy(): Promise<void> {
-    await this.$disconnect();
+    try {
+      await this.$disconnect();
+      this.logger.log('🛑 Conexão com o banco de dados encerrada.');
+    } catch (error) {
+      this.logger.error('⚠️ Erro ao encerrar conexão com o banco:', error);
+    }
   }
+
+  /**
+   * 🔁 Método opcional para uso em scripts independentes (fora do contexto NestJS)
+   * Permite reuso do serviço em CLI ou testes sem depender do ciclo de vida completo.
+   */
+
 }

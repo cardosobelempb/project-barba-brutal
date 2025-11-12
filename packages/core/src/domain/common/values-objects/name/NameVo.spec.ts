@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { BadRequestError } from '../../errors'
-import { NameVO } from './name.vo'
+import { NameVO } from './NameVO'
 
 describe('NameVO', () => {
   it('should create a valid NameVO', () => {

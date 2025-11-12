@@ -1,4 +1,2 @@
-import { messages } from './locales'
-import { PriceVO } from './price.vo'
-
-export { PriceVO, messages }
+export * from './locales'
+export * from './price.vo'

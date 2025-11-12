@@ -15,7 +15,7 @@ export class AnswerEntity {
   public questionId: string;
 
   constructor(props: AnswerProps, id?: UUIDVO) {
-    this.id = id ?? new UUIDVO(id);
+    this.id = id ?? UUIDVO.create(id);
     this.content = props.content;
     this.authorId = props.authorId;
     this.questionId = props.questionId;

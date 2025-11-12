@@ -1,3 +1,3 @@
-import { NameVO } from './name.vo'
+import { NameVO } from './NameVO'
 
 export { NameVO }

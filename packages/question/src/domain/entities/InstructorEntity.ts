@@ -11,7 +11,7 @@ export class InstructorEntity {
   public name: string;
 
   constructor(props: InstructorProps, id?: UUIDVO) {
-    this.id = id ?? new UUIDVO(id);
+    this.id = id ?? UUIDVO.create(id);
     this.name = props.name;
   }
 }

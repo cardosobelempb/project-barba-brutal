@@ -1,7 +1,6 @@
+import { Prisma, User as UserMapper } from '@prisma/client';
 import { UUIDVO } from '@repo/core';
 import { UserEntity } from '@repo/types';
-
-import { Prisma, User as UserMapper } from '../../../../../../../generated/prisma';
 
 export class UserPrismaMapper {
   static toDomain(entity: UserMapper): UserEntity {
@@ -18,7 +17,7 @@ export class UserPrismaMapper {
         updatedAt: entity.updatedAt,
         deletedAt: entity.deletedAt,
       },
-      new UUIDVO(entity.id),
+      UUIDVO.create(entity.id),
     );
   }
 

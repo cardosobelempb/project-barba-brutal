@@ -1,19 +1,18 @@
 import { BadRequestError } from '../../errors'
+import { AbstractValueObject } from '../AbstractValueObject'
 
 /**
  * ✅ Value Object responsável por representar e validar um Slug.
  * Garante imutabilidade, padronização e formato seguro para URLs.
  */
-export class SlugVO {
+export class SlugVO extends AbstractValueObject<string> {
   private static readonly MIN_LENGTH = 3
   private static readonly MAX_LENGTH = 100
   private static readonly SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
-  private readonly value: string
-
-  /** 🔒 Construtor privado: use os métodos de fábrica `create` ou `createFromText`. */
+  /** 🔒 Construtor privado: força o uso das fábricas estáticas */
   private constructor(value: string) {
-    this.value = value
+    super(value)
   }
 
   // ===============================
@@ -36,6 +35,7 @@ export class SlugVO {
 
   /**
    * Gera um Slug a partir de um texto bruto (ex: título, nome, etc).
+   * Aplica normalização Unicode, substituições e validação.
    * @throws BadRequestError se o resultado não atender aos critérios.
    */
   public static createFromText(text: string): SlugVO {
@@ -44,8 +44,8 @@ export class SlugVO {
     }
 
     // 🧹 Normalização Unicode (remove acentos e diacríticos)
-    let slugText = text
-      .normalize('NFD') // compatível com mais idiomas
+    const slugText = text
+      .normalize('NFD')
       .toLowerCase()
       .trim()
       .replace(/\s+/g, '-') // troca espaços por hífen
@@ -54,45 +54,21 @@ export class SlugVO {
       .replace(/--+/g, '-') // evita múltiplos hífens
       .replace(/^-+|-+$/g, '') // remove hífens nas bordas
 
-    // 🔎 Regras de tamanho
-    if (slugText.length < SlugVO.MIN_LENGTH) {
-      throw new BadRequestError(
-        `Slug must be at least ${SlugVO.MIN_LENGTH} characters.`
-      )
-    }
-
-    if (slugText.length > SlugVO.MAX_LENGTH) {
-      throw new BadRequestError(
-        `Slug must be less than ${SlugVO.MAX_LENGTH} characters.`
-      )
+    if (!SlugVO.isValid(slugText)) {
+      throw new BadRequestError(`Invalid slug generated: "${slugText}"`)
     }
 
     return new SlugVO(slugText)
   }
 
   // ===============================
-  // 🧩 MÉTODOS DE INSTÂNCIA
+  // 🧪 MÉTODOS DE VALIDAÇÃO
   // ===============================
 
-  /** Retorna o valor encapsulado (imutável). */
-  public getValue(): string {
-    return this.value
+  /** Implementação do contrato abstrato da classe base */
+  public isValid(): boolean {
+    return SlugVO.isValid(this.value)
   }
-
-  /** Compara se dois SlugVO representam o mesmo valor. */
-  public equals(other?: SlugVO | null): boolean {
-    if (!other) return false
-    return this.value === other.value
-  }
-
-  /** Representação de string (para logs, JSON, etc). */
-  public toString(): string {
-    return this.value
-  }
-
-  // ===============================
-  // 🧪 MÉTODOS ESTÁTICOS DE VALIDAÇÃO
-  // ===============================
 
   /** Verifica se o slug informado é válido. */
   public static isValid(value: string): boolean {
@@ -104,21 +80,3 @@ export class SlugVO {
     )
   }
 }
-
-/**
- 🧪 Exemplo Prático de Uso
-const slug1 = SlugVO.createFromText('Curso de TypeScript Avançado!')
-console.log(slug1.getValue()) // 'curso-de-typescript-avancado'
-
-const slug2 = SlugVO.create('curso-de-typescript-avancado')
-console.log(slug1.equals(slug2)) // true
-
-// Exemplo de erro
-try {
-  SlugVO.createFromText('a!')
-} catch (err) {
-  console.error(err.message)
-  // Slug must be at least 3 characters.
-}
-
- */
