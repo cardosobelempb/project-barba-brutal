@@ -1,23 +1,34 @@
-import { UUIDVO } from '@repo/core';
+import { Entity, Optional, UUIDVO } from '@repo/core';
 
 export interface AnswerProps {
   id?: UUIDVO
   content: string;
   authorId: string;
   questionId: string;
+  createdAt: Date;
+  updatedAt?: Date | null;
+  deletedAt?: Date | null;
 }
 
 
-export class AnswerEntity {
-  public id?: UUIDVO
-  public content: string;
-  public authorId: string;
-  public questionId: string;
+export class AnswerEntity extends Entity<AnswerProps> {
 
-  constructor(props: AnswerProps, id?: UUIDVO) {
-    this.id = id ?? UUIDVO.create(id);
-    this.content = props.content;
-    this.authorId = props.authorId;
-    this.questionId = props.questionId;
+  get content() {
+    return this.props.content;
+  }
+
+  static create(
+     props: Optional<AnswerProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    id?: UUIDVO,
+  ) {
+    const Answer = new AnswerEntity(
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+      },
+      id,
+    )
+
+    return Answer;
   }
 }

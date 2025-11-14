@@ -1,26 +1,42 @@
-import { UUIDVO } from '@repo/core';
+import { Entity, Optional, SlugVO, UUIDVO } from '@repo/core';
 
 export interface QuestionProps {
   id: UUIDVO;
   title: string;
-  slug: string;
+  slug: SlugVO;
   content: string;
   authorId: string;
+  createdAt: Date;
+  updatedAt?: Date | null;
+  deletedAt?: Date | null;
 }
 
 
-export class QuestionEntity {
-  public id?: UUIDVO;
-  public title: string;
-  public slug: string;
-  public content: string;
-  public authorId: string;
+export class QuestionEntity extends Entity<QuestionProps> {
+  get title() {
+    return this.props.title;
+  }
 
-  constructor(props: QuestionProps, id?: UUIDVO) {
-    this.id = id ?? UUIDVO.create(id);
-    this.title = props.title;
-    this.content = props.content;
-    this.slug = props.slug;
-    this.authorId = props.authorId;
+  get slug() {
+    return this.props.slug;
+  }
+
+  get content() {
+    return this.props.content;
+  }
+
+  static create(
+     props: Optional<QuestionProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    id?: UUIDVO,
+  ) {
+    const Question = new QuestionEntity(
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+      },
+      id,
+    )
+
+    return Question
   }
 }

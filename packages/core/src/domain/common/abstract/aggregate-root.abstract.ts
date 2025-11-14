@@ -1,4 +1,4 @@
-import { Entity } from '../../entities/entity'
+import { Entity } from '../../entities/Entity'
 import { IDomainEvent } from '../events/domain-event.interface'
 import { DomainEvents } from '../events/domain-events.event'
 

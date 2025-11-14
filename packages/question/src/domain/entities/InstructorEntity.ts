@@ -1,17 +1,31 @@
-import { UUIDVO } from '@repo/core';
+import { Entity, Optional, UUIDVO } from '@repo/core';
 
 export interface InstructorProps {
   id: UUIDVO
   name: string
+  createdAt: Date
+  updatedAt?: Date | null
+  deletedAt?: Date | null
 }
 
 
-export class InstructorEntity {
-  public id?: UUIDVO
-  public name: string;
+export class InstructorEntity extends Entity<InstructorProps> {
+  get name() {
+    return this.props.name;
+  }
 
-  constructor(props: InstructorProps, id?: UUIDVO) {
-    this.id = id ?? UUIDVO.create(id);
-    this.name = props.name;
+  static create(
+     props: Optional<InstructorProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    id?: UUIDVO,
+  ) {
+    const Instructor = new InstructorEntity(
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+      },
+      id,
+    )
+
+    return Instructor
   }
 }
