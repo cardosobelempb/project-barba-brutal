@@ -28,7 +28,7 @@ test('Create an answer', async () => {
   sut = new AnswerQuestionUseCase(answerInMemoryRepository)
   const answer = await sut.execute({
     questionId: '1',
-    authorId: '1',
+    intructorId:  '1',
     content: 'Nova resposta',
   })
 

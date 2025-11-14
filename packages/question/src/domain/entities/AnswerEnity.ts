@@ -1,10 +1,9 @@
 import { Entity, Optional, UUIDVO } from '@repo/core';
 
 export interface AnswerProps {
-  id?: UUIDVO
+  authorId: UUIDVO;
+  questionId: UUIDVO;
   content: string;
-  authorId: string;
-  questionId: string;
   createdAt: Date;
   updatedAt?: Date | null;
   deletedAt?: Date | null;
@@ -15,6 +14,14 @@ export class AnswerEntity extends Entity<AnswerProps> {
 
   get content() {
     return this.props.content;
+  }
+
+  get authorId() {
+    return this.props.authorId;
+  }
+
+  get questionId() {
+    return this.props.questionId;
   }
 
   static create(

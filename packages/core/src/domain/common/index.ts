@@ -1,10 +1,10 @@
-export * from './errors'
-export * from './events'
-export * from './values-objects'
 export * from './abstract'
+export * from './entities'
 export * from './errors'
 export * from './events'
 export * from './test'
+export * from './types'
 export * from './utils'
 export * from './validations'
 export * from './values-objects'
+

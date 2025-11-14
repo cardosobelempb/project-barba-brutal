@@ -1,7 +1,6 @@
 import { Entity, Optional, UUIDVO } from '@repo/core';
 
 export interface InstructorProps {
-  id: UUIDVO
   name: string
   createdAt: Date
   updatedAt?: Date | null

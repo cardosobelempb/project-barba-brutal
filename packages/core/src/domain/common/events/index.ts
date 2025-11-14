@@ -1,6 +1,4 @@
-import { IDomainEvent } from './domain-event.interface'
-import { IEventHandler } from './event-handler.interface'
-import { DomainEvents } from './domain-events.event'
+export * from './domain-event.interface';
+export * from './domain-events.event';
+export * from './event-handler.interface';
 
-export type { IDomainEvent, IEventHandler }
-export { DomainEvents }

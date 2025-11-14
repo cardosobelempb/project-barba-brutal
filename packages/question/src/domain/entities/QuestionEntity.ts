@@ -1,11 +1,11 @@
 import { Entity, Optional, SlugVO, UUIDVO } from '@repo/core';
 
 export interface QuestionProps {
-  id: UUIDVO;
+  authorId: string;
+  bestAnswerId?: UUIDVO;
   title: string;
   slug: SlugVO;
   content: string;
-  authorId: string;
   createdAt: Date;
   updatedAt?: Date | null;
   deletedAt?: Date | null;
