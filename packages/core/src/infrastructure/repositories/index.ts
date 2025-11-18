@@ -1,6 +1,2 @@
-import { Pagination } from './pagination';
-import { RepositoryAbstract } from './repository.abstract';
-
-export { RepositoryAbstract };
-export type { Pagination };
-
+export * from './pagination';
+export * from './repository.abstract';

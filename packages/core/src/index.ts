@@ -1,6 +1,6 @@
 export * from './application'
-export * from './infrastructure'
 export * from './domain'
-export * from './config'
-export * from './interfaces'
 export * from './i18n'
+export * from './infrastructure'
+export * from './interfaces'
+

@@ -13,9 +13,13 @@
   "description": "",
   "dependencies": {
     "@repo/core": "*",
-    "@repo/user": "*"
+    "@repo/user": "*",
+    "@repo/types": "*"
   },
   "devDependencies": {
-    "tsup": "^8.5.0"
+    "tsup": "^8.5.0",
+    "@repo/vitest-config": "*",
+    "@repo/eslint-config": "*",
+    "@repo/ts-config": "*"
   }
 }

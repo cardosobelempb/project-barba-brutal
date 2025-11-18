@@ -1,41 +1,78 @@
 export class ObjectUtils {
   private constructor() {}
 
+  // ---------------------------------------------------------------------------
+  // Basic Checks
+  // ---------------------------------------------------------------------------
+
   /**
-   * Remove referências de protótipos e funções, deixando apenas dados JSON-compatíveis.
+   * Retorna `true` se for um objeto simples (exclui arrays, null, Date, etc.)
+   */
+  static isObject(value: unknown): value is Record<string, any> {
+    return (
+      value !== null &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      !(value instanceof Date)
+    )
+  }
+
+  // ---------------------------------------------------------------------------
+  // Cloning
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Conversão segura para objeto plano JSON (sem funções, Date, Map etc.)
+   * OBS: valores não-serializáveis serão perdidos.
    */
   static convertToPlainObject<T>(value: T): T {
     return JSON.parse(JSON.stringify(value))
   }
 
   /**
-   * Faz uma cópia profunda do objeto.
+   * Deep clone usando serialização. Para objetos muito complexos, recomenda-se
+   * usar structuredClone (Node 17+ / browsers modernos).
    */
   static deepClone<T>(value: T): T {
+    // Caso ambiente suporte structuredClone:
+    if (typeof structuredClone === "function") {
+      try {
+        return structuredClone(value)
+      } catch {
+        // fallback abaixo
+      }
+    }
     return this.convertToPlainObject(value)
   }
 
-  /**
-   * Verifica se o valor é um objeto não nulo.
-   */
-  static isObject(value: any): value is Record<string, any> {
-    return value !== null && typeof value === 'object' && !Array.isArray(value)
-  }
+  // ---------------------------------------------------------------------------
+  // Empty checks
+  // ---------------------------------------------------------------------------
 
   /**
-   * Verifica se o objeto está vazio (não possui chaves próprias).
+   * Verifica se um valor é "vazio":
+   *  - null, undefined → true
+   *  - [] → true
+   *  - {} → true
+   *  - outros tipos → false
    */
-  static isEmpty(value: any): boolean {
+  static isEmpty(value: unknown): boolean {
     if (value == null) return true
     if (Array.isArray(value)) return value.length === 0
     if (this.isObject(value)) return Object.keys(value).length === 0
     return false
   }
 
+  // ---------------------------------------------------------------------------
+  // Deep Merge
+  // ---------------------------------------------------------------------------
+
   /**
-   * Faz merge profundo de dois objetos.
+   * Merge profundo entre dois objetos.
+   * - Valores escalares sobrescrevem o target
+   * - Objetos são mesclados recursivamente
    */
-  static mergeDeep<T>(target: T, source: Partial<T>): T {
+  static mergeDeep<T extends object>(target: T, source: Partial<T>): T {
     if (!this.isObject(target) || !this.isObject(source)) {
       return source as T
     }
@@ -43,34 +80,19 @@ export class ObjectUtils {
     const result = { ...target } as Record<string, any>
 
     for (const key in source) {
-      if (this.isObject(source[key])) {
-        if (!result[key]) {
-          result[key] = {}
-        }
-        result[key] = this.mergeDeep(result[key], source[key])
+      const sourceValue = source[key]
+      const targetValue = result[key]
+
+      if (this.isObject(sourceValue)) {
+        result[key] = this.mergeDeep(
+          this.isObject(targetValue) ? targetValue : {},
+          sourceValue
+        )
       } else {
-        result[key] = source[key]
+        result[key] = sourceValue
       }
     }
 
     return result as T
   }
 }
-
-/*
-Exemplos de uso:
-// Clonando profundamente
-const user = { name: 'Ana', contact: { email: 'ana@email.com' } };
-const clone = ObjectUtils.deepClone(user);
-
-// Verificando se está vazio
-ObjectUtils.isEmpty({}); // true
-ObjectUtils.isEmpty([]); // true
-
-// Merge profundo
-const base = { config: { theme: 'light', lang: 'en' } };
-const override = { config: { lang: 'pt' } };
-const merged = ObjectUtils.mergeDeep(base, override);
-console.log(merged); // { config: { theme: 'light', lang: 'pt' } }
-
- */

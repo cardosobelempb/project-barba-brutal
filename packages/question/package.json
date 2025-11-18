@@ -18,6 +18,9 @@
   },
   "devDependencies": {
     "tsup": "^8.5.0",
-    "@repo/vitest-config": "*"
+    "rollup": "^4.53.2",
+    "@repo/vitest-config": "*",
+    "@repo/eslint-config": "*",
+    "@repo/ts-config": "*"
   }
 }

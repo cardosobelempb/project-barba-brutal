@@ -1,85 +1,211 @@
-# 🎯 Novos Métodos Explicados:
-1. formatCurrency:
+# 📘 Exemplos de Uso – NumberUtils:
+## 🎯 1. formatNumberWithDecimal:
+- Formata sempre com 2 casas decimais.
 
-Recebe um número e o formata como uma moeda de acordo com a localidade e a moeda fornecida.
-Exemplo: 1234.56 → "R$ 1.234,56" (em português brasileiro).
+```ts
+NumberUtils.formatNumberWithDecimal(123.4)
+// "123.40"
 
-2. roundToDecimalPlaces:
+NumberUtils.formatNumberWithDecimal(50)
+// "50.00"
+
+NumberUtils.formatNumberWithDecimal(NaN)
+// "0.00" (protegido pelo ensureNumber)
+
+```
+
+## 🎯 2. formatCurrency
+- Formata moeda usando Intl.NumberFormat.
 
 Arredonda um número para o número especificado de casas decimais.
 Exemplo: 2.345 com 2 casas decimais → 2.35.
 
-3. parseCurrency:
+```ts
+NumberUtils.formatCurrency(1234.56)
+// "R$ 1.234,56"
+
+NumberUtils.formatCurrency(89.5, "en-US", "USD")
+// "$89.50"
+
+NumberUtils.formatCurrency(5000, "ja-JP", "JPY")
+// "￥5,000"
+
+
+```
+
+## 🎯 3. parseCurrency
+- Converte string de moeda → número.
 
 Converte uma string de moeda (ex: "R$ 1.234,56") de volta para um número.
 Exemplo: "R$ 1.234,56" → 1234.56.
 
-4. formatPercentage:
+```ts
+NumberUtils.parseCurrency("R$ 1.234,56")
+// 1234.56
+
+NumberUtils.parseCurrency("€ 9.999,00")
+// 9999
+
+NumberUtils.parseCurrency("50,25")
+// 50.25
+
+NumberUtils.parseCurrency("texto inválido")
+// 0
+
+
+```
+
+## 🎯 4. roundToDecimalPlaces
+- Arredonda com precisão definida.
 
 Formata um número como percentual (multiplicando o número por 100 e adicionando %).
 Exemplo: 0.1234 → "12.34%".
 
-5. formatPhoneNumber:
+```ts
+NumberUtils.roundToDecimalPlaces(2.345, 2)
+// 2.35
+
+NumberUtils.roundToDecimalPlaces(10.5678, 3)
+// 10.568
+
+NumberUtils.roundToDecimalPlaces(5.1, 0)
+// 5
+
+```
+
+## 🎯 5. formatPercentage
+- Converte número → percentual.
 
 Formata um número de telefone no formato (XX) XXXXX-XXXX (Brasil).
 Exemplo: 1234567890 → (12) 34567-8901.
 
-6. calculateTax:
+```ts
+NumberUtils.formatPercentage(0.1234)
+// "12.34%"
+
+NumberUtils.formatPercentage(1)
+// "100.00%"
+
+NumberUtils.formatPercentage(-0.05)
+// "-5.00%"
+
+```
+
+## 🎯 6. calculateTax
+- Calcula imposto sobre um valor.
 
 Calcula o valor do imposto sobre um valor (ex: 100 com 15% → 15).
 Exemplo: 100 com 15% → 15.
 
-7. isPositive:
+```ts
+NumberUtils.calculateTax(100, 15)
+// 15
+
+NumberUtils.calculateTax(250, 7.5)
+// 18.75
+
+NumberUtils.calculateTax(10_000, 27.5)
+// 2750
+
+```
+
+## 🎯 7. isPositive / isNegative / isInteger
 
 Verifica se um número é positivo.
 Exemplo: 2 → true, -2 → false.
 
-8. isNegative:
+```ts
+NumberUtils.isPositive(10)
+// true
+
+NumberUtils.isNegative(-5)
+// true
+
+NumberUtils.isInteger(10)
+// true
+
+NumberUtils.isInteger(10.5)
+// false
+
+NumberUtils.isPositive(NaN)
+// false (ensureNumber → 0)
+
+
+```
+
+## 🎯 8. formatPhoneNumber
+- Formata telefone brasileiro.
 
 Verifica se um número é negativo.
 Exemplo: -2 → true, 2 → false.
 
-9. isInteger:
+```ts
+NumberUtils.formatPhoneNumber("11987654321")
+// "(11) 98765-4321"
 
-Verifica se o número é inteiro.
-Exemplo: 2 → true, 2.5 → false.
+NumberUtils.formatPhoneNumber("11 98765-4321")
+// "(11) 98765-4321"
 
-# 🧑‍💻 Como usar:
+NumberUtils.formatPhoneNumber("(11)987654321")
+// "(11) 98765-4321"
+
+NumberUtils.formatPhoneNumber("123")
+// "123" (não formata pois não bate o padrão)
+
 
 ```
-import { NumberUtils } from './NumberUtils';
 
-// Formatar número com duas casas decimais
-console.log(NumberUtils.formatNumberWithDecimal(123.4)); // "123.40"
+## 🔥 Exemplos Combinados (casos reais)
+- 💰 Sistema de vendas — exibindo preço + imposto
 
-// Formatar como moeda
-console.log(NumberUtils.formatCurrency(1234.56)); // "R$ 1.234,56"
+```ts
+const price = 129.9
+const tax = NumberUtils.calculateTax(price, 12)
+const finalPrice = price + tax
 
-// Arredondar para 2 casas decimais
-console.log(NumberUtils.roundToDecimalPlaces(2.345, 2)); // 2.35
+console.log("Preço:", NumberUtils.formatCurrency(price))
+console.log("Imposto:", NumberUtils.formatCurrency(tax))
+console.log("Total:", NumberUtils.formatCurrency(finalPrice))
 
-// Converter de moeda para número
-console.log(NumberUtils.parseCurrency("R$ 1.234,56")); // 1234.56
+Preço: R$ 129,90
+Imposto: R$ 15,59
+Total: R$ 145,49
 
-// Formatar como percentual
-console.log(NumberUtils.formatPercentage(0.1234)); // "12.34%"
+```
 
-// Formatar número de telefone
-console.log(NumberUtils.formatPhoneNumber("1234567890")); // "(12) 34567-8901"
+## 📱 Formatação de telefone vindo de input desformatado
 
-// Calcular imposto
-console.log(NumberUtils.calculateTax(100, 15)); // 15
+```ts
+const input = "11-98765 4321"
+const phoneFormatted = NumberUtils.formatPhoneNumber(input)
 
-// Verificar se o número é positivo
-console.log(NumberUtils.isPositive(10)); // true
-console.log(NumberUtils.isPositive(-10)); // false
+console.log(phoneFormatted)
+// "(11) 98765-4321"
 
-// Verificar se o número é negativo
-console.log(NumberUtils.isNegative(-10)); // true
-console.log(NumberUtils.isNegative(10)); // false
+```
 
-// Verificar se o número é inteiro
-console.log(NumberUtils.isInteger(10)); // true
-console.log(NumberUtils.isInteger(10.5)); // false
+## 🧮 Arredondamento e porcentagem para gráficos
+
+```ts
+const value = 0.078998
+
+const percent = NumberUtils.formatPercentage(
+  NumberUtils.roundToDecimalPlaces(value, 4)
+)
+
+console.log(percent)
+// "7.90%"
+
+```
+
+## 💹 Converter moeda do usuário para número e somar
+
+```ts
+const a = NumberUtils.parseCurrency("R$ 1.500,00")
+const b = NumberUtils.parseCurrency("750,25")
+
+console.log(a + b)
+// 2250.25
+
 
 ```

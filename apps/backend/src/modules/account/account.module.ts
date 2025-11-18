@@ -1,7 +1,11 @@
 import { Module } from "@nestjs/common";
-import { BcryptAdapter } from "src/adapters/BcryptAdapter";
-import { PrismaService } from "src/shared/application/database/prisma.service";
 
+
+
+
+
+import { BcryptAdapter } from "@/adapters/BcryptAdapter";
+import { PrismaService } from "@/shared/application/database/prisma.service";
 import { RegisterAccountControlle } from "./controller/register-account.controller";
 
 @Module({

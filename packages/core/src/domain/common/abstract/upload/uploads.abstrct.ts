@@ -9,7 +9,7 @@ export interface UploadsFile {
 }
 
 export abstract class UploadsAbstract {
-  abstract upload(req: Express.Request, folder?: string): Promise<UploadsFile[]>;
+  abstract upload(req: Request, folder?: string): Promise<UploadsFile[]>;
   abstract delete(filePath: string): Promise<void>;
 }
 

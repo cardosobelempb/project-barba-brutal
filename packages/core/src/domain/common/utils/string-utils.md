@@ -1,44 +1,68 @@
-🔧 Métodos:
-isBlank -	Verifica se a string está vazia, nula ou contém apenas espaços.
+## 🔹 Exemplos de uso
 
-isNotBlank -	Retorna o inverso de isBlank.
+```ts
+// ========================
+// 1️⃣ Checagem de string
+// ========================
+console.log(StringUtils.isBlank(''))           // true
+console.log(StringUtils.isBlank('  '))        // true
+console.log(StringUtils.isNotBlank('texto'))  // true
 
-capitalize -	Capitaliza a primeira letra e transforma o restante em minúsculas.
+// ========================
+// 2️⃣ Capitalização
+// ========================
+console.log(StringUtils.capitalize('cláudio cardoso')) // "Cláudio cardoso"
+console.log(StringUtils.capitalize(''))               // undefined
 
-removeAccents -	Remove acentos de uma string.
+// ========================
+// 3️⃣ Remover acentos e criar slug
+// ========================
+console.log(StringUtils.removeAccents('Olá Mundo!'))  // "Ola Mundo!"
+console.log(StringUtils.toSlug('Olá Mundo!'))        // "ola-mundo"
 
-toSlug -	Gera um slug limpo de uma string (minúsculas, hífens, sem acentos/caracteres especiais).
+// ========================
+// 4️⃣ Truncar string
+// ========================
+console.log(StringUtils.truncate('Exemplo de texto longo', 10)) // "Exemplo de..."
 
-truncate -	Limita a string a um tamanho máximo, adicionando "..." se exceder.
+// ========================
+// 5️⃣ Contar ocorrências
+// ========================
+console.log(StringUtils.countOccurrences('banana', 'a')) // 3
 
-countOccurrences -	Conta quantas vezes uma substring aparece em uma string.
+// ========================
+// 6️⃣ Inverter string
+// ========================
+console.log(StringUtils.reverse('abc')) // "cba"
 
-reverse -	Inverte a string.
+// ========================
+// 7️⃣ Validar e-mail e URL
+// ========================
+console.log(StringUtils.isValidEmail('teste@dominio.com')) // true
+console.log(StringUtils.isValidURL('https://google.com')) // true
 
-isValidEmail -	Valida e-mails simples via regex.
+// ========================
+// 8️⃣ Validar CPF e CNPJ
+// ========================
+console.log(StringUtils.isValidCPF('123.456.789-09')) // false
+console.log(StringUtils.isValidCNPJ('11.444.777/0001-61')) // true
 
-isValidURL -	Valida se uma string é uma URL válida usando URL.
+// ========================
+// 9️⃣ Conversão de cases
+// ========================
+console.log(StringUtils.toCamelCase('hello_world-test')) // "helloWorldTest"
+console.log(StringUtils.toSnakeCase('HelloWorld Test'))  // "hello_world_test"
+console.log(StringUtils.toKebabCase('HelloWorld Test'))  // "hello-world-test"
 
-isValidCPF -	Valida um CPF com os algoritmos de verificação adequados.
+// ========================
+// 🔟 Gerar strings aleatórias
+// ========================
+console.log(StringUtils.generateRandomString(8))       // exemplo: "A1b2C3d4"
+console.log(StringUtils.generateSecureRandomString(8)) // exemplo: "G5h8K0Q2"
 
-isValidCNPJ -	Valida um CNPJ com os dígitos verificadores.
-
-toCamelCase -	Converte string para camelCase.
-
-toSnakeCase -	Converte para snake_case.
-
-toKebabCase -	Converte para kebab-case.
-
-generateRandomString -	Gera uma string aleatória com letras e números.
-
-getInitials -	Retorna as iniciais de um nome completo.
-
-# Exemplos rápidos:
-
-```
-console.log(StringUtils.isValidEmail("test@domain.com")); // true
-console.log(StringUtils.isValidCPF("123.456.789-09"));    // false ou true, se for válido
-console.log(StringUtils.toSnakeCase("myVariableName"));   // my_variable_name
-console.log(StringUtils.generateRandomString(8));         // Ex: "A8kG9LmP"
+// ========================
+// 1️⃣1️⃣ Obter iniciais
+// ========================
+console.log(StringUtils.getInitials('Cláudio Cardoso')) // "CC"
 
 ```

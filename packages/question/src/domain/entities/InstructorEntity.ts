@@ -13,6 +13,18 @@ export class InstructorEntity extends Entity<InstructorProps> {
     return this.props.name;
   }
 
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
+  get deletedAt() {
+    return this.props.deletedAt;
+  }
+
   static create(
      props: Optional<InstructorProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
     id?: UUIDVO,

@@ -1,160 +1,247 @@
+/**
+ * Utilitário de manipulação e formatação de datas.
+ * - Padronizado
+ * - Seguro
+ * - Reutilizável
+ */
 export class DateUtils {
   private constructor() {}
 
+  // ---------------------------------------------------------------------------
+  // Helpers internos
+  // ---------------------------------------------------------------------------
+
+  /** Valida se o valor é uma instância Date válida */
+  private static isDateInstance(date: any): date is Date {
+    return date instanceof Date && !isNaN(date.getTime())
+  }
+
+  /** Forma padronizada de extrair Y/M/D */
+  private static extractYMD(date: Date) {
+    return {
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+    }
+  }
+
+  /** Formata com máscara (DD/MM/YYYY, MM/DD/YYYY, etc.) */
+  private static formatWithMask(
+    date: Date,
+    mask: string,
+  ): string {
+    if (!this.isDateInstance(date)) return ''
+
+    const { day, month, year } = this.extractYMD(date)
+    return mask
+      .replace('DD', String(day).padStart(2, '0'))
+      .replace('MM', String(month).padStart(2, '0'))
+      .replace('YYYY', String(year))
+  }
+
+  // ---------------------------------------------------------------------------
+  // Validação
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Retorna true se a string ou Date representa uma data válida.
+   */
   static isValidDate(date: string | Date): boolean {
-    const d = new Date(date)
-    return !isNaN(d.getTime())
+    return this.isDateInstance(new Date(date))
   }
 
+  // ---------------------------------------------------------------------------
+  // Formatação
+  // ---------------------------------------------------------------------------
+
+  /** Formato DD/MM/YYYY */
   static formatDate(date: Date): string {
-    const day = String(date.getDate()).padStart(2, '0')
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const year = date.getFullYear()
-    return `${day}/${month}/${year}`
+    return this.formatWithMask(date, 'DD/MM/YYYY')
   }
 
-  static formatDateISO(date: Date): string {
-    return date.toISOString().split('T')[0] ?? '' // YYYY-MM-DD
+  /** Formato YYYY-MM-DD (ISO) */
+  static formatDateISO(date: Date): string | undefined {
+    return this.isDateInstance(date)
+      ? date.toISOString().split('T')[0]
+      : ''
   }
 
+  /** Formato MM/DD/YYYY (US) */
   static formatDateUS(date: Date): string {
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const year = date.getFullYear()
-    return `${month}/${day}/${year}`
+    return this.formatWithMask(date, 'MM/DD/YYYY')
   }
 
+  /**
+   * Formata usando locale e opções customizadas.
+   */
+  static formatWithLocale(
+    date: Date,
+    locale = 'pt-BR',
+    options?: Intl.DateTimeFormatOptions,
+  ): string {
+    if (!this.isDateInstance(date)) return ''
+    return new Intl.DateTimeFormat(locale, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      ...options,
+    }).format(date)
+  }
+
+  /** Formatação utilizada em textos de blog */
+  static formatDateForBlog(dateString: string, prefix?: string): string {
+    const date = new Date(dateString)
+    const base = this.formatDate(date)
+    return prefix ? `${prefix} ${base}` : base
+  }
+
+  // ---------------------------------------------------------------------------
+  // Parsing
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Converte "DD/MM/YYYY" → Date
+   * - Valida números
+   * - Protege contra NaN
+   * - Retorna null em caso de data inválida
+   */
   static parseDate(dateStr: string): Date | null {
-    const [day, month, year] = dateStr.split('/')
-    if (!day || !month || !year) {
+    if (!dateStr) return null
+
+    const parts = dateStr.split('/')
+    if (parts.length !== 3) return null
+
+    const [dayStr, monthStr, yearStr] = parts
+
+    // Converte os valores e valida imediatamente
+    const day = Number(dayStr)
+    const month = Number(monthStr)
+    const year = Number(yearStr)
+
+    // Rejeita NaN e valores fora dos ranges normais
+    if (
+      !Number.isInteger(day) ||
+      !Number.isInteger(month) ||
+      !Number.isInteger(year) ||
+      month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > 31
+    ) {
       return null
     }
-    const date = new Date(+year, +month - 1, +day)
-    return this.isValidDate(date) ? date : null
+
+    // Constrói a data real
+    const date = new Date(year, month - 1, day)
+
+    // Checa se o JavaScript não quebrou a data
+    return this.isDateInstance(date) ? date : null
   }
 
+
+  // ---------------------------------------------------------------------------
+  // Comparações simples
+  // ---------------------------------------------------------------------------
+
   static isPast(date: Date): boolean {
-    return date.getTime() < new Date().getTime()
+    return this.isDateInstance(date) && date.getTime() < Date.now()
   }
 
   static isFuture(date: Date): boolean {
-    return date.getTime() > new Date().getTime()
+    return this.isDateInstance(date) && date.getTime() > Date.now()
   }
 
-  static isSameDay(date1: Date, date2: Date): boolean {
+  static isSameDay(a: Date, b: Date): boolean {
+    if (!this.isDateInstance(a) || !this.isDateInstance(b)) return false
+
     return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
+      a.getDate() === b.getDate() &&
+      a.getMonth() === b.getMonth() &&
+      a.getFullYear() === b.getFullYear()
     )
   }
 
+  static isBetween(date: Date, start: Date, end: Date): boolean {
+    if (![date, start, end].every(d => this.isDateInstance(d))) return false
+
+    const t = date.getTime()
+    return t >= start.getTime() && t <= end.getTime()
+  }
+
+  // ---------------------------------------------------------------------------
+  // Manipulação
+  // ---------------------------------------------------------------------------
+
   static addDays(date: Date, days: number): Date {
-    const result = new Date(date)
-    result.setDate(result.getDate() + days)
-    return result
+    const clone = new Date(date)
+    clone.setDate(clone.getDate() + days)
+    return clone
   }
 
   static subtractDays(date: Date, days: number): Date {
     return this.addDays(date, -days)
   }
 
-  /**
-   * Retorna a diferença em dias entre duas datas.
-   */
-  static diffInDays(date1: Date, date2: Date): number {
-    const diff = Math.abs(date1.getTime() - date2.getTime())
-    return Math.floor(diff / (1000 * 60 * 60 * 24))
+  static diffInDays(a: Date, b: Date): number {
+    if (!this.isDateInstance(a) || !this.isDateInstance(b)) return 0
+    const diff = Math.abs(a.getTime() - b.getTime())
+    return Math.floor(diff / 86_400_000)
   }
 
-  /**
-   * Converte a data para uma string com fuso horário específico (ex: "pt-BR", "en-US")
-   */
-  static formatWithLocale(
-    date: Date,
-    locale: string = 'pt-BR',
-    options?: Intl.DateTimeFormatOptions,
-  ): string {
-    return new Intl.DateTimeFormat(locale, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      ...(options || {}),
-    }).format(date)
-  }
-
-  /**
-   * Retorna a data atual com o fuso horário especificado.
-   */
   static nowInTimezone(timeZone: string): string {
     return new Date().toLocaleString('en-US', { timeZone })
   }
 
-  /**
-   * Retorna se uma data está entre duas outras.
-   */
-  static isBetween(date: Date, start: Date, end: Date): boolean {
-    return date.getTime() >= start.getTime() && date.getTime() <= end.getTime()
-  }
+  // ---------------------------------------------------------------------------
+  // Datas relativas
+  // ---------------------------------------------------------------------------
 
-  /**
-   * Converte milissegundos para duração legível: "1d 2h 30m 10s"
-   */
   static convertMsToReadable(ms: number): string {
-    const seconds = Math.floor((ms / 1000) % 60)
-    const minutes = Math.floor((ms / (1000 * 60)) % 60)
-    const hours = Math.floor((ms / (1000 * 60 * 60)) % 24)
-    const days = Math.floor(ms / (1000 * 60 * 60 * 24))
+    const s = Math.floor((ms / 1000) % 60)
+    const m = Math.floor((ms / 60000) % 60)
+    const h = Math.floor((ms / 3600000) % 24)
+    const d = Math.floor(ms / 86400000)
 
     return [
-      days > 0 ? `${days}d` : '',
-      hours > 0 ? `${hours}h` : '',
-      minutes > 0 ? `${minutes}m` : '',
-      seconds > 0 ? `${seconds}s` : '',
+      d ? `${d}d` : '',
+      h ? `${h}h` : '',
+      m ? `${m}m` : '',
+      s ? `${s}s` : '',
     ]
       .filter(Boolean)
       .join(' ')
   }
 
-  /**
-   * Retorna uma string amigável da diferença da data em relação ao agora.
-   * Ex: "há 3 minutos", "em 2 dias"
-   */
   static getRelativeTimeFromNow(date: Date, locale = 'pt-BR'): string {
-    const now = new Date()
-    const diff = date.getTime() - now.getTime()
-    const absDiff = Math.abs(diff)
+    if (!this.isDateInstance(date)) return ''
+
+    const now = Date.now()
+    const diff = date.getTime() - now
+    const abs = Math.abs(diff)
 
     const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
-
     const units: [Intl.RelativeTimeFormatUnit, number][] = [
+      ['year', 365 * 86400000],
+      ['month', 30 * 86400000],
+      ['week', 7 * 86400000],
+      ['day', 86400000],
+      ['hour', 3600000],
+      ['minute', 60000],
       ['second', 1000],
-      ['minute', 1000 * 60],
-      ['hour', 1000 * 60 * 60],
-      ['day', 1000 * 60 * 60 * 24],
-      ['week', 1000 * 60 * 60 * 24 * 7],
-      ['month', 1000 * 60 * 60 * 24 * 30],
-      ['year', 1000 * 60 * 60 * 24 * 365],
     ]
 
-    for (let i = units.length - 1; i >= 0; i--) {
-      const unitEntry = units[i]
-      if (!unitEntry) continue
-      const [unit, msInUnit] = unitEntry
-      const delta = diff / msInUnit
-
-      if (Math.abs(delta) >= 1) {
-        return rtf.format(Math.round(delta), unit)
+    for (const [unit, size] of units) {
+      if (abs >= size) {
+        return rtf.format(Math.round(diff / size), unit)
       }
     }
-
     return rtf.format(0, 'second')
   }
 
-  /**
-   * Gera uma matriz representando um calendário mensal.
-   * Cada semana é um array de 7 datas.
-   */
+  // ---------------------------------------------------------------------------
+  // Construção de calendários
+  // ---------------------------------------------------------------------------
+
   static generateMonthlyCalendar(
     year: number,
     month: number,
@@ -166,43 +253,41 @@ export class DateUtils {
     const calendar: Date[][] = []
     let week: Date[] = []
 
-    const firstWeekday = (firstDay.getDay() + (startOnMonday ? 6 : 0)) % 7
+    const shift = startOnMonday ? 6 : 0
+    const firstWeekday = (firstDay.getDay() + shift) % 7
+
+    // Preenche espaços vazios da primeira semana
     for (let i = 0; i < firstWeekday; i++) {
-      week.push(new Date(NaN)) // vazio
+      week.push(new Date(NaN))
     }
 
-    for (let day = 1; day <= lastDay.getDate(); day++) {
-      const date = new Date(year, month, day)
-      week.push(date)
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      week.push(new Date(year, month, d))
       if (week.length === 7) {
         calendar.push(week)
         week = []
       }
     }
 
+    // Última semana incompleta
     if (week.length) {
-      while (week.length < 7) {
-        week.push(new Date(NaN)) // vazio
-      }
+      while (week.length < 7) week.push(new Date(NaN))
       calendar.push(week)
     }
 
     return calendar
   }
 
-  /**
-   * Gera uma lista de semanas a partir de uma data base.
-   */
   static generateWeeks(startDate: Date, numberOfWeeks: number): Date[][] {
     const weeks: Date[][] = []
-    const start = new Date(startDate)
-    start.setDate(start.getDate() - start.getDay()) // começa no domingo
+    const cursor = new Date(startDate)
+    cursor.setDate(cursor.getDate() - cursor.getDay()) // normaliza ao domingo
 
     for (let i = 0; i < numberOfWeeks; i++) {
       const week: Date[] = []
       for (let d = 0; d < 7; d++) {
-        week.push(new Date(start))
-        start.setDate(start.getDate() + 1)
+        week.push(new Date(cursor))
+        cursor.setDate(cursor.getDate() + 1)
       }
       weeks.push(week)
     }
@@ -210,42 +295,33 @@ export class DateUtils {
     return weeks
   }
 
-  /**
-   * Retorna a lista de feriados nacionais fixos e móveis (BR).
-   */
+  // ---------------------------------------------------------------------------
+  // Feriados Brasileiros
+  // ---------------------------------------------------------------------------
+
   static getBrazilianHolidays(year: number): Date[] {
-    const holidays: Date[] = []
+    const holidays: Date[] = [
+      new Date(year, 0, 1),
+      new Date(year, 3, 21),
+      new Date(year, 4, 1),
+      new Date(year, 8, 7),
+      new Date(year, 9, 12),
+      new Date(year, 10, 2),
+      new Date(year, 10, 15),
+      new Date(year, 11, 25),
+    ]
 
-    // Feriados fixos
-    holidays.push(new Date(year, 0, 1)) // Confraternização Universal
-    holidays.push(new Date(year, 3, 21)) // Tiradentes
-    holidays.push(new Date(year, 4, 1)) // Dia do Trabalhador
-    holidays.push(new Date(year, 8, 7)) // Independência
-    holidays.push(new Date(year, 9, 12)) // Nossa Senhora Aparecida
-    holidays.push(new Date(year, 10, 2)) // Finados
-    holidays.push(new Date(year, 10, 15)) // Proclamação da República
-    holidays.push(new Date(year, 11, 25)) // Natal
-
-    // Feriados móveis
     const easter = this.calculateEaster(year)
-    const carnival = new Date(easter)
-    carnival.setDate(easter.getDate() - 47)
-    const corpusChristi = new Date(easter)
-    corpusChristi.setDate(easter.getDate() + 60)
-    const goodFriday = new Date(easter)
-    goodFriday.setDate(easter.getDate() - 2)
+    const carnival = this.addDays(easter, -47)
+    const goodFriday = this.addDays(easter, -2)
+    const corpusChristi = this.addDays(easter, 60)
 
-    holidays.push(carnival)
-    holidays.push(goodFriday)
-    holidays.push(easter)
-    holidays.push(corpusChristi)
+    holidays.push(carnival, goodFriday, easter, corpusChristi)
 
     return holidays
   }
 
-  /**
-   * Cálculo da data da Páscoa (algoritmo de Gauss).
-   */
+  /** Algoritmo de Gauss para cálculo da Páscoa */
   static calculateEaster(year: number): Date {
     const f = Math.floor
     const G = year % 19
@@ -259,25 +335,9 @@ export class DateUtils {
     return new Date(year, month, day)
   }
 
-  /**
-   * Verifica se a data é feriado nacional no Brasil.
-   */
   static isHoliday(date: Date): boolean {
-    const holidays = this.getBrazilianHolidays(date.getFullYear())
-    return holidays.some(h => this.isSameDay(h, date))
-  }
-
-  static formatDateForBlog(dateString: string, prefix?: string): string {
-    const date = new Date(dateString)
-
-    // Formata para DD/MM/YYYY
-    const day = String(date.getDate()).padStart(2, '0')
-    const month = String(date.getMonth() + 1).padStart(2, '0') // Meses são base 0
-    const year = date.getFullYear()
-
-    const formattedDate = `${day}/${month}/${year}`
-
-    // Retorna com prefixo se existir
-    return prefix ? `${prefix} ${formattedDate}` : formattedDate
+    return this.getBrazilianHolidays(date.getFullYear()).some(h =>
+      this.isSameDay(h, date),
+    )
   }
 }

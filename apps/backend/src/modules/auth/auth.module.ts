@@ -31,7 +31,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
        useFactory(config: ConfigService<ENVIRONMENT_ZOD_SCHEMA, true>) {
         const PRIVATE_KEY = config.get<string>('JWT_PRIVATE_KEY');
         // const PUBLIC_KEY = config.get<string>('JWT_PUBLIC_KEY');
-        const EXPIRES_IN = config.get<string>('JWT_EXPIRES_IN') || '1h';
+        const EXPIRES_IN = config.get('JWT_EXPIRES_IN') || '1h';
 
         if (!PRIVATE_KEY) {
           throw new Error('JWT_PRIVATE_KEY is missing');

@@ -101,7 +101,7 @@ export class JwtAdapter<T extends TokenDTO> implements JwtAbstract<T> {
     const options: JwtSignOptions = {
       algorithm: 'RS256',
       privateKey: this.privateKey,
-      expiresIn,
+      expiresIn: 3600,
     };
 
     return this.jwtService.sign(payload as TokenDTO, options);
@@ -110,11 +110,11 @@ export class JwtAdapter<T extends TokenDTO> implements JwtAbstract<T> {
   /**
    * Cria e assina o token de forma assíncrona.
    */
-  private async signAsyncToken(payload: T, expiresIn: string | number): Promise<string> {
+  private async signAsyncToken(payload: T, expiresIn: string | undefined): Promise<string> {
     const options: JwtSignOptions = {
       algorithm: 'RS256',
       privateKey: this.privateKey,
-      expiresIn,
+      expiresIn: "1h",
     };
 
     return this.jwtService.signAsync(payload as TokenDTO, options);

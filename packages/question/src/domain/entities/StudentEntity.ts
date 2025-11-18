@@ -13,6 +13,18 @@ export class StudentEntity extends Entity<StudentProps> {
     return this.props.name;
   }
 
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
+  get deletedAt() {
+    return this.props.deletedAt;
+  }
+
   static create(
      props: Optional<StudentProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
     id?: UUIDVO,

@@ -1,89 +1,59 @@
-### 🔧 PasswordUtils.ts (classe principal com integração)
-```
-  import { HashComparer } from '../abstract'
+# 📘 EXEMPLOS DE USO (Didáticos e Reais)
 
-export class PasswordUtils {
-  constructor(private hasher: HashComparer) {}
-  // Gera uma senha aleatória
-  static generatePassword(
-    length: number = 12,
-    useUpperCase: boolean = true,
-    useNumbers: boolean = true,
-    useSymbols: boolean = true,
-  ): string {
-    const lowerCase = 'abcdefghijklmnopqrstuvwxyz'
-    const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    const numbers = '0123456789'
-    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?'
+## 🎲 1. Gerando senhas
 
-    let chars = lowerCase
-    if (useUpperCase) chars += upperCase
-    if (useNumbers) chars += numbers
-    if (useSymbols) chars += symbols
+```ts
+PasswordUtils.generatePassword()
+// ex: "fT9!aL0@xPqz"
 
-    let password = ''
-    for (let i = 0; i < length; i++) {
-      const index = Math.floor(Math.random() * chars.length)
-      password += chars[index]
-    }
-
-    return password
-  }
-
-  // Valida requisitos mínimos de senha
-  static validatePassword(password: string): boolean {
-    const minLength = 8
-    const hasUpperCase = /[A-Z]/.test(password)
-    const hasLowerCase = /[a-z]/.test(password)
-    const hasNumber = /[0-9]/.test(password)
-    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password)
-
-    return (
-      password.length >= minLength &&
-      hasUpperCase &&
-      hasLowerCase &&
-      hasNumber &&
-      hasSymbol
-    )
-  }
-
-  // Verifica força da senha (simples)
-  static getPasswordStrength(password: string): 'Fraca' | 'Média' | 'Forte' {
-    let score = 0
-    if (password.length >= 8) score++
-    if (/[A-Z]/.test(password)) score++
-    if (/[0-9]/.test(password)) score++
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++
-
-    if (score <= 1) return 'Fraca'
-    if (score === 2 || score === 3) return 'Média'
-    return 'Forte'
-  }
-
-  async hash(password: string): Promise<string> {
-    return this.hash(password)
-  }
-
-  async compare(password: string, hashed: string): Promise<boolean> {
-    return this.compare(password, hashed)
-  }
-}
+PasswordUtils.generatePassword(16, true, true, false)
+// ex: "AbcDEfgHIjkLMnop"
 
 ```
 
-### 💡 Exemplo de uso
+## 🔍 2. Validando requisitos mínimos
+
+```ts
+PasswordUtils.validatePassword("Fraca123")
+// false — falta símbolo
+
+PasswordUtils.validatePassword("Forte123!")
+// true
+
 ```
-import { BcryptPasswordHasher } from './BcryptPasswordHasher';
-import { PasswordUtils } from './PasswordUtils';
 
-const utils = new PasswordUtils(new BcryptPasswordHasher());
+## 📊 3. Avaliando força
 
-const senha = PasswordUtils.generatePassword();
-console.log('Senha gerada:', senha);
+```ts
+PasswordUtils.getPasswordStrength("abc")
+// "Fraca"
 
-const hash = await utils.hash(senha);
-console.log('Hash:', hash);
+PasswordUtils.getPasswordStrength("Ana1234")
+// "Média"
 
-const ok = await utils.compare(senha, hash);
-console.log('Senha confere?', ok);
+PasswordUtils.getPasswordStrength("A1!bcdefgh")
+// "Forte"
+
+
 ```
+## 🔐 4. Gerando hash da senha
+
+```ts
+const password = "MinhaSenhaForte!123"
+
+const hashed = await passwordUtils.hash(password)
+
+console.log(hashed)
+// "$argon2id$v=19$m=4096,t=3,p=1$..."
+
+
+```
+## 🔑 5. Comparando hash
+
+```ts
+const isValid = await passwordUtils.compare("MinhaSenhaForte!123", hashed)
+
+console.log(isValid) // true
+
+```
+

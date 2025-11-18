@@ -1,41 +1,64 @@
 export class TimeUtils {
   private constructor() {}
 
+  /**
+   * Valida se uma string está no formato HH:mm (24h)
+   */
   static isValidTime(timeStr: string): boolean {
     return /^([01]\d|2[0-3]):[0-5]\d$/.test(timeStr)
   }
 
+  /**
+   * Formata uma Date para string "HH:mm"
+   */
   static formatTime(date: Date): string {
     const hours = String(date.getHours()).padStart(2, '0')
     const minutes = String(date.getMinutes()).padStart(2, '0')
     return `${hours}:${minutes}`
   }
 
+  /**
+   * Converte string "HH:mm" em Date com a data de hoje
+   */
   static parseTime(timeStr: string): Date | null {
+    // Valida formato HH:mm
     if (!this.isValidTime(timeStr)) return null
+
     const [hours, minutes] = timeStr.split(':').map(Number)
+
+    // Garantia extra, mesmo que isValidTime já proteja
     if (hours === undefined || minutes === undefined) return null
+
     const now = new Date()
     now.setHours(hours, minutes, 0, 0)
     return now
   }
 
+  /**
+   * Adiciona minutos a uma data
+   */
   static addMinutes(date: Date, minutes: number): Date {
     const result = new Date(date)
     result.setMinutes(result.getMinutes() + minutes)
     return result
   }
 
+  /**
+   * Subtrai minutos de uma data
+   */
   static subtractMinutes(date: Date, minutes: number): Date {
     return this.addMinutes(date, -minutes)
   }
 
+  /**
+   * Compara se duas strings de tempo são iguais (HH:mm)
+   */
   static isSameTime(time1: string, time2: string): boolean {
     return time1 === time2
   }
 
   /**
-   * Calcula a diferença entre duas horas (em minutos).
+   * Calcula diferença entre duas datas em minutos
    */
   static diffInMinutes(date1: Date, date2: Date): number {
     const diffMs = Math.abs(date1.getTime() - date2.getTime())
@@ -43,12 +66,12 @@ export class TimeUtils {
   }
 
   /**
-   * Converte uma data para hora local com fuso horário.
+   * Formata hora em determinado fuso horário
    */
   static formatTimeInTimeZone(
     date: Date,
     timeZone: string,
-    locale = 'pt-BR',
+    locale: string = 'pt-BR',
   ): string {
     return date.toLocaleTimeString(locale, {
       timeZone,
@@ -58,26 +81,24 @@ export class TimeUtils {
   }
 
   /**
-   * Retorna se um horário está entre dois outros.
+   * Verifica se um horário está entre dois horários
    */
   static isTimeBetween(time: Date, start: Date, end: Date): boolean {
-    const t = time.getHours() * 60 + time.getMinutes()
-    const s = start.getHours() * 60 + start.getMinutes()
-    const e = end.getHours() * 60 + end.getMinutes()
-
+    const toMinutes = (d: Date) => d.getHours() * 60 + d.getMinutes()
+    const t = toMinutes(time)
+    const s = toMinutes(start)
+    const e = toMinutes(end)
     return t >= s && t <= e
   }
 
   /**
-   * Converte minutos para formato "2h 30m"
+   * Converte minutos para formato "Xh Ym"
    */
-  static convertMinutesToReadable(min: number): string {
-    const hours = Math.floor(min / 60)
-    const minutes = min % 60
-    return (
-      [hours > 0 ? `${hours}h` : '', minutes > 0 ? `${minutes}m` : '']
-        .filter(Boolean)
-        .join(' ') || '0m'
-    )
+  static convertMinutesToReadable(minutes: number): string {
+    const h = Math.floor(minutes / 60)
+    const m = minutes % 60
+    return [h > 0 ? `${h}h` : '', m > 0 ? `${m}m` : '']
+      .filter(Boolean)
+      .join(' ') || '0m'
   }
 }

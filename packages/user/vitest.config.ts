@@ -3,6 +3,7 @@ import baseConfig from '@repo/vitest-config/vitest.base'
 import { mergeConfig } from 'vitest/config'
 
 export default mergeConfig(baseConfig, {
+  plugins: [],
   test: {
     // customizações específicas do backend
   },

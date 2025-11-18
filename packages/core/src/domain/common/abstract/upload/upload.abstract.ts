@@ -12,7 +12,7 @@ export abstract class UploadAbstract {
   /**
    * Faz o upload de um arquivo e retorna seus dados.
    */
-  abstract upload(file: Express.Request): Promise<UploadFile>;
+  abstract upload(file: Request): Promise<UploadFile>;
 
   /**
    * (Opcional) Remove o arquivo do storage.

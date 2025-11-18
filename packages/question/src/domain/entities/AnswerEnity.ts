@@ -1,4 +1,4 @@
-import { Entity, Optional, UUIDVO } from '@repo/core';
+import { Entity, Optional, StringUtils, UUIDVO } from '@repo/core';
 
 export interface AnswerProps {
   authorId: UUIDVO;
@@ -16,6 +16,11 @@ export class AnswerEntity extends Entity<AnswerProps> {
     return this.props.content;
   }
 
+  set content(content: string) {
+    this.props.content = content;
+    this.touch();
+  }
+
   get authorId() {
     return this.props.authorId;
   }
@@ -23,6 +28,27 @@ export class AnswerEntity extends Entity<AnswerProps> {
   get questionId() {
     return this.props.questionId;
   }
+
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
+  get deletedAt() {
+    return this.props.deletedAt;
+  }
+
+  get excerpt() {
+    return StringUtils.truncate(this.content, 120)
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
+
 
   static create(
      props: Optional<AnswerProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
