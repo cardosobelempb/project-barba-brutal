@@ -12,3 +12,5 @@ export * from './email'
 export * from './jwt.abstract'
 export * from './upload'
 
+export * from './AbstractUseCase'
+

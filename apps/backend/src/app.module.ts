@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AccountModule } from './modules/account/account.module';
 import { DatabaseModule } from './modules/database/database.module';
-import { QuestionModule } from './modules/question/question.module';
+import { ForumModule } from './modules/forum/forum.module';
 import { envZodSchema } from './modules/settings/env/env.zod';
 import { SettingsModule } from './modules/settings/settings.module';
 import { UserModule } from './modules/user/user.module';
@@ -13,7 +13,7 @@ import { UserModule } from './modules/user/user.module';
   imports: [ConfigModule.forRoot({
     validate: (env) => envZodSchema.parse(env),
     isGlobal: true
-  }), SettingsModule, AccountModule, UserModule, DatabaseModule, QuestionModule],
+  }), SettingsModule, AccountModule, UserModule, DatabaseModule, ForumModule],
   controllers: [AppController],
   providers: [],
 })

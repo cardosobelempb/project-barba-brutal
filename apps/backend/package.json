@@ -27,7 +27,7 @@
     "@repo/core": "*",
     "@repo/eslint-config": "*",
     "@repo/professional": "*",
-    "@repo/question": "*",
+    "@repo/forum": "*",
     "@repo/service": "*",
     "@repo/types": "*",
     "@repo/user": "*",

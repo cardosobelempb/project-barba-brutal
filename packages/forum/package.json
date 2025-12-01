@@ -1,0 +1,26 @@
+{
+  "name": "@repo/forum",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsup src/index.ts --dts --minify",
+    "dev": "tsup src/index.ts --dts --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@repo/core": "*",
+    "@repo/user": "*"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "rollup": "^4.53.2",
+    "@repo/vitest-config": "*",
+    "@repo/eslint-config": "*",
+    "@repo/ts-config": "*"
+  }
+}
