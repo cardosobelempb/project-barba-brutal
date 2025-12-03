@@ -1,4 +1,4 @@
-import { UUIDVO } from "@repo/core";
+import { AbstractUseCase, UUIDVO } from "@repo/core";
 
 import { Answer } from "../../../enterprise/entities";
 import { AnswerRepository } from "../../repositories";
@@ -13,8 +13,10 @@ export interface AnswerQuestionResponse {
   answer: Answer;
 }
 
-export class CreateAnswerQuestion {
-  constructor(private readonly answerRepository: AnswerRepository) { }
+export class CreateAnswerQuestion extends AbstractUseCase<AnswerRepository, AnswerQuestionResponse, AnswerQuestionRequest> {
+  constructor(private readonly answerRepository: AnswerRepository) {
+    super(answerRepository)
+   }
 
   async execute({ intructorId, questionId, content }: AnswerQuestionRequest): Promise<AnswerQuestionResponse> {
 

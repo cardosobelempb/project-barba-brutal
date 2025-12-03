@@ -9,9 +9,9 @@ export function questionFactory(
 ) {
   const question = Question.create(
     {
+      authorId: UUIDVO.create(),
       title: faker.lorem.sentence(),
       content: faker.lorem.text(),
-      authorId: UUIDVO.create(),
       ...override,
     },
     id,

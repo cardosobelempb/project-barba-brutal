@@ -9,7 +9,6 @@ export interface AnswerProps {
   deletedAt?: Date | null;
 }
 
-
 export class Answer extends Entity<AnswerProps> {
 
   get content() {

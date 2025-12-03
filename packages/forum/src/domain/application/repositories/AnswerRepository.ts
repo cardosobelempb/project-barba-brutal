@@ -1,6 +1,6 @@
 import { RepositoryAbstract } from "@repo/core";
-import { AnswerEntity } from "../../enterprise/entities";
 
+import { Answer } from "../../enterprise/entities";
 
-export abstract class AnswerRepository extends RepositoryAbstract<AnswerEntity> {
+export abstract class AnswerRepository extends RepositoryAbstract<Answer> {
 }

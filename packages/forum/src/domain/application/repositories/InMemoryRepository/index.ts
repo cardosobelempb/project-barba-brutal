@@ -1,3 +1,3 @@
-export * from './InMemoryAnswerInRepository';
+export * from './InMemoryAnswerRepository';
 export * from './InMemoryQuestionRepository';
 
