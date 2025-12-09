@@ -1,0 +1,29 @@
+import { AbstractUseCase } from "@repo/core";
+
+import { Answer } from "../../../enterprise";
+import { AnswerRepository } from "../../repositories";
+
+export namespace FetchAnswersQuestion {
+  export interface Request {
+    questionId: string;
+    page: number;
+  }
+
+  export interface Response {
+    answers: Answer[]
+  }
+
+}
+
+export class FetchAnswersQuestion extends AbstractUseCase<{answerRepository: AnswerRepository}, FetchAnswersQuestion.Response, FetchAnswersQuestion.Request> {
+
+  async execute({ questionId, page  }: FetchAnswersQuestion.Request): Promise<FetchAnswersQuestion.Response>{
+    const { answerRepository } = this.deps;
+
+    const answers = await answerRepository.findManyByQuestionId(questionId, {page});
+
+    return {
+      answers
+    }
+  }
+}

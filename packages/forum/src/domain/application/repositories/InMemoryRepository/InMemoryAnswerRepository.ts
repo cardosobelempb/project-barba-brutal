@@ -1,4 +1,4 @@
-import { Pagination } from "@repo/core";
+import { Pagination, UUIDVO } from "@repo/core";
 
 import { Answer } from "../../../enterprise/entities";
 import { AnswerRepository } from "../AnswerRepository";
@@ -25,6 +25,29 @@ export class InMemoryAnswerRepository implements AnswerRepository {
     const end = start + _size;
 
     return this.items.slice(start, end);
+  }
+
+  async findManyByQuestionId(
+    questionId: string,
+    { page = 1, size = 20 }: Pagination,
+  ): Promise<Answer[]> {
+    // Criamos o value object apenas uma vez (evita recalcular para cada item)
+    const questionIdVO = UUIDVO.create(questionId);
+
+    // Filtramos respostas pertencentes à questão alvo
+    const filteredAnswers = this.items.filter((item) =>
+      item.questionId.equals(questionIdVO),
+    );
+
+    // Sanitizamos os valores da paginação
+    const currentPage = Math.max(1, page);
+    const pageSize = Math.max(1, size);
+
+    // Calculamos o deslocamento (offset)
+    const offset = (currentPage - 1) * pageSize;
+
+    // Retornamos o slice da página atual
+    return filteredAnswers.slice(offset, offset + pageSize);
   }
 
   /**

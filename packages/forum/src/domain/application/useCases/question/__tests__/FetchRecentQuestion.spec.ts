@@ -31,7 +31,19 @@ describe('Feth Recent Question', () => {
       expect.objectContaining({ createdAt: new Date(2025, 0, 20) }),
       expect.objectContaining({ createdAt: new Date(2025, 0, 18) })
     ]);
-    // expect(questions.slug.getValue()).toEqual(entity.slug.getValue());
-    // expect(questions.title).toEqual(entity.title);
   })
+
+  it('should be able to fetch paginated recent questions', async () => {
+
+    for (let i = 1; i <= 22; i++){
+      await inMemoryQuestionRepository.create(questionFactory({}));
+    }
+
+    const { questions } = await sut.execute({
+      page: 2
+    });
+
+    expect(questions).toHaveLength(2);
+  })
+
 });
