@@ -3,26 +3,26 @@ import { NotAllwedError, UUIDVO } from "@repo/core";
 import { expect } from "vitest";
 
 import { InMemoryQuestionRepository } from "../../../repositories";
+import { questionFactory } from "../factories/question-factory";
 import { UpdateQuestionUseCase } from "../UpdateQuestion";
-import { questionFactory } from "./factories/question-factory";
 
-let repository: InMemoryQuestionRepository;
+let inMemoryQuestionRepository: InMemoryQuestionRepository;
 let sut: UpdateQuestionUseCase;
 
 describe("UpdateQuestionUseCase", () => {
   beforeEach(() => {
-    repository = new InMemoryQuestionRepository();
-    sut = new UpdateQuestionUseCase(repository);
+    inMemoryQuestionRepository = new InMemoryQuestionRepository();
+    sut = new UpdateQuestionUseCase(inMemoryQuestionRepository);
   });
 
   afterEach(() => {
-    repository.items = [];
+    inMemoryQuestionRepository.items = [];
   });
 
   it("should update a question when the user is the owner", async () => {
     // Arrange
     const question = questionFactory({});
-    await repository.create(question);
+    await inMemoryQuestionRepository.create(question);
 
     const newTitle = faker.lorem.sentence();
     const newContent = faker.lorem.text();
@@ -36,9 +36,13 @@ describe("UpdateQuestionUseCase", () => {
     });
 
     // Assert
-    const updated = repository.items[0];
+    const updated = inMemoryQuestionRepository.items[0];
     expect(updated?.title).toBe(newTitle);
     expect(updated?.content).toBe(newContent);
+    expect(updated).toMatchObject({
+      title: updated?.title,
+      content: updated?.content,
+    })
   });
 
   it("should paginate results", async () => {
@@ -46,12 +50,12 @@ describe("UpdateQuestionUseCase", () => {
     const items = Array.from({ length: 30 }, () => questionFactory({}));
 
     for (const q of items) {
-      await repository.create(q);
+      await inMemoryQuestionRepository.create(q);
     }
 
     // Act perPage
-    const page1 = await repository.findAll({ page: 1, size: 10 });
-    const page3 = await repository.findAll({ page: 3, size: 10 });
+    const page1 = await inMemoryQuestionRepository.findAll({ page: 1, size: 10 });
+    const page3 = await inMemoryQuestionRepository.findAll({ page: 3, size: 10 });
 
     // Assert
     expect(page1).toHaveLength(10);
@@ -61,7 +65,7 @@ describe("UpdateQuestionUseCase", () => {
   it("should throw NotAllwedError when updating a question from another user", async () => {
     // Arrange
     const question = questionFactory({});
-    await repository.create(question);
+    await inMemoryQuestionRepository.create(question);
 
     // Act + Assert
     await expect(

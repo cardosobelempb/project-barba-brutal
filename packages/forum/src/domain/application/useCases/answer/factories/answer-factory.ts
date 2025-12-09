@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { UUIDVO } from "@repo/core";
 
-import { Answer, AnswerProps } from "../../../../../enterprise";
+import { Answer, AnswerProps } from "../../../../enterprise";
 
 export function answerFactory(
   override: Partial<AnswerProps> = {},

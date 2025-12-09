@@ -1,5 +1,6 @@
 import { AbstractUseCase, BadRequestError, NotAllwedError } from "@repo/core";
 
+import { Answer } from "../../../enterprise";
 import { AnswerRepository } from "../../repositories";
 
 export namespace UpdateAnswer {
@@ -9,7 +10,9 @@ export namespace UpdateAnswer {
     content: string;
   }
 
-  export interface Response {}
+  export interface Response {
+    answer: Answer;
+  }
 }
 
 /**
@@ -20,21 +23,20 @@ export namespace UpdateAnswer {
  * - Apenas o autor pode atualizá-la
  */
 export class UpdateAnswerUseCase extends AbstractUseCase<
-  AnswerRepository,
+  { answerRepository: AnswerRepository},
   UpdateAnswer.Response,
   UpdateAnswer.Request
 > {
-  constructor(private readonly answerRepository: AnswerRepository) {
-    super(answerRepository);
-  }
 
   async execute({
     authorId,
     answerId,
     content,
   }: UpdateAnswer.Request): Promise<UpdateAnswer.Response> {
+
     // 1. Busca a questão pelo ID
-    const answer = await this.answerRepository.findById(answerId);
+    const { answerRepository} = this.deps;
+    const answer = await answerRepository.findById(answerId);
 
     // 2. Valida se existe
     if (!answer) {
@@ -42,8 +44,8 @@ export class UpdateAnswerUseCase extends AbstractUseCase<
     }
 
     // 3. Garante que somente o autor possa editar
-    const isOwner = answer.authorId.getValue() === authorId;
-    if (!isOwner) {
+    const isAuthor = answer.authorId.getValue() === authorId;
+    if (!isAuthor) {
       throw new NotAllwedError("You are not allowed to update this answer.");
     }
 
@@ -51,8 +53,8 @@ export class UpdateAnswerUseCase extends AbstractUseCase<
     answer.content = content;
 
     // 5. Persiste as mudanças no repositório
-    await this.answerRepository.update(answer);
+    await answerRepository.update(answer);
 
-    return {};
+    return {answer};
   }
 }

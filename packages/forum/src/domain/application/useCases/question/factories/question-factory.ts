@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { UUIDVO } from "@repo/core";
 
-import { Question, QuestionProps } from "../../../../../enterprise";
+import { Question, QuestionProps } from "../../../../enterprise";
 
 export function questionFactory(
   override: Partial<QuestionProps> = {},

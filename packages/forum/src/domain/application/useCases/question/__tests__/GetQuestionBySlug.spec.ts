@@ -2,8 +2,8 @@ import { SlugVO } from '@repo/core';
 import { expect } from 'vitest';
 
 import { InMemoryQuestionRepository } from '../../../repositories';
+import { questionFactory } from '../factories/question-factory';
 import { GetQuestionBySlug } from '../GetQuestionBySlug';
-import { questionFactory } from './factories/question-factory';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository;
 let sut: GetQuestionBySlug;

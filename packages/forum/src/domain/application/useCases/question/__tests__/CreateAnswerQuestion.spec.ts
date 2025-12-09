@@ -1,8 +1,8 @@
 import { expect } from 'vitest';
 
 import { InMemoryAnswerRepository } from '../../../repositories';
-import { CreateAnswerQuestion } from '../CreateAnswerQuestion';
-import { answerFactory } from './factories/answer-factory';
+import { CreateAnswerQuestion } from '../../answer';
+import { answerFactory } from '../../answer/factories/answer-factory';
 
 let inMemoryAnswerInRepository: InMemoryAnswerRepository;
 let sut: CreateAnswerQuestion;

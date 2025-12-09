@@ -1,5 +1,6 @@
 import { AbstractUseCase, BadRequestError, NotAllwedError } from "@repo/core";
 
+import { Question } from "../../../enterprise";
 import { QuestionRepository } from "../../repositories";
 
 export namespace UpdateQuestion {
@@ -10,7 +11,9 @@ export namespace UpdateQuestion {
     content: string;
   }
 
-  export interface Response {}
+  export interface Response {
+    question: Question;
+  }
 }
 
 /**
@@ -44,8 +47,8 @@ export class UpdateQuestionUseCase extends AbstractUseCase<
     }
 
     // 3. Garante que somente o autor possa editar
-    const isOwner = question.authorId.getValue() === authorId;
-    if (!isOwner) {
+    const isAuthor = question.authorId.getValue() === authorId;
+    if (!isAuthor) {
       throw new NotAllwedError("You are not allowed to update this question.");
     }
 
@@ -56,6 +59,6 @@ export class UpdateQuestionUseCase extends AbstractUseCase<
     // 5. Persiste as mudanças no repositório
     await this.questionRepository.update(question);
 
-    return {};
+    return {question};
   }
 }

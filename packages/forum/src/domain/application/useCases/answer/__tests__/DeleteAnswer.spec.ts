@@ -3,7 +3,7 @@ import { expect } from "vitest";
 
 import { InMemoryAnswerRepository } from "../../../repositories";
 import { DeleteAnswerUseCase } from "../DeleteAnswer";
-import { answerFactory } from "./factories/answer-factory";
+import { answerFactory } from "../factories/answer-factory";
 
 let repository: InMemoryAnswerRepository;
 let sut: DeleteAnswerUseCase;
