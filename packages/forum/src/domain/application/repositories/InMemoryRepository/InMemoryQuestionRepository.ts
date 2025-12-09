@@ -4,6 +4,7 @@ import { Question } from "../../../enterprise/entities";
 import { QuestionRepository } from "../QuestionRepository";
 
 export class InMemoryQuestionRepository implements QuestionRepository {
+
   public items: Question[] = [];
 
   /**
@@ -18,6 +19,23 @@ export class InMemoryQuestionRepository implements QuestionRepository {
    */
   async findBySlug(slug: string): Promise<Question | null> {
     return this.items.find((item) => item.slug.getValue() === slug) ?? null;
+  }
+
+  async findManyRecent({ page = 1, size = 20 }: Pagination): Promise<Question[]> {
+    // Garantimos que os valores sejam válidos.
+    const currentPage = Math.max(1, page);
+    const pageSize = Math.max(1, size);
+
+    // Cálculo claro do offset
+    const offset = (currentPage - 1) * pageSize;
+
+    // Criamos uma cópia antes de ordenar para evitar mutação indesejada
+    const sortedItems = [...this.items].sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+
+    // Aplicamos a paginação
+    return sortedItems.slice(offset, offset + pageSize);
   }
 
   /**
