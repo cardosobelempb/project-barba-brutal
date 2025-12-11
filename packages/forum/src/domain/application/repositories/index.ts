@@ -1,4 +1,5 @@
 export * from './AnswerRepository';
-export * from './InMemoryRepository';
+export * from './CommentAnswerRepository';
+export * from './CommentQuestionRepository';
 export * from './QuestionRepository';
 

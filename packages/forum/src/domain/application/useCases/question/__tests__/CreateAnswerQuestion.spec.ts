@@ -1,6 +1,7 @@
 import { expect } from 'vitest';
 
-import { InMemoryAnswerRepository } from '../../../repositories';
+
+import { InMemoryAnswerRepository } from '../../../repositories/InMemoryRepository';
 import { CreateAnswerQuestion } from '../../answer';
 import { answerFactory } from '../../answer/factories/answer-factory';
 

@@ -2,7 +2,8 @@ import { faker } from "@faker-js/faker";
 import { NotAllwedError, UUIDVO } from "@repo/core";
 import { expect } from "vitest";
 
-import { InMemoryQuestionRepository } from "../../../repositories";
+
+import { InMemoryQuestionRepository } from "../../../repositories/InMemoryRepository";
 import { questionFactory } from "../factories/question-factory";
 import { UpdateQuestionUseCase } from "../UpdateQuestion";
 

@@ -1,7 +1,8 @@
 import { NotAllwedError, UUIDVO } from "@repo/core";
 import { expect } from "vitest";
 
-import { InMemoryQuestionRepository } from "../../../repositories";
+
+import { InMemoryQuestionRepository } from "../../../repositories/InMemoryRepository";
 import { DeleteQuestion } from "../DeleteQuestion";
 import { questionFactory } from "../factories/question-factory";
 

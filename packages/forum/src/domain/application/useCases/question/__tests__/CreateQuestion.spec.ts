@@ -1,7 +1,8 @@
 import { UUIDVO } from '@repo/core';
 import { expect } from 'vitest';
 
-import { InMemoryQuestionRepository } from '../../../repositories';
+
+import { InMemoryQuestionRepository } from '../../../repositories/InMemoryRepository';
 import { CreateQuestion } from '../CreateQuestion';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository;

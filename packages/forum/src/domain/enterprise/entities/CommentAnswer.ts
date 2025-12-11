@@ -2,21 +2,23 @@ import { Optional, UUIDVO } from "@repo/core";
 
 import { Comment, CommentProps } from "./Comment";
 
-export interface AnswerCommentProps extends CommentProps {
+export interface CommentAnswerProps extends CommentProps {
   answerId: UUIDVO;
-  }
+}
 
-export class AnswerComment extends Comment<AnswerCommentProps>{
-
+export class CommentAnswer extends Comment<CommentAnswerProps> {
   get answerId() {
     return this.props.answerId;
   }
 
   static create(
-     props: Optional<AnswerCommentProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    props: Optional<
+      CommentAnswerProps,
+      "createdAt" | "updatedAt" | "deletedAt"
+    >,
     id?: UUIDVO,
   ) {
-    const answerComment = new AnswerComment(
+    const commentAnswer = new CommentAnswer(
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
@@ -24,8 +26,8 @@ export class AnswerComment extends Comment<AnswerCommentProps>{
         deletedAt: props.deletedAt ?? new Date(),
       },
       id,
-    )
+    );
 
-    return answerComment
+    return commentAnswer;
   }
 }

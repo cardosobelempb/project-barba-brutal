@@ -1,6 +1,7 @@
 import { expect } from 'vitest';
 
-import { InMemoryQuestionRepository } from '../../../repositories';
+
+import { InMemoryQuestionRepository } from '../../../repositories/InMemoryRepository';
 import { questionFactory } from '../factories/question-factory';
 import { FetchRecentQuestion } from '../FetchRecentQuestion';
 
