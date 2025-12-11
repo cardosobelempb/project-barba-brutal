@@ -1,4 +1,4 @@
-import { Pagination } from "@repo/core";
+import { Pagination, UUIDVO } from "@repo/core";
 
 import { CommentAnswer } from "../../../enterprise/entities";
 import { CommentAnswerRepository } from "../CommentAnswerRepository";
@@ -25,6 +25,29 @@ export class InMemoryCommentAnswerRepository implements CommentAnswerRepository 
     const end = start + _size;
 
     return this.items.slice(start, end);
+  }
+
+  async findManyByCommentAnswerId(
+    answerId: string,
+    { page = 1, size = 20 }: Pagination,
+  ): Promise<CommentAnswer[]> {
+    // Criamos o value object apenas uma vez (evita recalcular para cada item)
+    const answerIdVO = UUIDVO.create(answerId);
+
+    // Filtramos respostas pertencentes à questão alvo
+    const filteredAnswers = this.items.filter((item) =>
+      item.answerId.equals(answerIdVO),
+    );
+
+    // Sanitizamos os valores da paginação
+    const currentPage = Math.max(1, page);
+    const pageSize = Math.max(1, size);
+
+    // Calculamos o deslocamento (offset)
+    const offset = (currentPage - 1) * pageSize;
+
+    // Retornamos o slice da página atual
+    return filteredAnswers.slice(offset, offset + pageSize);
   }
 
   /**

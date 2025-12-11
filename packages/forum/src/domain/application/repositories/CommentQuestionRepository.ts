@@ -1,7 +1,7 @@
-import { RepositoryAbstract } from "@repo/core";
+import { Pagination, RepositoryAbstract } from "@repo/core";
 
 import { CommentQuestion } from "../../enterprise/entities";
 
 export abstract class CommentQuestionRepository extends RepositoryAbstract<CommentQuestion> {
-
+  abstract findManyByCommentQuestionId(questionId: string, params: Pagination): Promise<CommentQuestion[]>
 }
