@@ -23,14 +23,14 @@ describe('Feth Comments Question useCase', () => {
     await inMemoryCommentQuestionRepository.create(commentQuestionFactory({questionId: questionIdVO}));
     await inMemoryCommentQuestionRepository.create(commentQuestionFactory({questionId: questionIdVO}));
 
-    const { commentsQuestion } = await sut.execute({
+    const { value } = await sut.execute({
       questionId: questionIdVO.getValue(),
       page: 1
     });
 
     // console.log(commentsquestions);
 
-    expect(commentsQuestion).toHaveLength(3);
+    expect(value?.commentsQuestion).toHaveLength(3);
   })
 
   it('should be able to fetch paginated  fetch comments Questions', async () => {
@@ -41,12 +41,12 @@ describe('Feth Comments Question useCase', () => {
       await inMemoryCommentQuestionRepository.create(commentQuestionFactory({questionId: questionIdVO}));
     }
 
-    const { commentsQuestion } = await sut.execute({
+    const { value } = await sut.execute({
       questionId: questionIdVO.getValue(),
       page: 2
     });
 
-    expect(commentsQuestion).toHaveLength(2);
+    expect(value?.commentsQuestion).toHaveLength(2);
   })
 
 });

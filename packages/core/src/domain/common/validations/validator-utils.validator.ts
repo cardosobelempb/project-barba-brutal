@@ -1,7 +1,7 @@
 import { FieldMessage, MethodArgumentNotValidError } from '../errors'
 import { ValidErrors } from './valid-errors.validator'
 import { ValidationErrors } from './validation-errors.validator'
-import { ValidatorConstants } from './validator-constants.validator'
+import { ValidatorConstants } from './ValidatorMessage'
 
 export class ValidatorUtils {
   private constructor() {}

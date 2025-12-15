@@ -1,4 +1,4 @@
-import { AbstractUseCase, NotAllwedError, NotFoundError } from "@repo/core";
+import { AbstractUseCase, Either, ErrorCode, left, NotAllwedError, NotFoundError, right } from "@repo/core";
 
 import { CommentQuestionRepository } from "../../repositories";
 
@@ -8,7 +8,7 @@ export namespace DeleteCommentOnQuestion {
     commentQuestionId: string;
   }
 
-  export interface Response {}
+  export type Response = Either<NotAllwedError | NotFoundError, {}>
 }
 
 export class DeleteCommentOnQuestionUseCase extends AbstractUseCase<
@@ -27,15 +27,15 @@ export class DeleteCommentOnQuestionUseCase extends AbstractUseCase<
     const commentQuestion = await commentQuestionRepository.findById(commentQuestionId);
 
     if (!commentQuestion) {
-      throw new NotFoundError("Comment Question not found.")
+      return left(new NotFoundError(ErrorCode.NOT_FOUND));
     }
 
     if (commentQuestion.authorId.getValue() !== authorId) {
-      throw new NotAllwedError("Not allowed.")
+      return left(new NotAllwedError(ErrorCode.NOT_ALLOWED));
     }
 
     await commentQuestionRepository.delete(commentQuestion);
 
-    return {};
+    return right({});
   }
 }

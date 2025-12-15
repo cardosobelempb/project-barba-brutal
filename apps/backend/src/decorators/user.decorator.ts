@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ErrorConstants, NotFoundError, UnauthorizedError } from '@repo/core';
+import { ErrorCode, NotFoundError, UnauthorizedError } from '@repo/core';
 import { TokenDTO } from '@repo/types';
 // import { Request } from '@repo/types';
 
@@ -40,7 +40,7 @@ export const User = createParamDecorator(
     // ✅ Validação: usuário obrigatório
     if (!user) {
       throw new UnauthorizedError(
-        `${ErrorConstants.ENTITY_NOT_FOUND}: usuário não encontrado no request.
+        `${ErrorCode.ENTITY_NOT_FOUND}: usuário não encontrado no request.
          Use um AuthGuard (ex: JwtAuthGuard) antes do decorator @User().`,
       );
     }

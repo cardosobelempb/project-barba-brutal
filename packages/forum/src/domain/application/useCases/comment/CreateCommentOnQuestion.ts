@@ -1,4 +1,4 @@
-import { AbstractUseCase, NotFoundError, UUIDVO } from "@repo/core";
+import { AbstractUseCase, Either, ErrorCode, left, NotFoundError, right, UUIDVO } from "@repo/core";
 
 import { CommentQuestion } from "../../../enterprise";
 import { CommentQuestionRepository, QuestionRepository } from "../../repositories";
@@ -10,9 +10,9 @@ export namespace CreateCommentOnCrestion {
     content: string;
   }
 
-  export interface Response {
+  export type Response = Either<NotFoundError, {
     commentQuestion: CommentQuestion;
-  }
+  }>
 }
 
 export class CreateCommentOnQuestionUseCase extends AbstractUseCase<
@@ -33,7 +33,7 @@ export class CreateCommentOnQuestionUseCase extends AbstractUseCase<
     const question = await questionRepository.findById(questionId);
 
     if (!question) {
-      throw new NotFoundError("Question not found.")
+      return left(new NotFoundError(ErrorCode.NOT_FOUND))
     }
 
     const commentQuestion = CommentQuestion.create({
@@ -44,8 +44,8 @@ export class CreateCommentOnQuestionUseCase extends AbstractUseCase<
 
     await commentQuestionRepository.create(commentQuestion);
 
-    return {
+    return right({
       commentQuestion,
-    };
+    });
   }
 }

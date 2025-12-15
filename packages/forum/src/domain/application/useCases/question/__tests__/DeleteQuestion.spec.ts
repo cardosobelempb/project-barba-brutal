@@ -39,13 +39,11 @@ describe("Delete Question", () => {
     // Arrange
     const entity = questionFactory({});
     await inMemoryQuestionRepository.create(entity);
-
-    // Act + Assert
-    await expect(
-      sut.execute({
+    const result = await sut.execute({
         authorId: UUIDVO.generate(), // força falha corretamente
         questionId: entity.id.getValue(),
       })
-    ).rejects.toBeInstanceOf(NotAllwedError);
+    // Act + Assert
+    expect(result.value).toBeInstanceOf(NotAllwedError);
   });
 });

@@ -21,13 +21,13 @@ describe('Feth Recent Question', () => {
     await inMemoryQuestionRepository.create(questionFactory({ createdAt: new Date(2025, 0, 18) }));
     await inMemoryQuestionRepository.create(questionFactory({createdAt: new Date(2025, 0, 23)}));
 
-    const { questions } = await sut.execute({
+    const { value } = await sut.execute({
       page: 1
     });
 
     // console.log(questions);
 
-    expect(questions).toEqual([
+    expect(value?.questions).toEqual([
       expect.objectContaining({ createdAt: new Date(2025, 0, 23) }),
       expect.objectContaining({ createdAt: new Date(2025, 0, 20) }),
       expect.objectContaining({ createdAt: new Date(2025, 0, 18) })
@@ -40,11 +40,11 @@ describe('Feth Recent Question', () => {
       await inMemoryQuestionRepository.create(questionFactory({}));
     }
 
-    const { questions } = await sut.execute({
+    const { value } = await sut.execute({
       page: 2
     });
 
-    expect(questions).toHaveLength(2);
+    expect(value?.questions).toHaveLength(2);
   })
 
 });

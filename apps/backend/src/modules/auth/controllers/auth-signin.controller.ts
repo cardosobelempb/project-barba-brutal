@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, UsePipes } from "@nestjs/common";
 import { AuthSignInService } from "@repo/auth";
-import { ErrorConstants, UnauthorizedError } from "@repo/core";
+import { ErrorCode, UnauthorizedError } from "@repo/core";
 
 import type { SignInDTO, TokenDTO } from "@repo/types";
 import { AuthSignInPresenter } from "@repo/types";
@@ -65,7 +65,7 @@ export class AuthSignInController {
     } catch (error) {
       if (error instanceof UnauthorizedError) {
         // 🔒 Customiza resposta de credenciais inválidas
-        throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS);
+        throw new UnauthorizedError(ErrorCode.INVALID_CREDENTIALS);
       }
 
       // Repassa o erro para o filtro global

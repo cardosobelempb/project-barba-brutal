@@ -1,4 +1,4 @@
-import { AbstractUseCase } from "@repo/core";
+import { AbstractUseCase, Either, right } from "@repo/core";
 
 import { CommentQuestion } from "../../../enterprise";
 import { CommentQuestionRepository } from "../../repositories";
@@ -9,9 +9,9 @@ export namespace FetchCommentsQuestion {
     page: number;
   }
 
-  export interface Response {
+  export type Response = Either<null, {
     commentsQuestion: CommentQuestion[]
-  }
+  }>
 
 }
 
@@ -22,8 +22,8 @@ export class FetchCommentsQuestionUseCase extends AbstractUseCase<{commentQuesti
 
     const commentsQuestion = await commentQuestionRepository.findManyByCommentQuestionId(questionId, {page});
 
-    return {
+    return right({
       commentsQuestion
-    }
+    });
   }
 }

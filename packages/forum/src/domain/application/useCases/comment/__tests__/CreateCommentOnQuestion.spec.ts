@@ -27,13 +27,13 @@ describe('Create Comment On Question Use Case', () => {
 
     await inMemoryQuestionRepository.create(question);
 
-    const { commentQuestion } = await sut.execute({
+    const result = await sut.execute({
       authorId: UUIDVO.generate(),
       questionId: question.id.getValue(),
       content: question.content,
     });
 
-    expect(commentQuestion.id).toBeDefined();
-    expect(inMemoryCommentQuestionRepository.items[0]?.content).toEqual(commentQuestion.content);
+    expect(result.isRight()).toBe(true);
+    expect(inMemoryCommentQuestionRepository.items[0]?.content).toEqual(question.content);
   })
 });

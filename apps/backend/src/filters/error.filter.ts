@@ -1,5 +1,5 @@
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common'
-import { BadRequestError, ConflictError, DataIntegrityViolationError, EntityNotFoundError, ErrorConstants, MethodArgumentNotValidError, NotAllwedError, ResourceNotFoundError } from '@repo/core'
+import { BadRequestError, ConflictError, DataIntegrityViolationError, EntityNotFoundError, ErrorCode, MethodArgumentNotValidError, NotAllwedError, ResourceNotFoundError } from '@repo/core'
 import { Request, Response } from 'express'
 import { ZodError } from 'zod'
 
@@ -35,7 +35,7 @@ export class ErrorFilter implements ExceptionFilter {
         const validationError: ValidationError = {
           timestamp: new Date().toISOString(),
           status: HttpStatus.BAD_REQUEST,
-          error: ErrorConstants.BAD_REQUEST,
+          error: ErrorCode.BAD_REQUEST,
           message: res.message || 'Validation failed',
           errors: res.errors,
           path: request.url,
@@ -48,7 +48,7 @@ export class ErrorFilter implements ExceptionFilter {
       const standardError: StandardError = {
         timestamp: new Date().toISOString(),
         status: HttpStatus.BAD_REQUEST,
-        error: ErrorConstants.BAD_REQUEST,
+        error: ErrorCode.BAD_REQUEST,
         message: (res as any)?.message || exception.message,
         path: request.url,
       }
@@ -60,19 +60,19 @@ export class ErrorFilter implements ExceptionFilter {
     // ⚙️ 2. Erros conhecidos (domínio)
     // ========================================================
     if (exception instanceof ConflictError) {
-      return this.handleError(exception, HttpStatus.CONFLICT, ErrorConstants.CONFLICT_ERROR, request, response)
+      return this.handleError(exception, HttpStatus.CONFLICT, ErrorCode.CONFLICT_ERROR, request, response)
     }
     if (exception instanceof ResourceNotFoundError || exception instanceof EntityNotFoundError) {
-      return this.handleError(exception, HttpStatus.NOT_FOUND, ErrorConstants.RESOURCE_NOT_FOUND, request, response)
+      return this.handleError(exception, HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, request, response)
     }
     if (exception instanceof BadRequestError || exception instanceof MethodArgumentNotValidError) {
-      return this.handleError(exception, HttpStatus.BAD_REQUEST, ErrorConstants.BAD_REQUEST, request, response)
+      return this.handleError(exception, HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST, request, response)
     }
     if (exception instanceof DataIntegrityViolationError) {
-      return this.handleError(exception, HttpStatus.UNPROCESSABLE_ENTITY, ErrorConstants.DATA_INTEGRITY_VIOLATION, request, response)
+      return this.handleError(exception, HttpStatus.UNPROCESSABLE_ENTITY, ErrorCode.DATA_INTEGRITY_VIOLATION, request, response)
     }
     if (exception instanceof NotAllwedError) {
-      return this.handleError(exception, HttpStatus.METHOD_NOT_ALLOWED, ErrorConstants.METHOD_NOT_ALLOWED, request, response)
+      return this.handleError(exception, HttpStatus.METHOD_NOT_ALLOWED, ErrorCode.METHOD_NOT_ALLOWED, request, response)
     }
 
     // ========================================================

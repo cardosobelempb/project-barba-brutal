@@ -1,4 +1,4 @@
-import { BadRequestError, ErrorConstants, HashGenerator, ServiceAbstract } from '@repo/core';
+import { BadRequestError, ErrorCode, HashGenerator, ServiceAbstract } from '@repo/core';
 import { AuthRegisterDTO, UserEntity } from '@repo/types';
 import { UserRepository } from '@repo/user';
 
@@ -12,7 +12,7 @@ export class AuthRegisterService implements ServiceAbstract<AuthRegisterDTO, Use
     const userExists = await this.userRepository.findByEmail(entity.email)
 
     if (userExists) {
-      throw new BadRequestError(ErrorConstants.CONFLICT_ERROR)
+      throw new BadRequestError(ErrorCode.CONFLICT_ERROR)
     }
 
     const hashGenerator = await this.hashGenerator.hash(entity.password)

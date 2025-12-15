@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UsePipes } from "@nestjs/common";
-import { ConflictError, ErrorConstants } from "@repo/core";
+import { ConflictError, ErrorCode } from "@repo/core";
 import { registerAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
 
 import type { RegisterAccountZodSchema } from "src/shared/schemas/registerAccountZod.schema";
@@ -30,7 +30,7 @@ export class RegisterAccountControlle {
 
     if (userWithSameEmail) {
       console.log("Conflict: User with same email already exists.")
-      throw new ConflictError(ErrorConstants.CONFLICT_ERROR)
+      throw new ConflictError(ErrorCode.CONFLICT_ERROR)
     }
 
     const hashedPawword = await this.bcryptAdapter.hash(password)

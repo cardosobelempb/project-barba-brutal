@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ErrorConstants, NotFoundError, UnauthorizedError } from '@repo/core';
+import { ErrorCode, NotFoundError, UnauthorizedError } from '@repo/core';
 
 import { RequestWithUser } from 'src/guards/auth.guard';
 import { UserPayloadZodSchema } from 'src/shared/schemas';
@@ -28,7 +28,7 @@ export const ParamUser = createParamDecorator(
     // 🚫 Caso o usuário não esteja presente, indica falha de autenticação
     if (!user) {
       throw new UnauthorizedError(
-        `${ErrorConstants.ENTITY_NOT_FOUND}: Usuário não encontrado na requisição.
+        `${ErrorCode.ENTITY_NOT_FOUND}: Usuário não encontrado na requisição.
          Certifique-se de aplicar um AuthGuard (ex: JwtAuthGuard) antes do @ParamUser().`,
       );
     }

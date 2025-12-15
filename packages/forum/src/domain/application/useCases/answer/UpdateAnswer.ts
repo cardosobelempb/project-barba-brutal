@@ -1,4 +1,4 @@
-import { AbstractUseCase, BadRequestError, NotAllwedError } from "@repo/core";
+import { AbstractUseCase, Either, ErrorCode, left, NotAllwedError, NotFoundError, right } from "@repo/core";
 
 import { Answer } from "../../../enterprise";
 import { AnswerRepository } from "../../repositories";
@@ -10,9 +10,9 @@ export namespace UpdateAnswer {
     content: string;
   }
 
-  export interface Response {
+  export type Response = Either<NotFoundError | NotAllwedError, {
     answer: Answer;
-  }
+  }>
 }
 
 /**
@@ -40,13 +40,13 @@ export class UpdateAnswerUseCase extends AbstractUseCase<
 
     // 2. Valida se existe
     if (!answer) {
-      throw new BadRequestError("Answer not found.");
+      return left(new NotFoundError(ErrorCode.NOT_FOUND))
     }
 
     // 3. Garante que somente o autor possa editar
     const isAuthor = answer.authorId.getValue() === authorId;
     if (!isAuthor) {
-      throw new NotAllwedError("You are not allowed to update this answer.");
+      return left(new NotAllwedError(ErrorCode.NOT_ALLOWED))
     }
 
     // 4. Atualiza o estado do agregado (Domain-Driven)
@@ -55,6 +55,6 @@ export class UpdateAnswerUseCase extends AbstractUseCase<
     // 5. Persiste as mudanças no repositório
     await answerRepository.update(answer);
 
-    return {answer};
+    return right({answer});
   }
 }

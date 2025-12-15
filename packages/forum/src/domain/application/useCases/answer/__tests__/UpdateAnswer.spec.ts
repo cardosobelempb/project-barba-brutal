@@ -59,14 +59,13 @@ describe("UpdateAnswerUseCase", () => {
     // Arrange
     const answer = answerFactory({});
     await inMemoryAnswerRepository.create(answer);
-
-    // Act + Assert
-    await expect(
-      sut.execute({
+    const result = await sut.execute({
         authorId: UUIDVO.generate(), // outro usuário
         answerId: answer.id.getValue(),
         content: faker.lorem.text(),
       })
-    ).rejects.toBeInstanceOf(NotAllwedError);
+    // Act + Assert
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllwedError);
   });
 });

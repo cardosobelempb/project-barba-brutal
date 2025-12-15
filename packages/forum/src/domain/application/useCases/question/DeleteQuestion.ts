@@ -1,4 +1,4 @@
-import { AbstractUseCase, BadRequestError, NotAllwedError } from "@repo/core";
+import { AbstractUseCase, Either, ErrorCode, left, NotAllwedError, NotFoundError, right } from "@repo/core";
 
 import { QuestionRepository } from "../../repositories";
 
@@ -7,7 +7,7 @@ export interface DeleteQuestionRequest {
   questionId: string;
 }
 
-export interface DeleteQuestionResponse {}
+export type DeleteQuestionResponse = Either<NotFoundError | NotAllwedError, {}>
 
 export class DeleteQuestion extends AbstractUseCase<
   QuestionRepository,
@@ -26,15 +26,15 @@ export class DeleteQuestion extends AbstractUseCase<
     const question = await this.questionRepository.findById(questionId);
 
     if (!question) {
-      throw new BadRequestError("Question not found.")
+      return left(new NotFoundError(ErrorCode.NOT_FOUND))
     }
 
     if (question.authorId.getValue() !== authorId) {
-      throw new NotAllwedError("Not Allowed.")
+      return left(new NotAllwedError(ErrorCode.NOT_ALLOWED))
     }
 
     await this.questionRepository.delete(question);
 
-    return {};
+    return right({});
   }
 }

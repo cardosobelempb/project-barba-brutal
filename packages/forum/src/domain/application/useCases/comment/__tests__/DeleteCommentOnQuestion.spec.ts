@@ -39,12 +39,13 @@ describe("Delete Comment On Question UseCase", () => {
     const entity = commentQuestionFactory({});
     await inMemoryCommentQuestionRepository.create(entity);
 
-    // Act + Assert
-    await expect(
-      sut.execute({
+    const result = await sut.execute({
         authorId: UUIDVO.generate(), // força falha corretamente
         commentQuestionId: entity.id.getValue(),
       })
-    ).rejects.toBeInstanceOf(NotAllwedError);
+
+    // Act + Assert
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllwedError);
   });
 });

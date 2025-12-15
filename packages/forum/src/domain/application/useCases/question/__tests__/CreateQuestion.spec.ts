@@ -1,7 +1,6 @@
 import { UUIDVO } from '@repo/core';
 import { expect } from 'vitest';
 
-
 import { InMemoryQuestionRepository } from '../../../repositories/InMemoryRepository';
 import { CreateQuestion } from '../CreateQuestion';
 
@@ -17,14 +16,13 @@ describe('Create Question Use Case', () => {
 
   it('should be able to create a question', async () => {
 
-    const { question } = await sut.execute({
+    const result = await sut.execute({
       authorId: UUIDVO.generate(),
       title: 'Nova resposta',
       content: 'Conteúdo da pergunta',
     });
 
-    expect(question.id).toBeDefined();
-    expect(question.content).toEqual('Conteúdo da pergunta');
-    expect(inMemoryQuestionRepository.items[0]?.id.getValue()).toEqual(question.id.getValue());
+    expect(result.isRight()).toBe(true);
+    expect(inMemoryQuestionRepository.items[0]).toEqual(result.value?.question);
   })
 });

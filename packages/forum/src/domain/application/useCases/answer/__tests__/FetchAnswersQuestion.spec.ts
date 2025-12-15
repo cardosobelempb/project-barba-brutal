@@ -23,14 +23,14 @@ describe('Feth Answer Question', () => {
     await inMemoryAnswerRepository.create(answerFactory({questionId: questionIdVO}));
     await inMemoryAnswerRepository.create(answerFactory({questionId: questionIdVO}));
 
-    const { answers } = await sut.execute({
+    const { value } = await sut.execute({
       questionId: questionIdVO.getValue(),
       page: 1
     });
 
     // console.log(answers);
 
-    expect(answers).toHaveLength(3);
+    expect(value?.answers).toHaveLength(3);
   })
 
   it('should be able to fetch paginated  fetch answers question', async () => {
@@ -41,12 +41,12 @@ describe('Feth Answer Question', () => {
       await inMemoryAnswerRepository.create(answerFactory({questionId: questionIdVO}));
     }
 
-    const { answers } = await sut.execute({
+    const { value } = await sut.execute({
       questionId: questionIdVO.getValue(),
       page: 2
     });
 
-    expect(answers).toHaveLength(2);
+    expect(value?.answers).toHaveLength(2);
   })
 
 });

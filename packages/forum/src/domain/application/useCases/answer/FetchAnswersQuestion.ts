@@ -1,4 +1,4 @@
-import { AbstractUseCase } from "@repo/core";
+import { AbstractUseCase, Either, right } from "@repo/core";
 
 import { Answer } from "../../../enterprise";
 import { AnswerRepository } from "../../repositories";
@@ -9,9 +9,9 @@ export namespace FetchAnswersQuestion {
     page: number;
   }
 
-  export interface Response {
+  export type Response = Either<null, {
     answers: Answer[]
-  }
+  }>
 
 }
 
@@ -22,8 +22,8 @@ export class FetchAnswersQuestion extends AbstractUseCase<{answerRepository: Ans
 
     const answers = await answerRepository.findManyByQuestionId(questionId, {page});
 
-    return {
+    return right({
       answers
-    }
+    })
   }
 }

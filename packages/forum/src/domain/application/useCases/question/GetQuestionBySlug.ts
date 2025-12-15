@@ -1,31 +1,35 @@
-import { AbstractUseCase, NotFoundError, SlugVO } from "@repo/core";
+import { AbstractUseCase, Either, ErrorCode, left, NotFoundError, right, SlugVO } from "@repo/core";
 
 import { Question } from "../../../enterprise";
 import { QuestionRepository } from "../../repositories";
 
-export interface GetQuestionBySlugRequest {
-  slug: SlugVO;
+export namespace GetQuestionBySlug {
+  export interface Request {
+    slug: SlugVO;
+  }
+
+  export type Response = Either<NotFoundError, {
+    question: Question
+  }>
 }
 
-export interface GetQuestionBySlugResponse {
-  question: Question
-}
+export class GetQuestionBySlug extends AbstractUseCase<
+  {questionRepository: QuestionRepository},
+  GetQuestionBySlug.Response,
+  GetQuestionBySlug.Request> {
 
-export class GetQuestionBySlug extends AbstractUseCase<QuestionRepository, GetQuestionBySlugResponse, GetQuestionBySlugRequest> {
-  constructor(private readonly questionRepository: QuestionRepository) {
-    super(questionRepository)
-   }
+  async execute({ slug }: GetQuestionBySlug.Request): Promise<GetQuestionBySlug.Response>{
 
-  async execute({ slug }: GetQuestionBySlugRequest): Promise<GetQuestionBySlugResponse>{
+    const { questionRepository } = this.deps;
 
-    const question = await this.questionRepository.findBySlug(slug.getValue());
+    const question = await questionRepository.findBySlug(slug.getValue());
 
     if(!question){
-      throw new NotFoundError("Question not found");
+      return left(new NotFoundError(ErrorCode.NOT_FOUND))
     }
 
-    return {
+    return right({
       question
-    }
+    })
   }
 }

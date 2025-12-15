@@ -1,4 +1,4 @@
-import { AbstractUseCase, UUIDVO } from "@repo/core";
+import { AbstractUseCase, Either, right, UUIDVO } from "@repo/core";
 
 import { Answer } from "../../../enterprise/entities";
 import { AnswerRepository } from "../../repositories";
@@ -9,27 +9,26 @@ export interface AnswerQuestionRequest {
   content: string;
 }
 
-export interface AnswerQuestionResponse {
+export type AnswerQuestionResponse = Either<null, {
   answer: Answer;
-}
+}>
 
-export class CreateAnswerQuestion extends AbstractUseCase<AnswerRepository, AnswerQuestionResponse, AnswerQuestionRequest> {
-  constructor(private readonly answerRepository: AnswerRepository) {
-    super(answerRepository)
-   }
+export class CreateAnswerQuestion extends AbstractUseCase<{
+  answerRepository: AnswerRepository
+}, AnswerQuestionResponse, AnswerQuestionRequest> {
 
   async execute({ intructorId, questionId, content }: AnswerQuestionRequest): Promise<AnswerQuestionResponse> {
-
+    const {answerRepository } = this.deps;
     const answer = Answer.create({
       authorId: UUIDVO.create(intructorId),
       questionId: UUIDVO.create(questionId),
       content
     })
 
-    await this.answerRepository.create(answer)
+    await answerRepository.create(answer)
 
-    return {
+    return right({
       answer,
-    }
+    })
   }
 }

@@ -2,6 +2,7 @@ import { NotAllwedError, UUIDVO } from "@repo/core";
 import { expect } from "vitest";
 
 import { InMemoryAnswerRepository } from "../../../repositories/InMemoryRepository";
+
 import { DeleteAnswerUseCase } from "../DeleteAnswer";
 import { answerFactory } from "../factories/answer-factory";
 
@@ -40,13 +41,13 @@ describe("DeleteAnswerUseCase", () => {
     await repository.create(answer);
 
     const anotherUserId = UUIDVO.generate();
-
-    // Act + Assert: garante que a permissão falha corretamente
-    await expect(
-      sut.execute({
+    const result = await sut.execute({
         authorId: anotherUserId,
         answerId: answer.id.getValue(),
       })
-    ).rejects.toBeInstanceOf(NotAllwedError);
+
+    // Act + Assert: garante que a permissão falha corretamente
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllwedError);
   });
 });

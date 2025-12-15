@@ -1,4 +1,4 @@
-import { AbstractUseCase, UUIDVO } from "@repo/core";
+import { AbstractUseCase, Either, right, UUIDVO } from "@repo/core";
 
 import { Question } from "../../../enterprise";
 import { QuestionRepository } from "../../repositories";
@@ -9,9 +9,9 @@ export interface CreateQuestionRequest {
   content: string;
 }
 
-export interface CreateQuestionResponse {
+export type CreateQuestionResponse = Either<null, {
   question: Question
-}
+}>
 
 export class CreateQuestion extends AbstractUseCase<QuestionRepository, CreateQuestionResponse,CreateQuestionRequest> {
   constructor(private readonly questionRepository: QuestionRepository) {
@@ -28,8 +28,8 @@ export class CreateQuestion extends AbstractUseCase<QuestionRepository, CreateQu
 
     await this.questionRepository.create(question);
 
-    return {
+    return right({
       question
-    }
+    })
   }
 }

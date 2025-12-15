@@ -1,4 +1,4 @@
-import { ErrorConstants, HashComparer, ServiceAbstract, UnauthorizedError } from '@repo/core'
+import { ErrorCode, HashComparer, ServiceAbstract, UnauthorizedError } from '@repo/core'
 import { SignInDTO, UserEntity } from '@repo/types'
 import { UserRepository } from '@repo/user'
 
@@ -32,14 +32,14 @@ export class AuthSignInService
 
     // ✅ Fail Fast — evita processamento desnecessário
     if (!user) {
-      throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
+      throw new UnauthorizedError(ErrorCode.INVALID_CREDENTIALS)
     }
 
     // 2️⃣ Verificar se a senha corresponde ao hash armazenado
     const isPasswordValid = await this.hashComparer.compare(password, user.password)
 
     if (!isPasswordValid) {
-      throw new UnauthorizedError(ErrorConstants.INVALID_CREDENTIALS)
+      throw new UnauthorizedError(ErrorCode.INVALID_CREDENTIALS)
     }
 
     // 3️⃣ Retornar o usuário autenticado

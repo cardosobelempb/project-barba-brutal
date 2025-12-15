@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
-import { ErrorConstants, UnauthorizedError } from '@repo/core';
+import { ErrorCode, UnauthorizedError } from '@repo/core';
 import { TokenDTO, UserEntity } from '@repo/types';
 import { UserFindByIdService } from '@repo/user';
 import { Request } from 'express';
@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractToken(request);
     if (!token) {
       this.logger.warn('Token ausente ou mal formatado no header Authorization.');
-      throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
+      throw new UnauthorizedError(ErrorCode.INVALID_TOKEN);
     }
 
     const payload = this.validateToken(token);
@@ -67,12 +67,12 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = this.jwtAdapter.verifyAccessToken(token);
       if (!payload) {
-        throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
+        throw new UnauthorizedError(ErrorCode.INVALID_TOKEN);
       }
       return payload;
     } catch (error) {
       this.logger.error('Falha ao validar token JWT', error.stack);
-      throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
+      throw new UnauthorizedError(ErrorCode.INVALID_TOKEN);
     }
   }
 
@@ -83,13 +83,13 @@ export class AuthGuard implements CanActivate {
     const userId = payload?.userId;
     if (!userId) {
       this.logger.warn('Payload inválido: campo userId ausente.');
-      throw new UnauthorizedError(ErrorConstants.INVALID_TOKEN);
+      throw new UnauthorizedError(ErrorCode.INVALID_TOKEN);
     }
 
     const user = await this.userFindByIdService.execute(userId);
     if (!user) {
       this.logger.warn(`Usuário não encontrado: ${userId}`);
-      throw new UnauthorizedError(ErrorConstants.UNAUTHORIZED);
+      throw new UnauthorizedError(ErrorCode.UNAUTHORIZED);
     }
 
     return user;

@@ -1,7 +1,6 @@
 import { NotAllwedError, UUIDVO } from "@repo/core";
 import { expect } from "vitest";
 
-
 import { InMemoryQuestionRepository } from "../../../repositories/InMemoryRepository";
 import { answerFactory } from "../../answer/factories/answer-factory";
 import { ChooseQuestionBestAnswerUseCase } from "../ChooseQuestionBestAnswer";
@@ -41,6 +40,7 @@ describe("Choose Question Best Answer UseCase", () => {
     await sut.execute({
       answerId: answer.id.getValue(),
       authorId: question.authorId.getValue(),
+      questionId: question.id.getValue(),
     });
 
     // Assert
@@ -57,13 +57,14 @@ describe("Choose Question Best Answer UseCase", () => {
 
     await inMemoryQuestionRepository.create(question);
     await inMemoryAnswerRepository.create(answer);
-
-    // Act + Assert
-    await expect(
-      sut.execute({
+    const result = await sut.execute({
         authorId: UUIDVO.generate(), // força falha corretamente
         answerId: answer.id.getValue(),
+        questionId: question.id.getValue(),
       })
-    ).rejects.toBeInstanceOf(NotAllwedError);
+
+    // Act + Assert
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllwedError);
   });
 });

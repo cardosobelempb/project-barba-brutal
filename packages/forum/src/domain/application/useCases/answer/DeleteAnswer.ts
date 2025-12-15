@@ -1,4 +1,4 @@
-import { AbstractUseCase, BadRequestError, NotAllwedError } from "@repo/core";
+import { AbstractUseCase, Either, ErrorCode, left, NotAllwedError, NotFoundError, right } from "@repo/core";
 
 import { AnswerRepository } from "../../repositories";
 
@@ -8,7 +8,7 @@ export namespace DeleteAnswer {
     answerId: string;
   }
 
-  export interface Response {}
+  export type Response = Either<NotFoundError | NotAllwedError, {}>
 }
 
 /**
@@ -20,36 +20,37 @@ export namespace DeleteAnswer {
  * - O autor da requisição deve ser o mesmo autor da resposta.
  */
 export class DeleteAnswerUseCase extends AbstractUseCase<
-  AnswerRepository,
-  DeleteAnswer.Response,
-  DeleteAnswer.Request
-> {
-  constructor(private readonly answerRepository: AnswerRepository) {
-    super(answerRepository);
-  }
-
-  async execute({
-    authorId,
-    answerId,
-  }: DeleteAnswer.Request): Promise<DeleteAnswer.Response> {
-    // Busca a resposta pelo ID
-    const answer = await this.answerRepository.findById(answerId);
-
-    // Valida se a resposta existe
-    if (!answer) {
-      throw new BadRequestError("Answer not found.");
+    AnswerRepository,
+    DeleteAnswer.Response,
+    DeleteAnswer.Request
+  > {
+    constructor(private readonly answerRepository: AnswerRepository) {
+      super(answerRepository);
     }
 
-    // Valida se o usuário autenticado é realmente o autor da resposta
-    const isOwner = answer.authorId.getValue() === authorId;
-    if (!isOwner) {
-      throw new NotAllwedError("You are not allowed to delete this answer.");
-    }
+    async execute({
+      authorId,
+      answerId,
+    }: DeleteAnswer.Request): Promise<DeleteAnswer.Response> {
+      // Busca a resposta pelo ID
+      const answer = await this.answerRepository.findById(answerId);
 
-    // Executa a remoção da resposta
-    await this.answerRepository.delete(answer);
+      // Valida se a resposta existe
+      if (!answer) {
+        return left(new NotFoundError(ErrorCode.NOT_FOUND))
+      }
 
-    return {};
+      // Valida se o usuário autenticado é realmente o autor da resposta
+      const isOwner = answer.authorId.getValue() === authorId;
+      if (!isOwner) {
+        return left(new NotAllwedError(ErrorCode.NOT_ALLOWED));
+      }
+
+      // Executa a remoção da resposta
+      await this.answerRepository.delete(answer);
+
+      return right({});
+
   }
 }
 
@@ -62,4 +63,4 @@ export class DeleteAnswerUseCase extends AbstractUseCase<
   5. Se não for → erro 403
   6. Caso válido → deletamos
   7. Retornamos {}
- */
+*/
