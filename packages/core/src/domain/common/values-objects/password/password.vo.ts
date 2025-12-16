@@ -1,4 +1,4 @@
-import { Hashed } from '../../abstract/hash.abstract'
+import { HashAbstract } from '../../abstract/HashAbstract'
 import { BadRequestError } from '../../errors'
 
 /**
@@ -19,10 +19,10 @@ export interface PasswordOptions {
  */
 export class PasswordVO {
   private readonly value: string
-  private readonly hasher?: Hashed
+  private readonly hasher?: HashAbstract
   private readonly options: Required<PasswordOptions>
 
-  constructor(password: string, hasher?: Hashed, options: PasswordOptions = {}) {
+  constructor(password: string, hasher?: HashAbstract, options: PasswordOptions = {}) {
     if (!password || password.trim().length === 0) {
       throw new BadRequestError('Password cannot be empty.')
     }
@@ -100,7 +100,7 @@ export class PasswordVO {
   public static async validateOldPassword(
     oldPassword: string,
     oldHash: string,
-    hasher: Hashed,
+    hasher: HashAbstract,
   ): Promise<void> {
     if (!hasher) throw new BadRequestError('Hasher not provided.')
     const match = await hasher.compare(oldPassword, oldHash)

@@ -1,4 +1,4 @@
-import { DateUtils, Entity, Optional, SlugVO, StringUtils, UUIDVO } from '@repo/core';
+import { AggregateAbstract, DateUtils, Optional, SlugVO, StringUtils, UUIDVO } from '@repo/core';
 
 export interface QuestionProps {
   authorId: UUIDVO;
@@ -12,7 +12,7 @@ export interface QuestionProps {
 }
 
 
-export class Question extends Entity<QuestionProps> {
+export class Question extends AggregateAbstract<QuestionProps> {
 
   get authorId() {
     return this.props.authorId;

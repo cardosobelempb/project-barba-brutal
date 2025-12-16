@@ -1,6 +1,6 @@
-export abstract class UUIDAbstract {
+export abstract class UuidAbstract {
   abstract getId(): string;
-  abstract equals(entity: UUIDAbstract): boolean;
+  abstract equals(entity: UuidAbstract): boolean;
 }
 
 /**
