@@ -1,167 +1,199 @@
 /**
- * Versão altamente otimizada da WatchedList usando Map para
- * permitir operações O(1) baseadas em uma chave única.
- *
- * Fluxos rastreados:
- * - Itens adicionados
- * - Itens removidos
- * - Estado atual
- *
- * T = tipo de item de domínio (entidade, value object, DTO)
+ * WatchedList rastreia alterações em uma coleção
+ * com base em uma chave única e comparação semântica.
  */
 export abstract class WatchedListAbstract<T> {
-  /** Mapa atual de itens (estado vivo da coleção) */
   protected currentItems: Map<string, T>;
-
-  /** Snapshot inicial (imutável) */
   private readonly initialItems: Map<string, T>;
 
-  /** Itens adicionados após o estado inicial */
-  private added: Map<string, T>;
+  private addedItems: Map<string, T>;
+  private removedItems: Map<string, T>;
+  private updatedItems: Map<string, { before: T; after: T }>;
 
-  /** Itens removidos após o estado inicial */
-  private removed: Map<string, T>;
-
-  /**
-   * Cada item deve fornecer uma chave única.
-   * Ex: ID, GUID, código composto, etc.
-   */
   protected abstract getItemKey(item: T): string;
 
-  constructor(initial: T[] = []) {
-    this.currentItems = new Map(initial.map((i) => [this.getItemKey(i), i]));
-    this.initialItems = new Map(initial.map((i) => [this.getItemKey(i), i]));
-    this.added = new Map();
-    this.removed = new Map();
+  /**
+   * Compara dois itens semanticamente.
+   * Deve retornar true se forem considerados equivalentes.
+   */
+  protected abstract compareItems(a: T, b: T): boolean;
+
+  constructor(initialItems: T[] = []) {
+    const map = this.toMap(initialItems);
+
+    this.currentItems = new Map(map);
+    this.initialItems = new Map(map);
+    this.addedItems = new Map();
+    this.removedItems = new Map();
+    this.updatedItems = new Map();
   }
 
   // -----------------------------------------------------
-  // Getters públicos
+  // Conversões
   // -----------------------------------------------------
 
-  /** Retorna itens atuais (array) */
+  private toMap(items: T[]): Map<string, T> {
+    return new Map(items.map(item => [this.getItemKey(item), item]));
+  }
+
+  // -----------------------------------------------------
+  // Consultas públicas
+  // -----------------------------------------------------
+
   public getItems(): T[] {
-    return Array.from(this.currentItems.values());
+    return [...this.currentItems.values()];
   }
 
-  /** Retorna itens adicionados */
-  public getNewItems(): T[] {
-    return Array.from(this.added.values());
+  public getAddedItems(): T[] {
+    return [...this.addedItems.values()];
   }
 
-  /** Retorna itens removidos */
   public getRemovedItems(): T[] {
-    return Array.from(this.removed.values());
+    return [...this.removedItems.values()];
+  }
+
+  public getUpdatedItems(): Array<{ before: T; after: T }> {
+    return [...this.updatedItems.values()];
   }
 
   // -----------------------------------------------------
-  // Consultas
+  // Regras internas
   // -----------------------------------------------------
 
-  /** Item existe no estado atual? */
-  public exists(item: T): boolean {
-    return this.currentItems.has(this.getItemKey(item));
+  private existedInitially(key: string): boolean {
+    return this.initialItems.has(key);
   }
 
-  /** Existia no snapshot inicial? */
-  private existedInitially(item: T): boolean {
-    return this.initialItems.has(this.getItemKey(item));
+  private isNewItem(key: string): boolean {
+    return this.addedItems.has(key);
+  }
+
+  private wasRemoved(key: string): boolean {
+    return this.removedItems.has(key);
   }
 
   // -----------------------------------------------------
   // Mutação
   // -----------------------------------------------------
 
-  /** Adiciona item com rastreamento O(1) */
   public add(item: T): void {
     const key = this.getItemKey(item);
+    const current = this.currentItems.get(key);
 
-    const wasRemoved = this.removed.has(key);
-    const existedInitially = this.existedInitially(item);
-
-    // Se estava marcado como removido, desfaz remoção
-    if (wasRemoved) {
-      this.removed.delete(key);
+    // Caso exista, verifica se houve alteração semântica
+    if (current && !this.compareItems(current, item)) {
+      this.trackUpdate(key, current, item);
     }
 
-    // Se não existia antes, registra como novo
-    if (!this.added.has(key) && !existedInitially) {
-      this.added.set(key, item);
+    if (this.wasRemoved(key)) {
+      this.removedItems.delete(key);
     }
 
-    // Garante na lista atual
+    if (!this.existedInitially(key) && !this.isNewItem(key)) {
+      this.addedItems.set(key, item);
+    }
+
     this.currentItems.set(key, item);
   }
 
-  /** Remove item com rastreamento O(1) */
   public remove(item: T): void {
     const key = this.getItemKey(item);
 
-    const wasAdded = this.added.has(key);
-    const wasRemoved = this.removed.has(key);
-
-    // Sempre remove do estado atual
     this.currentItems.delete(key);
+    this.updatedItems.delete(key);
 
-    // Se era um item novo, basta desfazer add
-    if (wasAdded) {
-      this.added.delete(key);
+    if (this.isNewItem(key)) {
+      this.addedItems.delete(key);
       return;
     }
 
-    // Se já esteve removido, ignora
-    if (!wasRemoved) {
-      this.removed.set(key, item);
+    if (!this.wasRemoved(key)) {
+      this.removedItems.set(key, item);
     }
   }
 
-  /** Atualiza estado completo (mantendo histórico) */
   public update(items: T[]): void {
-    const next = new Map(items.map((i) => [this.getItemKey(i), i]));
+    const nextState = this.toMap(items);
 
-    const newItems: Map<string, T> = new Map();
-    const removedItems: Map<string, T> = new Map();
+    this.recalculateDiffs(nextState);
+    this.currentItems = nextState;
+  }
 
-    // Itens inseridos
-    next.forEach((item, key) => {
-      if (!this.currentItems.has(key)) {
-        newItems.set(key, item);
+  /**
+ * Registra alteração semântica de um item
+ */
+private trackUpdate(
+  key: string,
+  before: T,
+  after: T
+): void {
+  // Evita registrar update de item recém-adicionado
+  if (this.addedItems.has(key)) {
+    return;
+  }
+
+  this.updatedItems.set(key, { before, after });
+}
+
+  // -----------------------------------------------------
+  // Diferenças
+  // -----------------------------------------------------
+
+  private recalculateDiffs(next: Map<string, T>): void {
+    this.addedItems.clear();
+    this.removedItems.clear();
+    this.updatedItems.clear();
+
+    next.forEach((nextItem, key) => {
+      const current = this.currentItems.get(key);
+
+      if (!current && !this.existedInitially(key)) {
+        this.addedItems.set(key, nextItem);
+        return;
+      }
+
+      if (current && !this.compareItems(current, nextItem)) {
+        this.updatedItems.set(key, { before: current, after: nextItem });
       }
     });
 
-    // Itens removidos
-    this.currentItems.forEach((item, key) => {
-      if (!next.has(key)) {
-        removedItems.set(key, item);
+    this.currentItems.forEach((currentItem, key) => {
+      if (!next.has(key) && this.existedInitially(key)) {
+        this.removedItems.set(key, currentItem);
       }
     });
-
-    this.currentItems = next;
-    this.added = newItems;
-    this.removed = removedItems;
   }
 }
 
 /**
-  📦 Exemplo prático
-  interface Produto {
-    id: string;
-    nome: string;
+ interface Produto {
+  id: string;
+  nome: string;
+  preco: number;
+}
+
+class ListaProdutos extends WatchedList<Produto> {
+  protected getItemKey(item: Produto): string {
+    return item.id;
   }
 
-  class ListaProdutos extends WatchedListMap<Produto> {
-    protected getItemKey(item: Produto): string {
-      return item.id;
-    }
+  protected compareItems(a: Produto, b: Produto): boolean {
+    return a.nome === b.nome && a.preco === b.preco;
   }
+}
 
-  const lista = new ListaProdutos([{ id: "1", nome: "Caneta" }]);
+const lista = new ListaProdutos([
+  { id: "1", nome: "Caneta", preco: 2 }
+]);
 
-  lista.add({ id: "2", nome: "Lápis" });
-  lista.remove({ id: "1", nome: "Caneta" });
+lista.add({ id: "1", nome: "Caneta Azul", preco: 2 });
 
-  console.log(lista.getItems());         // [ { id:"2", nome:"Lápis" } ]
-  console.log(lista.getNewItems());      // [ { id:"2", nome:"Lápis" } ]
-  console.log(lista.getRemovedItems());  // [ { id:"1", nome:"Caneta" } ]
-
- */
+lista.getUpdatedItems();
+/*
+[
+  {
+    before: { id: "1", nome: "Caneta", preco: 2 },
+    after:  { id: "1", nome: "Caneta Azul", preco: 2 }
+  }
+]
+*/
