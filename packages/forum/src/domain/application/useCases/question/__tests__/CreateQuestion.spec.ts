@@ -2,15 +2,18 @@ import { UUIDVO } from '@repo/core';
 import { expect } from 'vitest';
 
 import { InMemoryQuestionRepository } from '../../../repositories/InMemoryRepository';
+import { InMemoryQuestionAttachmentRepository } from '../../../repositories/InMemoryRepository/InMemoryQuestionAttachmentRepository';
 import { CreateQuestion } from '../CreateQuestion';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository;
+let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository;
 let sut: CreateQuestion;
 
 describe('Create Question Use Case', () => {
 
   beforeEach(() => {
-    inMemoryQuestionRepository = new InMemoryQuestionRepository();
+    inMemoryQuestionAttachmentRepository = new InMemoryQuestionAttachmentRepository();
+    inMemoryQuestionRepository = new InMemoryQuestionRepository(inMemoryQuestionAttachmentRepository);
     sut = new CreateQuestion(inMemoryQuestionRepository)
   })
 
@@ -25,8 +28,6 @@ describe('Create Question Use Case', () => {
       content: 'Conteúdo da pergunta',
       attachmentsIds: [attachemnt1.getValue(), attachemnt2.getValue()]
     });
-
-    console.log("Result CreateQuestion =>", result.value?.question.attachments.getItems()[0]?.attachmentId.getValue());
 
     expect(result.isRight()).toBe(true);
     expect(inMemoryQuestionRepository.items[0]).toEqual(result.value?.question);

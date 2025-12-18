@@ -1,17 +1,19 @@
 import { expect } from 'vitest';
 
-
 import { InMemoryQuestionRepository } from '../../../repositories/InMemoryRepository';
+import { InMemoryQuestionAttachmentRepository } from '../../../repositories/InMemoryRepository/InMemoryQuestionAttachmentRepository';
 import { questionFactory } from '../factories/question-factory';
 import { FetchRecentQuestion } from '../FetchRecentQuestion';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository;
+let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository;
 let sut: FetchRecentQuestion;
 
 describe('Feth Recent Question', () => {
 
   beforeEach(() => {
-    inMemoryQuestionRepository = new InMemoryQuestionRepository();
+    inMemoryQuestionAttachmentRepository = new InMemoryQuestionAttachmentRepository();
+    inMemoryQuestionRepository = new InMemoryQuestionRepository(inMemoryQuestionAttachmentRepository);
     sut = new FetchRecentQuestion({questionRepository: inMemoryQuestionRepository})
   })
 

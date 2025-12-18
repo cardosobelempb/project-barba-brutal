@@ -2,10 +2,15 @@ import { Pagination } from "@repo/core";
 
 import { Question } from "../../../enterprise/entities";
 import { QuestionRepository } from "../QuestionRepository";
+import { InMemoryQuestionAttachmentRepository } from "./InMemoryQuestionAttachmentRepository";
 
 export class InMemoryQuestionRepository implements QuestionRepository {
 
   public items: Question[] = [];
+
+  constructor(
+    private inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository
+  ){}
 
   /**
    * Busca uma questão pelo ID
@@ -85,5 +90,10 @@ export class InMemoryQuestionRepository implements QuestionRepository {
     this.items = this.items.filter(
       (item) => !item.id.equals(entity.id)
     );
+    this.inMemoryQuestionAttachmentRepository.deleteManyByQuestionId(entity.id.getValue())
+
+    //  const itemIndex = this.items.findIndex((item) => item.id.equals(entity.id));
+    // this.items.splice(itemIndex, 1);
+    // this.inMemoryQuestionAttachmentRepository.deleteManyByQuestionId(entity.id.toString())
   }
 }

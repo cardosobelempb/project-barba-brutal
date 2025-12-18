@@ -2,18 +2,21 @@ import { NotAllwedError, UUIDVO } from "@repo/core";
 import { expect } from "vitest";
 
 import { InMemoryQuestionRepository } from "../../../repositories/InMemoryRepository";
+import { InMemoryQuestionAttachmentRepository } from "../../../repositories/InMemoryRepository/InMemoryQuestionAttachmentRepository";
 import { answerFactory } from "../../answer/factories/answer-factory";
 import { ChooseQuestionBestAnswerUseCase } from "../ChooseQuestionBestAnswer";
 import { questionFactory } from "../factories/question-factory";
 import { InMemoryAnswerRepository } from './../../../repositories/InMemoryRepository/InMemoryAnswerRepository';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository;
+let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository;
 let inMemoryAnswerRepository: InMemoryAnswerRepository;
 let sut: ChooseQuestionBestAnswerUseCase;
 
 describe("Choose Question Best Answer UseCase", () => {
   beforeEach(() => {
-    inMemoryQuestionRepository = new InMemoryQuestionRepository();
+    inMemoryQuestionAttachmentRepository = new InMemoryQuestionAttachmentRepository();
+    inMemoryQuestionRepository = new InMemoryQuestionRepository(inMemoryQuestionAttachmentRepository);
     inMemoryAnswerRepository = new InMemoryAnswerRepository();
     sut = new ChooseQuestionBestAnswerUseCase({
       answerRepository: inMemoryAnswerRepository,

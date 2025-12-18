@@ -8,6 +8,6 @@ export class QuestionAttachmentList extends WatchedListAbstract<QuestionAttachme
   }
 
   protected compareItems(a: QuestionAttachment, b: QuestionAttachment): boolean {
-    return a.id === b.id;
+    return a.id.equals(b.id);
   }
 }

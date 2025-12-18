@@ -28,8 +28,6 @@ describe('Feth Answer Question', () => {
       page: 1
     });
 
-    // console.log(answers);
-
     expect(value?.answers).toHaveLength(3);
   })
 

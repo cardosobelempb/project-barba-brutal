@@ -29,8 +29,6 @@ describe("Create Answer Question UseCase", () => {
       content: answer.content,
     });
 
-    console.log('Result => ', result.value)
-
     // Assert: verifica que foi removida do repositório
     expect(result.isRight()).toBe(true);
     expect(inMemoryAnswerRepository.items[0]).toEqual(result.value?.answer);
