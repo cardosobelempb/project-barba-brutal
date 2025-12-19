@@ -1,9 +1,11 @@
 import { Entity, Optional, StringUtils, UUIDVO } from '@repo/core';
+import { AnswerAttachmentList } from './AnswerAttachementList';
 
 export interface AnswerProps {
   authorId: UUIDVO;
   questionId: UUIDVO;
   content: string;
+  attachments: AnswerAttachmentList;
   createdAt: Date;
   updatedAt?: Date | null;
   deletedAt?: Date | null;
@@ -18,6 +20,10 @@ export class Answer extends Entity<AnswerProps> {
   set content(content: string) {
     this.props.content = content;
     this.touch();
+  }
+
+  get attachments() {
+    return this.props.attachments;
   }
 
   get authorId() {
@@ -48,14 +54,20 @@ export class Answer extends Entity<AnswerProps> {
     this.props.updatedAt = new Date();
   }
 
+  updateAttachments(attachments: AnswerAttachmentList) {
+    this.props.attachments = attachments;
+    this.touch();
+  }
+
 
   static create(
-     props: Optional<AnswerProps, 'createdAt' | 'updatedAt' | 'deletedAt'>,
+     props: Optional<AnswerProps, "attachments" | 'createdAt' | 'updatedAt' | 'deletedAt'>,
     id?: UUIDVO,
   ) {
     const answer = new Answer(
       {
         ...props,
+        attachments: props.attachments ?? new AnswerAttachmentList(),
         createdAt: props.createdAt ?? new Date(),
       },
       id,

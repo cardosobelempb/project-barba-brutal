@@ -4,14 +4,17 @@ import { expect } from 'vitest';
 import { InMemoryAnswerRepository } from '../../../repositories/InMemoryRepository';
 import { answerFactory } from '../factories/answer-factory';
 import { FetchAnswersQuestion } from '../FetchAnswersQuestion';
+import { InMemoryAnswerAttachmentRepository } from './../../../repositories/InMemoryRepository/InMemoryAnswerAttachmentRepository';
 
+let inMemoryAnswerAttachmentRepository: InMemoryAnswerAttachmentRepository;
 let inMemoryAnswerRepository: InMemoryAnswerRepository;
 let sut: FetchAnswersQuestion;
 
 describe('Feth Answer Question', () => {
 
   beforeEach(() => {
-    inMemoryAnswerRepository = new InMemoryAnswerRepository();
+    inMemoryAnswerAttachmentRepository = new InMemoryAnswerAttachmentRepository();
+    inMemoryAnswerRepository = new InMemoryAnswerRepository(inMemoryAnswerAttachmentRepository);
     sut = new FetchAnswersQuestion({answerRepository: inMemoryAnswerRepository})
   })
 

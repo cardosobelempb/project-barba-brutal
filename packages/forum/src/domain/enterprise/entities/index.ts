@@ -1,4 +1,6 @@
 export * from './Answer';
+export * from './AnswerAttachementList';
+export * from './AnswerAttachment';
 export * from './Attachment';
 export * from './CommentAnswer';
 export * from './CommentQuestion';

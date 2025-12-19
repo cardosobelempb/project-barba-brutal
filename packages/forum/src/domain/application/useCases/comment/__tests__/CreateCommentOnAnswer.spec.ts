@@ -3,15 +3,18 @@ import { expect } from 'vitest';
 import { InMemoryAnswerRepository, InMemoryCommentAnswerRepository } from '../../../repositories/InMemoryRepository';
 import { answerFactory } from '../../answer/factories/answer-factory';
 import { CreateCommentOnAnswerUseCase } from '../CreateCommentOnAnswer';
+import { InMemoryAnswerAttachmentRepository } from './../../../repositories/InMemoryRepository/InMemoryAnswerAttachmentRepository';
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository;
 let inMemoryCommentAnswerRepository: InMemoryCommentAnswerRepository;
+let inMemoryAnswerAttachmentRepository: InMemoryAnswerAttachmentRepository;
 let sut: CreateCommentOnAnswerUseCase;
 
 describe('Create Comment On Answer Use Case', () => {
 
   beforeEach(() => {
-    inMemoryAnswerRepository = new InMemoryAnswerRepository();
+    inMemoryAnswerAttachmentRepository = new InMemoryAnswerAttachmentRepository();
+    inMemoryAnswerRepository = new InMemoryAnswerRepository(inMemoryAnswerAttachmentRepository);
     inMemoryCommentAnswerRepository = new InMemoryCommentAnswerRepository(),
 
     sut = new CreateCommentOnAnswerUseCase({

@@ -1,27 +1,24 @@
 import { Pagination, UUIDVO } from "@repo/core";
 
-import { Answer } from "../../../enterprise/entities";
-import { AnswerRepository } from "../AnswerRepository";
-import { InMemoryAnswerAttachmentRepository } from "./InMemoryAnswerAttachmentRepository";
+import { AnswerAttachment } from "../../../enterprise";
+import { AnswerAttachmentRepository } from "../AnswerAttchmentRepository";
 
-export class InMemoryAnswerRepository implements AnswerRepository {
-  public items: Answer[] = [];
 
-  constructor(
-      private inMemoryAnswerAttachmentRepository: InMemoryAnswerAttachmentRepository
-  ) { }
+export class InMemoryAnswerAttachmentRepository implements AnswerAttachmentRepository {
+
+  public items: AnswerAttachment[] = [];
 
   /**
    * Busca uma questão pelo ID
    */
-  async findById(id: string): Promise<Answer | null> {
+  async findById(id: string): Promise<AnswerAttachment | null> {
     return this.items.find((item) => item.id.getValue() === id) ?? null;
   }
 
   /**
    * Retorna todas as questões com paginação simples
    */
-  async findAll({ page = 1, size = 10 }: Pagination): Promise<Answer[]> {
+  async findAll({ page = 1, size = 10 }: Pagination): Promise<AnswerAttachment[]> {
     // Proteção contra paginação inválida
     const _page = Math.max(1, page);
     const _size = Math.max(1, size);
@@ -32,16 +29,20 @@ export class InMemoryAnswerRepository implements AnswerRepository {
     return this.items.slice(start, end);
   }
 
-  async findManyByQuestionId(
-    questionId: string,
+  async findManyByAnswerId(answerId: string): Promise<AnswerAttachment[]> {
+    return this.items.filter((item) => item.answerId.equals(UUIDVO.create(answerId)));
+  }
+
+   async findManyByAnswerAttachmentId(
+    answerId: string,
     { page = 1, size = 20 }: Pagination,
-  ): Promise<Answer[]> {
+  ): Promise<AnswerAttachment[]> {
     // Criamos o value object apenas uma vez (evita recalcular para cada item)
-    const questionIdVO = UUIDVO.create(questionId);
+    const answerIdVO = UUIDVO.create(answerId);
 
     // Filtramos respostas pertencentes à questão alvo
     const filteredAnswers = this.items.filter((item) =>
-      item.questionId.equals(questionIdVO),
+      item.answerId.equals(answerIdVO),
     );
 
     // Sanitizamos os valores da paginação
@@ -58,7 +59,7 @@ export class InMemoryAnswerRepository implements AnswerRepository {
   /**
    * Cria uma nova questão no repositório
    */
-  async create(entity: Answer): Promise<void> {
+  async create(entity: AnswerAttachment): Promise<void> {
     this.items.push(entity);
   }
 
@@ -66,12 +67,12 @@ export class InMemoryAnswerRepository implements AnswerRepository {
    * Atualiza uma questão existente.
    * Lança erro se não existir (evita inconsistências silenciosas).
    */
-  async update(entity: Answer): Promise<void> {
+  async update(entity: AnswerAttachment): Promise<void> {
     const index = this.items.findIndex((item) => item.id.equals(entity.id));
 
     if (index === -1) {
       throw new Error(
-        `Cannot update: Answer with ID ${entity.id.getValue()} not found.`,
+        `Cannot update: AnswerComment with ID ${entity.id.getValue()} not found.`,
       );
     }
 
@@ -82,9 +83,16 @@ export class InMemoryAnswerRepository implements AnswerRepository {
   /**
    * Exclui uma questão do repositório.
    */
-  async delete(entity: Answer): Promise<void> {
+  async delete(entity: AnswerAttachment): Promise<void> {
     // remove por valor do ID (correto)
     this.items = this.items.filter((item) => !item.id.equals(entity.id));
-    this.inMemoryAnswerAttachmentRepository.deleteManyByAnswerId(entity.id.getValue())
+  }
+
+  async deleteManyByAnswerId(answerId: string): Promise<void> {
+     this.items = this.items.filter(
+      (item) => item.answerId.getValue() !== answerId,
+    );
+    // const answerAttachments = this.items.filter(item => item.answerId.toString() !== answerId);
+    // this.items = answerAttachments;
   }
 }
