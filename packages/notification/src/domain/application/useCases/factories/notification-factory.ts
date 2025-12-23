@@ -11,8 +11,8 @@ export function notificationFactory(
   const notification = Notification.create(
     {
       recipientId: UUIDVO.create(),
-      title: faker.lorem.text(),
-      content: faker.lorem.text(),
+      title: faker.lorem.sentence(4),
+      content: faker.lorem.sentence(10),
       ...override,
     },
     id,
