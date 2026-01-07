@@ -1,31 +1,39 @@
 /**
- * This function loops through a function rerunning all assertions
- * inside of it until it gets a truthy result.
+ * Reexecuta assertions até que todas passem ou o tempo máximo seja atingido.
  *
- * If the maximum duration is reached, it then rejects.
+ * Útil para testar comportamentos assíncronos/eventuais,
+ * como subscribers, side effects ou event buses.
  *
- * @param expectations A function containing all tests assertions
- * @param maxDuration Maximum wait time before rejecting
+ * @param assertions Função contendo as assertions (deve lançar erro se falhar)
+ * @param timeout Tempo máximo de espera em ms
+ * @param interval Intervalo entre tentativas em ms
  */
 export async function waitFor(
   assertions: () => void,
-  maxDuration = 1000,
+  timeout = 1000,
+  interval = 10,
 ): Promise<void> {
+  const startTime = Date.now()
+  let lastError: unknown
+
   return new Promise((resolve, reject) => {
-    let elapsedTime = 0
-
-    const interval = setInterval(() => {
-      elapsedTime += 10
-
+    const attempt = () => {
       try {
         assertions()
-        clearInterval(interval)
-        resolve()
-      } catch (err) {
-        if (elapsedTime >= maxDuration) {
-          reject(err)
+        return resolve()
+      } catch (error) {
+        lastError = error
+
+        const elapsedTime = Date.now() - startTime
+
+        if (elapsedTime >= timeout) {
+          return reject(lastError)
         }
+
+        setTimeout(attempt, interval)
       }
-    }, 10)
+    }
+
+    attempt()
   })
 }

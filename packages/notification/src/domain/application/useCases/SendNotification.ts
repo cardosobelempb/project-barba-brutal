@@ -1,24 +1,23 @@
 import { AbstractUseCase, Either, right, UUIDVO } from "@repo/core";
+
 import { Notification } from "../../enterprise";
 import { NotificationRepository } from "../repositories";
 
-
-
-export namespace SendNotificationProps {
+export namespace SendNotification {
   export interface Input {
-  recipientId: string;
-  title: string;
-  content: string;
+    recipientId: string;
+    title: string;
+    content: string;
+  }
+
+  export type Output = Either<null, {
+    notification: Notification
+  }>
 }
 
-export type Output = Either<null, {
-  notification: Notification
-}>
- }
+export class SendNotificationUseCase extends AbstractUseCase<{notificationRepository: NotificationRepository}, SendNotification.Output, SendNotification.Input> {
 
-export class SendNotificationUseCase extends AbstractUseCase<{notificationRepository: NotificationRepository}, SendNotificationProps.Output,SendNotificationProps.Input> {
-
-  async execute({ recipientId, title, content }: SendNotificationProps.Input): Promise<SendNotificationProps.Output>{
+  async execute({ recipientId, title, content }: SendNotification.Input): Promise<SendNotification.Output>{
     const {notificationRepository } = this.deps;
 
     const notification = Notification.create({
@@ -27,7 +26,6 @@ export class SendNotificationUseCase extends AbstractUseCase<{notificationReposi
       content
     });
 
-
     await notificationRepository.create(notification);
 
     return right({
@@ -35,3 +33,5 @@ export class SendNotificationUseCase extends AbstractUseCase<{notificationReposi
     })
   }
 }
+
+

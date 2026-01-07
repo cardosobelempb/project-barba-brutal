@@ -2,9 +2,8 @@ import { UUIDVO } from '@repo/core';
 import { expect } from 'vitest';
 
 import { InMemoryNotificationRepository } from '../../repositories/inMemoryRepository';
-
-import { SendNotificationUseCase } from '../SendNotification';
 import { notificationFactory } from '../factories/notification-factory';
+import { SendNotificationUseCase } from '../SendNotification';
 
 let inMemoryNotificationRepository: InMemoryNotificationRepository;
 let sut: SendNotificationUseCase;

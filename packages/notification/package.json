@@ -17,6 +17,7 @@
     "rollup": "^4.53.2",
     "@repo/vitest-config": "*",
     "@repo/eslint-config": "*",
-    "@repo/ts-config": "*"
+    "@repo/ts-config": "*",
+    "@repo/forum": "*"
   }
 }

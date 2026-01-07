@@ -11,7 +11,7 @@
  * - Método setupSubscriptions agora expressa claramente a intenção:
  *   "registrar callbacks que escutam eventos".
  */
-export abstract class DomainEventHandlerAbstract {
+export abstract class EventHandlerAbstract {
   /**
    * Configura todas as assinaturas deste handler.
    *

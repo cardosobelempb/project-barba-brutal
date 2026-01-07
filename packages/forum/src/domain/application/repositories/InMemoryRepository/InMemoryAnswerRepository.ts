@@ -1,4 +1,4 @@
-import { Pagination, UUIDVO } from "@repo/core";
+import { Events, Pagination, UUIDVO } from "@repo/core";
 
 import { Answer } from "../../../enterprise/entities";
 import { AnswerRepository } from "../AnswerRepository";
@@ -60,6 +60,7 @@ export class InMemoryAnswerRepository implements AnswerRepository {
    */
   async create(entity: Answer): Promise<void> {
     this.items.push(entity);
+    Events.dispatchEventsForAggregate(entity.id);
   }
 
   /**
@@ -77,6 +78,7 @@ export class InMemoryAnswerRepository implements AnswerRepository {
 
     // Atualiza mantendo posição original
     this.items[index] = entity;
+    Events.dispatchEventsForAggregate(entity.id);
   }
 
   /**

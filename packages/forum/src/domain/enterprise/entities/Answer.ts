@@ -1,4 +1,6 @@
-import { Entity, Optional, StringUtils, UUIDVO } from '@repo/core';
+import { AggregateAbstract, Optional, StringUtils, UUIDVO } from '@repo/core';
+
+import { AnswerCreatedEvent } from '../events';
 import { AnswerAttachmentList } from './AnswerAttachementList';
 
 export interface AnswerProps {
@@ -11,7 +13,7 @@ export interface AnswerProps {
   deletedAt?: Date | null;
 }
 
-export class Answer extends Entity<AnswerProps> {
+export class Answer extends AggregateAbstract<AnswerProps> {
 
   get content() {
     return this.props.content;
@@ -71,7 +73,13 @@ export class Answer extends Entity<AnswerProps> {
         createdAt: props.createdAt ?? new Date(),
       },
       id,
-    )
+    );
+
+    const isNewAnswer = !id;
+
+    if(isNewAnswer) {
+      answer.registerEvent(new AnswerCreatedEvent(answer));
+    }
 
     return answer;
   }

@@ -1,4 +1,4 @@
-export * from './DomainEventAbstract';
-export * from './DomainEventHandlerAbstract';
-export * from './DomainEvents';
+export * from './EventAbstract';
+export * from './EventHandlerAbstract';
+export * from './Events';
 

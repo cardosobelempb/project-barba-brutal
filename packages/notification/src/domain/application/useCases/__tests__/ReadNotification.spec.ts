@@ -1,19 +1,18 @@
+import { NotAllwedError, UUIDVO } from '@repo/core';
 import { expect } from 'vitest';
 
 import { InMemoryNotificationRepository } from '../../repositories/inMemoryRepository';
-
-import { NotAllwedError, UUIDVO } from '@repo/core';
-import { ReadNotificationUseCase } from '../ReadNotification';
 import { notificationFactory } from '../factories/notification-factory';
+import { ReadNotification } from '../ReadNotification';
 
 let inMemoryNotificationRepository: InMemoryNotificationRepository;
-let sut: ReadNotificationUseCase;
+let sut: ReadNotification.UseCase;
 
 describe('Read Notification Use Case', () => {
 
   beforeEach(() => {
     inMemoryNotificationRepository = new InMemoryNotificationRepository();
-    sut = new ReadNotificationUseCase({notificationRepository: inMemoryNotificationRepository})
+    sut = new ReadNotification.UseCase({notificationRepository: inMemoryNotificationRepository})
   })
 
   it('should be able to read a notification', async () => {
@@ -23,8 +22,8 @@ describe('Read Notification Use Case', () => {
     await inMemoryNotificationRepository.create(notification);
 
     const result = await sut.execute({
-      recipientId: notification.recipientId.toString(),
       notificationId: notification.id.toString(),
+      recipientId: notification.recipientId.toString(),
     });
 
     expect(result.isRight()).toBe(true);
@@ -34,13 +33,14 @@ describe('Read Notification Use Case', () => {
   })
 
   it("should not be able to read a notification from another user", async () => {
+
     const notification = notificationFactory({})
 
     await inMemoryNotificationRepository.create(notification);
 
     const result = await sut.execute({
-      recipientId: UUIDVO.generate(),
       notificationId: notification.id.toString(),
+      recipientId: UUIDVO.generate(),
     });
     // Act + Assert
     expect(result.value).toBeInstanceOf(NotAllwedError);

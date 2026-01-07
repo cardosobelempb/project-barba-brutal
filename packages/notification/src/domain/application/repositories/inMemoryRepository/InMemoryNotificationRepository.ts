@@ -1,7 +1,7 @@
 import { Pagination } from "@repo/core";
+
 import { Notification } from "../../../enterprise";
 import { NotificationRepository } from "../NotificationRepository";
-
 
 export class InMemoryNotificationRepository implements NotificationRepository {
 
